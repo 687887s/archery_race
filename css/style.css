@@ -258,66 +258,127 @@ tr:last-child td {
     margin-left: 0.5rem;
 }
 
-/* Bracket Styling */
+/* Redesigned Bracket Styling */
 .bracket-wrapper {
     display: block;
     width: 100%;
-    overflow-x: auto; /* Horizontal scroll for wide brackets */
-    padding: 2rem 0;
+    overflow-x: auto;
+    padding: 3rem 2rem;
     cursor: grab;
-}
-
-.bracket-wrapper:active {
-    cursor: grabbing;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
 }
 
 .bracket {
-    display: inline-flex; /* Keep it in a line for horizontal scroll */
-    gap: 4rem;
+    display: flex;
+    gap: 0; /* Rounds will be connected by lines */
     min-width: max-content;
-    padding-bottom: 2rem;
+    align-items: stretch;
 }
 
 .round {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    gap: 2rem;
-}
-
-.match {
-    display: flex;
-    flex-direction: column;
-    width: 220px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 0.5rem;
-    overflow: hidden;
+    justify-content: space-around; /* This ensures even spacing that grows each round */
+    width: 280px;
     position: relative;
 }
 
-.player {
-    padding: 0.75rem;
+.round-title {
+    position: absolute;
+    top: -2rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: var(--accent-blue);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.75rem;
+}
+
+.match {
+    padding: 1rem 2rem;
+    position: relative;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Connecting Lines Logic */
+.match::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2rem;
+    height: 1px;
+    background: var(--glass-border);
+}
+
+.round:first-child .match::before {
+    display: none; /* First round has no incoming lines */
+}
+
+.match::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 2rem;
+    height: 1px;
+    background: var(--glass-border);
+}
+
+.round:last-child .match::after {
+    display: none; /* Last round (Final) has no outgoing lines */
+}
+
+/* Vertical Connectors */
+.match-pair-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.player {
+    background: var(--sidebar-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    height: 40px;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
     font-size: 0.9rem;
-    transition: background 0.2s;
+    transition: all 0.3s;
+    width: 200px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .player.winner {
-    background: rgba(16, 185, 129, 0.1);
-    color: var(--accent-emerald);
+    border-color: var(--accent-blue);
+    background: rgba(59, 130, 246, 0.1);
     font-weight: 600;
+    color: white;
 }
 
-.player:first-child {
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.score {
-    font-family: monospace;
+.player .score {
+    background: var(--glass-bg);
+    color: var(--accent-blue);
+    min-width: 28px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 0.8rem;
     font-weight: 700;
+    margin-left: 8px;
+}
+
+.player.winner .score {
+    background: var(--accent-blue);
+    color: white;
 }
 
 /* Utility */
