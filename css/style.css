@@ -91,7 +91,7 @@ body {
     position: fixed;
     top: 1.5rem;
     left: 1.5rem;
-    z-index: 1100;
+    z-index: 2100; /* Above sidebar (2000) */
     background: var(--sidebar-bg);
     border: 1px solid var(--glass-border);
     color: white;

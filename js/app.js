@@ -29,7 +29,7 @@ function toggleSidebar(forceCollapse = null) {
     }
 }
 
-menuToggle?.addEventListener('click', () => toggleSidebar(false));
+menuToggle?.addEventListener('click', () => toggleSidebar());
 sidebarOverlay?.addEventListener('click', () => toggleSidebar(true));
 
 // View Switching Logic
