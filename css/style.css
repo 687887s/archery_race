@@ -257,7 +257,9 @@ tr:last-child td {
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
-    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+}
 
 /* Redesigned Bracket Styling (Bottom-to-Top, Side-by-Side Players) */
 .bracket-wrapper {
@@ -273,7 +275,7 @@ tr:last-child td {
 .bracket {
     display: flex;
     flex-direction: column-reverse; /* Round 1 at Bottom, Final at Top */
-    gap: 8rem; /* Vertical gap between rounds */
+    gap: 8rem;
     min-width: max-content;
     align-items: center;
 }
@@ -282,14 +284,14 @@ tr:last-child td {
     display: flex;
     flex-direction: row; 
     justify-content: center;
-    gap: 5rem; /* Horizontal gap between matches */
+    gap: 5rem;
     width: 100%;
     position: relative;
 }
 
 .round-title {
     position: absolute;
-    bottom: -2.5rem; /* Title below the round in bottom-up mode */
+    bottom: -2.5rem;
     left: 0;
     width: 100%;
     text-align: center;
@@ -303,22 +305,21 @@ tr:last-child td {
 .match {
     position: relative;
     display: flex;
-    flex-direction: row; /* Players side-by-side */
+    flex-direction: row;
     gap: 1rem;
     align-items: center;
     justify-content: center;
-    width: 320px; /* Wider for side-by-side */
+    width: 320px;
 }
 
-/* Dashed Vertical Connecting Lines */
 .match::before {
     content: " \;
  position: absolute;
  left: 50%;
- bottom: -4rem; /* Line down to previous round */
+ bottom: -4rem;
  width: 0;
  height: 4rem;
- border-left: 2px dashed var(--glass-border);
+ border-left: 2px dashed rgba(255,255,255,0.2);
 }
 
 .round:first-child .match::before {
@@ -329,10 +330,10 @@ tr:last-child td {
  content: \\;
  position: absolute;
  left: 50%;
- top: -4rem; /* Line up to next round */
+ top: -4rem;
  width: 0;
  height: 4rem;
- border-left: 2px dashed var(--glass-border);
+ border-left: 2px dashed rgba(255,255,255,0.2);
 }
 
 .round:last-child .match::after {
@@ -352,18 +353,16 @@ tr:last-child td {
  flex: 1;
  min-width: 140px;
  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
- transition: all 0.3s;
 }
 
 .player.winner {
  background: rgba(59, 130, 246, 0.2);
  border-color: var(--accent-blue);
  color: white;
- box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
 }
 
 .player .score {
- background: rgba(255, 255, 255, 0.1);
+ background: rgba(0,0,0,0.3);
  color: var(--accent-blue);
  min-width: 32px;
  height: 28px;
@@ -379,15 +378,11 @@ tr:last-child td {
  color: white;
 }
 
-/* VS Indicator */
-.match::after {
- /* We reuse after for the top line, so we need a different way for VS */
-}
-
 .vs-divider {
  color: var(--text-secondary);
  font-size: 0.7rem;
  font-weight: 700;
+ opacity: 0.5;
 }
 
 .bracket-wrapper.active-dragging { cursor: grabbing; user-select: none; }
