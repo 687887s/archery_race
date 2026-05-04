@@ -34,25 +34,33 @@ function switchView(view) {
 btnStandings?.addEventListener('click', () => switchView('standings'));
 btnBracket?.addEventListener('click', () => switchView('bracket'));
 
-// Auto-fetch logic for Frontend
+// Auto-fetch logic for Frontend (Optimized with Parallel Fetching)
 async function autoFetchData() {
     try {
-        // Try to load default data files with cache busting
-        const playerResponse = await fetch('data/players.csv?v=' + Date.now());
+        console.time('DataLoad');
+        showToast('正在獲取最新賽況...');
+        
+        // Parallel fetching to reduce waiting time
+        const [playerResponse, matchResponse] = await Promise.all([
+            fetch(`data/players.csv?v=${Date.now()}`),
+            fetch(`data/matches.csv?v=${Date.now()}`)
+        ]);
+
         if (playerResponse.ok) {
             const players = await handler.loadPlayers(await playerResponse.blob());
             renderStandings('standings-body', handler.getRankings());
         }
 
-        const matchResponse = await fetch('data/matches.csv?v=' + Date.now());
         if (matchResponse.ok) {
             const matches = await handler.loadMatches(await matchResponse.blob());
             renderBracket('bracket-container', matches);
         }
         
+        console.timeEnd('DataLoad');
         console.log('Initial data loaded successfully');
     } catch (err) {
-        console.warn('No initial data found or fetch failed:', err);
+        console.warn('Initial data load failed:', err);
+        showToast('載入數據失敗，請重新整理', true);
     }
 }
 
