@@ -22,7 +22,8 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-primary);
-    overflow: hidden; /* Prevent body scroll to keep sidebar fixed */
+    overflow: hidden;
+    /* Prevent body scroll to keep sidebar fixed */
 }
 
 /* Custom Premium Scrollbar */
@@ -59,7 +60,8 @@ body {
     display: flex;
     flex-direction: column;
     padding: 2rem 1rem;
-    z-index: 2000; /* Higher than menu button */
+    z-index: 2000;
+    /* Higher than menu button */
     position: fixed;
     top: 0;
     left: 0;
@@ -91,7 +93,8 @@ body {
     position: fixed;
     top: 1.5rem;
     left: 1.5rem;
-    z-index: 2100; /* Above sidebar (2000) */
+    z-index: 2100;
+    /* Above sidebar (2000) */
     background: var(--sidebar-bg);
     border: 1px solid var(--glass-border);
     color: white;
@@ -103,7 +106,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .logo {
@@ -188,7 +191,8 @@ body {
 .view-title h2 {
     font-size: 1.875rem;
     font-weight: 700;
-    margin-left: 3.5rem; /* Space for menu button */
+    margin-left: 3.5rem;
+    /* Space for menu button */
 }
 
 .upload-btn {
@@ -254,16 +258,12 @@ tr:last-child td {
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.7rem;
-    font-weight: 700;
-    margin-left: 0.5rem;
-}
 
-
-/* Redesigned Bracket Styling (Vertical Flow - Top to Bottom) */
+/* Redesigned Bracket Styling (Bottom-to-Top, Side-by-Side Players) */
 .bracket-wrapper {
     display: block;
     width: 100%;
-    height: 80vh;
+    height: 85vh;
     overflow: auto;
     padding: 5rem 2rem;
     cursor: grab;
@@ -272,8 +272,8 @@ tr:last-child td {
 
 .bracket {
     display: flex;
-    flex-direction: column; 
-    gap: 6rem;
+    flex-direction: column-reverse; /* Round 1 at Bottom, Final at Top */
+    gap: 8rem; /* Vertical gap between rounds */
     min-width: max-content;
     align-items: center;
 }
@@ -282,14 +282,14 @@ tr:last-child td {
     display: flex;
     flex-direction: row; 
     justify-content: center;
-    gap: 4rem; 
+    gap: 5rem; /* Horizontal gap between matches */
     width: 100%;
     position: relative;
 }
 
 .round-title {
     position: absolute;
-    top: -3rem;
+    bottom: -2.5rem; /* Title below the round in bottom-up mode */
     left: 0;
     width: 100%;
     text-align: center;
@@ -303,19 +303,22 @@ tr:last-child td {
 .match {
     position: relative;
     display: flex;
-    flex-direction: column;
-    width: 180px;
-    z-index: 5;
+    flex-direction: row; /* Players side-by-side */
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    width: 320px; /* Wider for side-by-side */
 }
 
+/* Dashed Vertical Connecting Lines */
 .match::before {
     content: " \;
  position: absolute;
  left: 50%;
- top: -3rem;
- width: 1px;
- height: 3rem;
- background: var(--glass-border);
+ bottom: -4rem; /* Line down to previous round */
+ width: 0;
+ height: 4rem;
+ border-left: 2px dashed var(--glass-border);
 }
 
 .round:first-child .match::before {
@@ -326,10 +329,10 @@ tr:last-child td {
  content: \\;
  position: absolute;
  left: 50%;
- bottom: -3rem;
- width: 1px;
- height: 3rem;
- background: var(--glass-border);
+ top: -4rem; /* Line up to next round */
+ width: 0;
+ height: 4rem;
+ border-left: 2px dashed var(--glass-border);
 }
 
 .round:last-child .match::after {
@@ -339,38 +342,51 @@ tr:last-child td {
 .player {
  background: var(--sidebar-bg);
  border: 1px solid var(--glass-border);
- height: 40px;
+ border-radius: 8px;
+ height: 50px;
  display: flex;
  align-items: center;
  justify-content: space-between;
- padding: 0 12px;
- font-size: 0.85rem;
-}
-
-.player:first-child {
- border-radius: 8px 8px 0 0;
- border-bottom: none;
-}
-
-.player:last-child {
- border-radius: 0 0 8px 8px;
+ padding: 0 15px;
+ font-size: 0.9rem;
+ flex: 1;
+ min-width: 140px;
+ box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+ transition: all 0.3s;
 }
 
 .player.winner {
  background: rgba(59, 130, 246, 0.2);
  border-color: var(--accent-blue);
  color: white;
+ box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
 }
 
 .player .score {
- background: rgba(0, 0, 0, 0.3);
+ background: rgba(255, 255, 255, 0.1);
  color: var(--accent-blue);
- min-width: 28px;
- height: 24px;
+ min-width: 32px;
+ height: 28px;
  display: flex;
  align-items: center;
  justify-content: center;
  border-radius: 4px;
+ font-weight: 700;
+}
+
+.player.winner .score {
+ background: var(--accent-blue);
+ color: white;
+}
+
+/* VS Indicator */
+.match::after {
+ /* We reuse after for the top line, so we need a different way for VS */
+}
+
+.vs-divider {
+ color: var(--text-secondary);
+ font-size: 0.7rem;
  font-weight: 700;
 }
 

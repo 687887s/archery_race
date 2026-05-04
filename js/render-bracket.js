@@ -30,6 +30,7 @@ export function renderBracket(containerId, matches) {
                     <span class="name">${match.player1 || 'TBD'}</span>
                     <span class="score">${match.score1}</span>
                 </div>
+                <div class="vs-divider">VS</div>
                 <div class="player ${isP2Winner ? 'winner' : ''}">
                     <span class="name">${match.player2 || 'TBD'}</span>
                     <span class="score">${match.score2}</span>
