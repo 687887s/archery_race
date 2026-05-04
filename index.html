@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archery Race | 體育賽事即時賽況</title>
+    <meta name="description" content="專業體育賽事即時賽況更新網頁，包含積分賽排名與淘汰賽賽程。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">🏹</span>
+                <h1>Archery Race</h1>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" id="btn-standings" data-view="standings">
+                    <span class="icon">📊</span> 積分排名
+                </button>
+                <button class="nav-item" id="btn-bracket" data-view="bracket">
+                    <span class="icon">🌿</span> 淘汰賽程
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Real-time Updates v1.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="view-title">
+                    <h2 id="current-view-name">積分排名</h2>
+                </div>
+                <div class="actions">
+                    <label for="csv-upload" class="upload-btn">
+                        <span class="icon">📥</span> 匯入資料 (CSV)
+                        <input type="file" id="csv-upload" accept=".csv" hidden>
+                    </label>
+                </div>
+            </header>
+
+            <section class="content-area" id="content-standings">
+                <!-- Standings Table will be rendered here -->
+                <div class="card glass">
+                    <div class="table-responsive">
+                        <table id="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>姓名</th>
+                                    <th>單位</th>
+                                    <th>積分</th>
+                                    <th>勝</th>
+                                    <th>負</th>
+                                    <th>平</th>
+                                </tr>
+                            </thead>
+                            <tbody id="standings-body">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-area hidden" id="content-bracket">
+                <!-- Bracket Tree will be rendered here -->
+                <div class="bracket-wrapper">
+                    <div id="bracket-container" class="bracket">
+                        <!-- Dynamic SVG/HTML Bracket -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
