@@ -37,14 +37,14 @@ btnBracket?.addEventListener('click', () => switchView('bracket'));
 // Auto-fetch logic for Frontend
 async function autoFetchData() {
     try {
-        // Try to load default data files
-        const playerResponse = await fetch('data/players.csv');
+        // Try to load default data files with cache busting
+        const playerResponse = await fetch('data/players.csv?v=' + Date.now());
         if (playerResponse.ok) {
             const players = await handler.loadPlayers(await playerResponse.blob());
             renderStandings('standings-body', handler.getRankings());
         }
 
-        const matchResponse = await fetch('data/matches.csv');
+        const matchResponse = await fetch('data/matches.csv?v=' + Date.now());
         if (matchResponse.ok) {
             const matches = await handler.loadMatches(await matchResponse.blob());
             renderBracket('bracket-container', matches);
