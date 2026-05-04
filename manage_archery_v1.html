@@ -31,11 +31,22 @@
         }
         .data-editor { margin-top: 2rem; background: var(--glass-bg); border-radius: 1rem; padding: 1.5rem; border: 1px solid var(--glass-border); }
         .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .table-responsive { max-height: 60vh; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: 0.5rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th { position: sticky; top: 0; background: var(--sidebar-bg); z-index: 10; }
         th, td { padding: 0.75rem; border: 1px solid var(--glass-border); }
         td input { background: transparent; border: none; color: white; width: 100%; }
         .btn-save { background: var(--accent-emerald); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.3rem; cursor: pointer; font-weight: 600; }
         .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .admin-tabs { display: flex; gap: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
+        .admin-tab { padding: 1rem; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
+        .admin-tab.active { color: var(--accent-blue); border-bottom: 2px solid var(--accent-blue); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
+        body { overflow-y: auto !important; } /* Allow scrolling in admin */
     </style>
 </head>
 <body class="dark-theme">
@@ -70,11 +81,16 @@
             </div>
         </header>
 
+        <div class="admin-tabs">
+            <div class="admin-tab active" data-target="players-editor">📊 積分賽管理</div>
+            <div class="admin-tab" data-target="matches-editor">🌿 淘汰賽管理</div>
+        </div>
+
         <!-- Players Editor -->
-        <div class="data-editor">
+        <div class="data-editor" id="players-editor">
             <div class="editor-header">
                 <h2>📊 積分賽排名管理</h2>
-                <button class="btn-save" id="save-players" onclick="saveToGithub('players')">同步積分至 GitHub</button>
+                <button class="btn-save" id="save-players">同步積分至 GitHub</button>
             </div>
             <div class="table-responsive">
                 <table id="edit-players-table">
@@ -89,10 +105,10 @@
         </div>
 
         <!-- Matches Editor -->
-        <div class="data-editor">
+        <div class="data-editor hidden" id="matches-editor">
             <div class="editor-header">
                 <h2>🌿 淘汰賽賽程管理</h2>
-                <button class="btn-save" id="save-matches" onclick="saveToGithub('matches')">同步賽程至 GitHub</button>
+                <button class="btn-save" id="save-matches">同步賽程至 GitHub</button>
             </div>
             <div class="table-responsive">
                 <table id="edit-matches-table">
@@ -119,9 +135,24 @@
 
         // Attach event listeners
         document.getElementById('login-btn').addEventListener('click', checkAuth);
+        document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
+        document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
+
+        // Admin Tab Switching
+        document.querySelectorAll('.admin-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.data-editor').forEach(e => e.classList.add('hidden'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target).classList.remove('hidden');
+            });
+        });
+
         // Also allow Enter key
         document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkAuth();
+            if (e.key === 'Enter' && !document.getElementById('auth-overlay').classList.contains('hidden')) {
+                checkAuth();
+            }
         });
 
         function checkAuth() {
