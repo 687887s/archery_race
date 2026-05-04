@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archery Race | 管理後台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        .admin-panel {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+        .admin-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .upload-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .upload-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .upload-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-blue);
+        }
+        .upload-card h3 {
+            margin-bottom: 1rem;
+        }
+        .upload-card p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="admin-panel">
+        <header class="admin-header">
+            <h1>Archery Race 管理系統</h1>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">在此更新賽事數據，前端將會即時讀取更新後的內容。</p>
+        </header>
+
+        <div class="upload-section">
+            <div class="upload-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                <h3>積分賽數據</h3>
+                <p>上傳包含姓名、單位、積分等資訊的 CSV 檔案。</p>
+                <label class="btn-primary">
+                    選擇檔案
+                    <input type="file" id="csv-upload-players" accept=".csv" hidden>
+                </label>
+            </div>
+
+            <div class="upload-card">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🌿</div>
+                <h3>淘汰賽數據</h3>
+                <p>上傳包含對賽組合、勝負及比分的 CSV 檔案。</p>
+                <label class="btn-primary">
+                    選擇檔案
+                    <input type="file" id="csv-upload-matches" accept=".csv" hidden>
+                </label>
+            </div>
+        </div>
+
+        <div style="margin-top: 4rem; text-align: center;">
+            <a href="index.html" style="color: var(--accent-emerald); text-decoration: none; font-weight: 600;">← 返回賽況前端</a>
+        </div>
+    </div>
+
+    <!-- Hidden elements for script reuse -->
+    <div id="toast" class="toast"></div>
+    <div id="standings-body" style="display:none"></div>
+    <div id="bracket-container" style="display:none"></div>
+
+    <script type="module">
+        import { DataHandler } from './js/data-handler.js';
+        import { renderStandings } from './js/render-standings.js';
+        import { renderBracket } from './js/render-bracket.js';
+
+        const handler = new DataHandler();
+        const toast = document.getElementById('toast');
+
+        function showToast(message, isError = false) {
+            toast.textContent = message;
+            toast.style.borderLeftColor = isError ? '#ef4444' : '#3b82f6';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        async function handleUpload(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                showToast(`正在更新${type === 'players' ? '積分' : '淘汰賽'}數據...`);
+                if (type === 'players') {
+                    await handler.loadPlayers(file);
+                    showToast('積分數據已暫存（預覽）！請將檔案上傳至 GitHub 以正式更新。');
+                } else {
+                    await handler.loadMatches(file);
+                    showToast('淘汰賽數據已暫存（預覽）！請將檔案上傳至 GitHub 以正式更新。');
+                }
+                // In a real scenario with a backend, we would fetch() and POST this to the server.
+                // For GitHub, we explain they need to replace the file in the data/ folder.
+            } catch (err) {
+                showToast('處理失敗，請檢查檔案格式。', true);
+            }
+        }
+
+        document.getElementById('csv-upload-players').addEventListener('change', (e) => handleUpload(e, 'players'));
+        document.getElementById('csv-upload-matches').addEventListener('change', (e) => handleUpload(e, 'matches'));
+    </script>
+</body>
+</html>

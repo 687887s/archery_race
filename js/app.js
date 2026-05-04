@@ -15,34 +15,55 @@ const toast = document.getElementById('toast');
 
 // View Switching Logic
 function switchView(view) {
+    if (!contentStandings || !contentBracket) return;
     if (view === 'standings') {
         contentStandings.classList.remove('hidden');
         contentBracket.classList.add('hidden');
-        btnStandings.classList.add('active');
-        btnBracket.classList.remove('active');
-        viewTitle.textContent = '積分排名';
+        btnStandings?.classList.add('active');
+        btnBracket?.classList.remove('active');
+        if (viewTitle) viewTitle.textContent = '積分排名';
     } else {
         contentStandings.classList.add('hidden');
         contentBracket.classList.remove('hidden');
-        btnStandings.classList.remove('active');
-        btnBracket.classList.add('active');
-        viewTitle.textContent = '淘汰賽程';
+        btnStandings?.classList.remove('active');
+        btnBracket?.classList.add('active');
+        if (viewTitle) viewTitle.textContent = '淘汰賽程';
     }
 }
 
-btnStandings.addEventListener('click', () => switchView('standings'));
-btnBracket.addEventListener('click', () => switchView('bracket'));
+btnStandings?.addEventListener('click', () => switchView('standings'));
+btnBracket?.addEventListener('click', () => switchView('bracket'));
 
-// File Upload Logic
-csvUpload.addEventListener('change', async (e) => {
+// Auto-fetch logic for Frontend
+async function autoFetchData() {
+    try {
+        // Try to load default data files
+        const playerResponse = await fetch('data/players.csv');
+        if (playerResponse.ok) {
+            const players = await handler.loadPlayers(await playerResponse.blob());
+            renderStandings('standings-body', handler.getRankings());
+        }
+
+        const matchResponse = await fetch('data/matches.csv');
+        if (matchResponse.ok) {
+            const matches = await handler.loadMatches(await matchResponse.blob());
+            renderBracket('bracket-container', matches);
+        }
+        
+        console.log('Initial data loaded successfully');
+    } catch (err) {
+        console.warn('No initial data found or fetch failed:', err);
+    }
+}
+
+// File Upload Logic (for Admin)
+csvUpload?.addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     try {
         showToast('正在處理檔案...');
         
-        // We'll try to guess if it's players or matches based on filename or content
-        // For this demo, if it contains "match" it's matches, else players
         if (file.name.toLowerCase().includes('match')) {
             const matches = await handler.loadMatches(file);
             renderBracket('bracket-container', matches);
@@ -61,6 +82,7 @@ csvUpload.addEventListener('change', async (e) => {
 });
 
 function showToast(message, isError = false) {
+    if (!toast) return;
     toast.textContent = message;
     toast.style.borderLeftColor = isError ? '#ef4444' : '#3b82f6';
     toast.classList.add('show');
@@ -69,6 +91,6 @@ function showToast(message, isError = false) {
     }, 3000);
 }
 
-// Initial state (optional: load defaults if they exist)
-// In a real app, you might fetch initial data here.
+// Initial state
+autoFetchData();
 console.log('Archery Race App Initialized');
