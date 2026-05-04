@@ -12,6 +12,18 @@ const contentBracket = document.getElementById('content-bracket');
 const viewTitle = document.getElementById('current-view-name');
 const csvUpload = document.getElementById('csv-upload');
 const toast = document.getElementById('toast');
+const sidebar = document.getElementById('main-sidebar');
+const menuToggle = document.getElementById('menu-toggle');
+
+// Initial state: collapse on mobile, show on desktop
+if (window.innerWidth < 1024) {
+    sidebar.classList.add('collapsed');
+}
+
+// Sidebar Toggle Logic
+menuToggle?.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+});
 
 // View Switching Logic
 function switchView(view) {
@@ -33,14 +45,14 @@ function switchView(view) {
         btn.classList.toggle('active', btn.dataset.view === view);
     });
 
-    // Update Tabs
-    document.querySelectorAll('.tab-item').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.view === view);
-    });
+    // Auto-collapse sidebar after selection on smaller screens
+    if (window.innerWidth < 1024) {
+        sidebar.classList.add('collapsed');
+    }
 }
 
-// Attach Listeners to Sidebar and Tabs
-document.querySelectorAll('.nav-item, .tab-item').forEach(el => {
+// Attach Listeners to Sidebar
+document.querySelectorAll('.nav-item').forEach(el => {
     el.addEventListener('click', () => switchView(el.dataset.view));
 });
 

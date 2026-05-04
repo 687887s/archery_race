@@ -58,7 +58,34 @@ body {
     display: flex;
     flex-direction: column;
     padding: 2rem 1rem;
-    z-index: 100;
+    z-index: 1000;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%);
+    position: absolute;
+    height: 100%;
+}
+
+.menu-toggle {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 1100;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--glass-border);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
 .logo {
@@ -143,30 +170,7 @@ body {
 .view-title h2 {
     font-size: 1.875rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-.view-tabs {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-}
-
-.tab-item {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    padding: 0.5rem 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s;
-}
-
-.tab-item.active {
-    color: var(--accent-blue);
-    border-bottom-color: var(--accent-blue);
+    margin-left: 3.5rem; /* Space for menu button */
 }
 
 .upload-btn {

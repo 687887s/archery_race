@@ -16,8 +16,11 @@
 </head>
 <body class="dark-theme">
     <div class="app-container">
+        <!-- Menu Toggle (Mobile & Desktop) -->
+        <button id="menu-toggle" class="menu-toggle">☰</button>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="main-sidebar">
             <div class="logo">
                 <span class="logo-icon">🏹</span>
                 <h1>Archery Race</h1>
@@ -40,10 +43,6 @@
             <header class="top-header">
                 <div class="view-title">
                     <h2 id="current-view-name">積分排名</h2>
-                    <div class="view-tabs">
-                        <button class="tab-item active" data-view="standings">積分表</button>
-                        <button class="tab-item" data-view="bracket">淘汰賽程</button>
-                    </div>
                 </div>
                 <div class="actions">
                     <!-- 管理入口已隱藏 -->
