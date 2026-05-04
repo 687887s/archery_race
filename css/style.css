@@ -22,7 +22,26 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
     color: var(--text-primary);
-    overflow: hidden;
+    overflow: hidden; /* Prevent body scroll to keep sidebar fixed */
+}
+
+/* Custom Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }
 
 .app-container {
@@ -124,6 +143,30 @@ body {
 .view-title h2 {
     font-size: 1.875rem;
     font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.view-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.tab-item {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab-item.active {
+    color: var(--accent-blue);
+    border-bottom-color: var(--accent-blue);
 }
 
 .upload-btn {
@@ -195,14 +238,22 @@ tr:last-child td {
 
 /* Bracket Styling */
 .bracket-wrapper {
-    display: flex;
-    justify-content: center;
+    display: block;
+    width: 100%;
+    overflow-x: auto; /* Horizontal scroll for wide brackets */
     padding: 2rem 0;
+    cursor: grab;
+}
+
+.bracket-wrapper:active {
+    cursor: grabbing;
 }
 
 .bracket {
-    display: flex;
+    display: inline-flex; /* Keep it in a line for horizontal scroll */
     gap: 4rem;
+    min-width: max-content;
+    padding-bottom: 2rem;
 }
 
 .round {

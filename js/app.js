@@ -16,23 +16,33 @@ const toast = document.getElementById('toast');
 // View Switching Logic
 function switchView(view) {
     if (!contentStandings || !contentBracket) return;
+    
+    // Update Content
     if (view === 'standings') {
         contentStandings.classList.remove('hidden');
         contentBracket.classList.add('hidden');
-        btnStandings?.classList.add('active');
-        btnBracket?.classList.remove('active');
         if (viewTitle) viewTitle.textContent = '積分排名';
     } else {
         contentStandings.classList.add('hidden');
         contentBracket.classList.remove('hidden');
-        btnStandings?.classList.remove('active');
-        btnBracket?.classList.add('active');
         if (viewTitle) viewTitle.textContent = '淘汰賽程';
     }
+
+    // Update Sidebar
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.view === view);
+    });
+
+    // Update Tabs
+    document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.view === view);
+    });
 }
 
-btnStandings?.addEventListener('click', () => switchView('standings'));
-btnBracket?.addEventListener('click', () => switchView('bracket'));
+// Attach Listeners to Sidebar and Tabs
+document.querySelectorAll('.nav-item, .tab-item').forEach(el => {
+    el.addEventListener('click', () => switchView(el.dataset.view));
+});
 
 // Auto-fetch logic for Frontend (Optimized with Parallel Fetching)
 async function autoFetchData() {
