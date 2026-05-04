@@ -53,20 +53,38 @@ body {
 /* Sidebar Styling */
 .sidebar {
     width: 260px;
+    height: 100vh;
     background-color: var(--sidebar-bg);
     border-right: 1px solid var(--glass-border);
     display: flex;
     flex-direction: column;
     padding: 2rem 1rem;
-    z-index: 1000;
-    position: relative;
+    z-index: 2000; /* Higher than menu button */
+    position: fixed;
+    top: 0;
+    left: 0;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar.collapsed {
     transform: translateX(-100%);
-    position: absolute;
-    height: 100%;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1500;
+    transition: opacity 0.3s;
+}
+
+.sidebar-overlay.hidden {
+    display: none;
+    opacity: 0;
 }
 
 .menu-toggle {

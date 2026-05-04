@@ -14,16 +14,23 @@ const csvUpload = document.getElementById('csv-upload');
 const toast = document.getElementById('toast');
 const sidebar = document.getElementById('main-sidebar');
 const menuToggle = document.getElementById('menu-toggle');
-
-// Initial state: collapse on mobile, show on desktop
-if (window.innerWidth < 1024) {
-    sidebar.classList.add('collapsed');
-}
+const sidebarOverlay = document.getElementById('sidebar-overlay');
 
 // Sidebar Toggle Logic
-menuToggle?.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-});
+function toggleSidebar(forceCollapse = null) {
+    const isCollapsed = forceCollapse !== null ? forceCollapse : !sidebar.classList.contains('collapsed');
+    
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+        sidebarOverlay.classList.add('hidden');
+    } else {
+        sidebar.classList.remove('collapsed');
+        sidebarOverlay.classList.remove('hidden');
+    }
+}
+
+menuToggle?.addEventListener('click', () => toggleSidebar(false));
+sidebarOverlay?.addEventListener('click', () => toggleSidebar(true));
 
 // View Switching Logic
 function switchView(view) {
@@ -45,10 +52,8 @@ function switchView(view) {
         btn.classList.toggle('active', btn.dataset.view === view);
     });
 
-    // Auto-collapse sidebar after selection on smaller screens
-    if (window.innerWidth < 1024) {
-        sidebar.classList.add('collapsed');
-    }
+    // Selection -> Collapse: Always close sidebar after clicking a menu item
+    toggleSidebar(true);
 }
 
 // Attach Listeners to Sidebar
