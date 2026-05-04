@@ -15,6 +15,43 @@ const toast = document.getElementById('toast');
 const sidebar = document.getElementById('main-sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
+const bracketWrapper = document.querySelector('.bracket-wrapper');
+
+// Drag-to-scroll logic for Bracket
+let isDown = false;
+let startX;
+let scrollLeft;
+let startY;
+let scrollTop;
+
+if (bracketWrapper) {
+    bracketWrapper.addEventListener('mousedown', (e) => {
+        isDown = true;
+        bracketWrapper.classList.add('active-dragging');
+        startX = e.pageX - bracketWrapper.offsetLeft;
+        startY = e.pageY - bracketWrapper.offsetTop;
+        scrollLeft = bracketWrapper.scrollLeft;
+        scrollTop = bracketWrapper.scrollTop;
+    });
+    bracketWrapper.addEventListener('mouseleave', () => {
+        isDown = false;
+        bracketWrapper.classList.remove('active-dragging');
+    });
+    bracketWrapper.addEventListener('mouseup', () => {
+        isDown = false;
+        bracketWrapper.classList.remove('active-dragging');
+    });
+    bracketWrapper.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - bracketWrapper.offsetLeft;
+        const y = e.pageY - bracketWrapper.offsetTop;
+        const walkX = (x - startX) * 2; // Scroll-fast factor
+        const walkY = (y - startY) * 2;
+        bracketWrapper.scrollLeft = scrollLeft - walkX;
+        bracketWrapper.scrollTop = scrollTop - walkY;
+    });
+}
 
 // Sidebar Toggle Logic
 function toggleSidebar(forceCollapse = null) {
