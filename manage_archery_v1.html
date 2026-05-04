@@ -125,26 +125,40 @@
         });
 
         function checkAuth() {
-            console.log('Attempting Auth...');
-            const pass = document.getElementById('admin-pass').value.trim();
-            GITHUB_TOKEN = document.getElementById('github-token').value.trim();
-            
-            // Allow both classic (ghp_) and fine-grained (github_pat_) tokens
-            const isValidToken = GITHUB_TOKEN.startsWith('ghp_') || GITHUB_TOKEN.startsWith('github_pat_');
-            
-            if (pass === '1234' && isValidToken) {
-                document.getElementById('auth-overlay').classList.add('hidden');
-                document.getElementById('admin-ui').classList.remove('hidden');
-                loadCurrentData();
-            } else {
-                document.getElementById('auth-error').style.display = 'block';
-                if (!isValidToken && GITHUB_TOKEN !== '') {
-                    document.getElementById('auth-error').textContent = 'Token 格式錯誤 (應以 ghp_ 或 github_pat_ 開頭)';
+            try {
+                console.log('Auth Button Clicked');
+                const pass = document.getElementById('admin-pass').value.trim();
+                const token = document.getElementById('github-token').value.trim();
+                
+                console.log('Password entered:', pass);
+                console.log('Token length:', token.length);
+                
+                // Allow the login even if token prefix is weird, but warn
+                const isValidToken = token.length > 20; 
+                
+                if (pass === '1234') {
+                    if (isValidToken) {
+                        console.log('Credentials OK. Hiding overlay...');
+                        GITHUB_TOKEN = token;
+                        document.getElementById('auth-overlay').style.display = 'none';
+                        document.getElementById('admin-ui').classList.remove('hidden');
+                        console.log('Loading current data...');
+                        loadCurrentData();
+                    } else {
+                        console.log('Token too short.');
+                        document.getElementById('auth-error').style.display = 'block';
+                        document.getElementById('auth-error').textContent = 'Token 長度不足，請重新確認';
+                    }
                 } else {
-                    document.getElementById('auth-error').textContent = '驗證失敗，請檢查密碼是否正確';
+                    console.log('Wrong password.');
+                    document.getElementById('auth-error').style.display = 'block';
+                    document.getElementById('auth-error').textContent = '密碼錯誤 (預設為 1234)';
                 }
+            } catch (err) {
+                console.error('CRITICAL AUTH ERROR:', err);
+                alert('登入發生錯誤: ' + err.message);
             }
-        };
+        }
 
         window.logout = () => location.reload();
 
