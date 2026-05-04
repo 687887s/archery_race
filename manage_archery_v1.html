@@ -116,16 +116,23 @@
         let GITHUB_TOKEN = '';
 
         window.checkAuth = () => {
-            const pass = document.getElementById('admin-pass').value;
-            GITHUB_TOKEN = document.getElementById('github-token').value;
+            const pass = document.getElementById('admin-pass').value.trim();
+            GITHUB_TOKEN = document.getElementById('github-token').value.trim();
             
-            // Basic password check (In real world, this would be more secure)
-            if (pass === '1234' && GITHUB_TOKEN.startsWith('ghp_')) {
+            // Allow both classic (ghp_) and fine-grained (github_pat_) tokens
+            const isValidToken = GITHUB_TOKEN.startsWith('ghp_') || GITHUB_TOKEN.startsWith('github_pat_');
+            
+            if (pass === '1234' && isValidToken) {
                 document.getElementById('auth-overlay').classList.add('hidden');
                 document.getElementById('admin-ui').classList.remove('hidden');
                 loadCurrentData();
             } else {
                 document.getElementById('auth-error').style.display = 'block';
+                if (!isValidToken && GITHUB_TOKEN !== '') {
+                    document.getElementById('auth-error').textContent = 'Token 格式錯誤 (應以 ghp_ 或 github_pat_ 開頭)';
+                } else {
+                    document.getElementById('auth-error').textContent = '驗證失敗，請檢查密碼是否正確';
+                }
             }
         };
 
