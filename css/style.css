@@ -1,14 +1,14 @@
-﻿:root {
-    --bg-color: #0f172a;
-    --sidebar-bg: #1e293b;
-    --accent-blue: #3b82f6;
+:root {
+    --bg-color: #0a0f1e;
+    --sidebar-bg: #141b2d;
+    --accent-blue: #38bdf8;
     --accent-emerald: #10b981;
-    --accent-orange: #f59e0b;
-    --text-primary: #f8fafc;
+    --accent-silver: #94a3b8;
+    --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --glass-bg: rgba(255, 255, 255, 0.03);
     --glass-border: rgba(255, 255, 255, 0.1);
-    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
     --transition-speed: 0.3s;
 }
 
@@ -23,7 +23,6 @@ body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     overflow: hidden;
-    /* Prevent body scroll to keep sidebar fixed */
 }
 
 /* Custom Premium Scrollbar */
@@ -39,10 +38,6 @@ body {
 ::-webkit-scrollbar-thumb {
     background: var(--glass-border);
     border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--text-secondary);
 }
 
 .app-container {
@@ -61,7 +56,6 @@ body {
     flex-direction: column;
     padding: 2rem 1rem;
     z-index: 2000;
-    /* Higher than menu button */
     position: fixed;
     top: 0;
     left: 0;
@@ -81,12 +75,10 @@ body {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(4px);
     z-index: 1500;
-    transition: opacity 0.3s;
 }
 
 .sidebar-overlay.hidden {
     display: none;
-    opacity: 0;
 }
 
 .menu-toggle {
@@ -94,7 +86,6 @@ body {
     top: 1.5rem;
     left: 1.5rem;
     z-index: 2100;
-    /* Above sidebar (2000) */
     background: var(--sidebar-bg);
     border: 1px solid var(--glass-border);
     color: white;
@@ -122,12 +113,19 @@ body {
 }
 
 .logo h1 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -0.025em;
-    background: linear-gradient(to right, #60a5fa, #34d399);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin: 0;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.logo-text p {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--accent-blue);
+    margin: 0;
 }
 
 .nav-menu {
@@ -192,7 +190,6 @@ body {
     font-size: 1.875rem;
     font-weight: 700;
     margin-left: 3.5rem;
-    /* Space for menu button */
 }
 
 .upload-btn {
@@ -253,7 +250,7 @@ tr:last-child td {
 }
 
 .seed-badge {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-emerald));
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -262,8 +259,7 @@ tr:last-child td {
     margin-left: 0.5rem;
 }
 
-
-/* Redesigned Bracket Styling (Vertical Flow - Top to Bottom) */
+/* Bracket Styling */
 .bracket-wrapper {
     display: block;
     width: 100%;
@@ -313,93 +309,94 @@ tr:last-child td {
 }
 
 .match::before {
-    content: " \;
- position: absolute;
- left: 50%;
- bottom: -4rem;
- width: 0;
- height: 4rem;
- border-left: 2px dashed rgba(255, 255, 255, 0.6);
- z-index: 1;
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -4rem;
+    width: 0;
+    height: 4rem;
+    border-left: 2px dashed rgba(255, 255, 255, 0.3);
+    z-index: 1;
 }
 
 .round:first-child .match::before {
- display: none;
+    display: none;
 }
 
 .match::after {
- content: \\;
- position: absolute;
- left: 50%;
- top: -4rem;
- width: 0;
- height: 4rem;
- border-left: 2px dashed rgba(255, 255, 255, 0.6);
- z-index: 1;
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -4rem;
+    width: 0;
+    height: 4rem;
+    border-left: 2px dashed rgba(255, 255, 255, 0.3);
+    z-index: 1;
 }
 
 .round:last-child .match::after {
- display: none;
+    display: none;
 }
 
 .player {
- background: var(--sidebar-bg);
- border: 1px solid var(--glass-border);
- border-radius: 8px;
- height: 50px;
- display: flex;
- align-items: center;
- justify-content: space-between;
- padding: 0 15px;
- font-size: 0.9rem;
- flex: 1;
- min-width: 140px;
- box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    background: var(--sidebar-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    font-size: 0.9rem;
+    flex: 1;
+    min-width: 140px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .player.winner {
- background: rgba(59, 130, 246, 0.2);
- border-color: var(--accent-blue);
- color: white;
+    background: rgba(56, 189, 248, 0.1);
+    border-color: var(--accent-blue);
+    color: white;
 }
 
 .player .score {
- background: rgba(0,0,0,0.4);
- color: var(--accent-blue);
- min-width: 32px;
- height: 28px;
- display: flex;
- align-items: center;
- justify-content: center;
- border-radius: 4px;
- font-weight: 700;
+    background: rgba(0,0,0,0.4);
+    color: var(--accent-blue);
+    min-width: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-weight: 700;
 }
 
 .player.winner .score {
- background: var(--accent-blue);
- color: white;
+    background: var(--accent-blue);
+    color: white;
 }
 
 .vs-divider {
- color: var(--text-secondary);
- font-size: 0.7rem;
- font-weight: 700;
- opacity: 0.8;
+    color: var(--text-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    opacity: 0.8;
 }
 
 .bracket-wrapper.active-dragging { cursor: grabbing; user-select: none; }
 .hidden { display: none !important; }
+
 .toast {
- position: fixed;
- bottom: 2rem;
- right: 2rem;
- background: var(--sidebar-bg);
- color: white;
- padding: 1rem 1.5rem;
- border-radius: 0.5rem;
- border-left: 4px solid var(--accent-blue);
- transform: translateY(200%);
- transition: transform 0.3s ease;
- z-index: 9999;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--sidebar-bg);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid var(--accent-blue);
+    transform: translateY(200%);
+    transition: transform 0.3s ease;
+    z-index: 9999;
 }
 .toast.show { transform: translateY(0); }
