@@ -96,7 +96,7 @@
                 <table id="edit-players-table">
                     <thead>
                         <tr>
-                            <th>姓名</th><th>單位</th><th>種子(1/0)</th><th>積分</th><th>勝</th><th>負</th><th>平</th>
+                            <th>姓名</th><th>單位</th><th>分組</th><th>種子(1/0)</th><th>積分</th><th>勝</th><th>負</th><th>平</th>
                         </tr>
                     </thead>
                     <tbody id="edit-players-body"></tbody>
@@ -114,7 +114,7 @@
                 <table id="edit-matches-table">
                     <thead>
                         <tr>
-                            <th>場次 ID</th><th>回合</th><th>選手 1</th><th>選手 2</th><th>勝者</th><th>比分 1</th><th>比分 2</th>
+                            <th>ID</th><th>類別</th><th>分組</th><th>回合</th><th>選手 1</th><th>選手 2</th><th>勝者</th><th>比分 1</th><th>比分 2</th>
                         </tr>
                     </thead>
                     <tbody id="edit-matches-body"></tbody>
@@ -198,12 +198,12 @@
                 // Load Players
                 const pResp = await fetch('data/players.csv?t=' + Date.now());
                 const pData = await handler.loadPlayers(await pResp.blob());
-                renderEditor('edit-players-body', pData, ['name', 'unit', 'isSeed', 'points', 'wins', 'losses', 'draws']);
+                renderEditor('edit-players-body', pData, ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']);
 
                 // Load Matches
                 const mResp = await fetch('data/matches.csv?t=' + Date.now());
                 const mData = await handler.loadMatches(await mResp.blob());
-                renderEditor('edit-matches-body', mData, ['matchId', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
+                renderEditor('edit-matches-body', mData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
             } catch (err) {
                 showToast('讀取原始數據失敗', true);
             }

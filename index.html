@@ -32,12 +32,24 @@
                 </div>
             </div>
             <nav class="nav-menu">
-                <button class="nav-item active" id="btn-standings" data-view="standings">
-                    <span class="icon">📊</span> 積分排名
-                </button>
-                <button class="nav-item" id="btn-bracket" data-view="bracket">
-                    <span class="icon">🌿</span> 淘汰賽程
-                </button>
+                <div class="nav-section">
+                    <h3>個人賽 Individual</h3>
+                    <button class="nav-item active" data-type="Individual" data-view="standings">
+                        <span class="icon">📊</span> 積分排名
+                    </button>
+                    <button class="nav-item" data-type="Individual" data-view="bracket">
+                        <span class="icon">🌿</span> 淘汰賽程
+                    </button>
+                </div>
+                <div class="nav-section">
+                    <h3>團體賽 Team</h3>
+                    <button class="nav-item" data-type="Team" data-view="standings">
+                        <span class="icon">📊</span> 積分排名
+                    </button>
+                    <button class="nav-item" data-type="Team" data-view="bracket">
+                        <span class="icon">🌿</span> 淘汰賽程
+                    </button>
+                </div>
             </nav>
             <div class="sidebar-footer">
                 <p>Real-time Updates v1.0</p>
@@ -48,10 +60,14 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="view-title">
-                    <h2 id="current-view-name">積分排名</h2>
+                    <h2 id="current-view-name">個人賽 | 積分排名</h2>
                 </div>
-                <div class="actions">
-                    <!-- 管理入口已隱藏 -->
+                <div class="group-tabs" id="group-selector">
+                    <button class="tab-item active" data-group="Recurve-70m">反曲 70m</button>
+                    <button class="tab-item" data-group="Recurve-30m">反曲 30m</button>
+                    <button class="tab-item" data-group="Traditional-30m">傳統 30m</button>
+                    <button class="tab-item" data-group="Traditional-20m-Open">傳統 20m(公)</button>
+                    <button class="tab-item" data-group="Traditional-20m-Student">傳統 20m(學)</button>
                 </div>
             </header>
 

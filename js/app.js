@@ -4,25 +4,25 @@ import { renderBracket } from './render-bracket.js';
 
 const handler = new DataHandler();
 
+// App State
+let currentType = 'Individual';
+let currentView = 'standings';
+let currentGroup = 'Recurve-70m';
+
 // UI Elements
-const btnStandings = document.getElementById('btn-standings');
-const btnBracket = document.getElementById('btn-bracket');
 const contentStandings = document.getElementById('content-standings');
 const contentBracket = document.getElementById('content-bracket');
 const viewTitle = document.getElementById('current-view-name');
-const csvUpload = document.getElementById('csv-upload');
 const toast = document.getElementById('toast');
 const sidebar = document.getElementById('main-sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const bracketWrapper = document.querySelector('.bracket-wrapper');
+const groupSelector = document.getElementById('group-selector');
 
 // Drag-to-scroll logic for Bracket
 let isDown = false;
-let startX;
-let scrollLeft;
-let startY;
-let scrollTop;
+let startX, scrollLeft, startY, scrollTop;
 
 if (bracketWrapper) {
     bracketWrapper.addEventListener('mousedown', (e) => {
@@ -46,7 +46,7 @@ if (bracketWrapper) {
         e.preventDefault();
         const x = e.pageX - bracketWrapper.offsetLeft;
         const y = e.pageY - bracketWrapper.offsetTop;
-        const walkX = (x - startX) * 2; // Scroll-fast factor
+        const walkX = (x - startX) * 2;
         const walkY = (y - startY) * 2;
         bracketWrapper.scrollLeft = scrollLeft - walkX;
         bracketWrapper.scrollTop = scrollTop - walkY;
@@ -56,7 +56,6 @@ if (bracketWrapper) {
 // Sidebar Toggle Logic
 function toggleSidebar(forceCollapse = null) {
     const isCollapsed = forceCollapse !== null ? forceCollapse : !sidebar.classList.contains('collapsed');
-    
     if (isCollapsed) {
         sidebar.classList.add('collapsed');
         sidebarOverlay.classList.add('hidden');
@@ -69,100 +68,86 @@ function toggleSidebar(forceCollapse = null) {
 menuToggle?.addEventListener('click', () => toggleSidebar());
 sidebarOverlay?.addEventListener('click', () => toggleSidebar(true));
 
-// View Switching Logic
-function switchView(view) {
+// View & Category Switching
+function updateView() {
     if (!contentStandings || !contentBracket) return;
-    
-    // Update Content
-    if (view === 'standings') {
+
+    // Show/Hide Content Areas
+    if (currentView === 'standings') {
         contentStandings.classList.remove('hidden');
         contentBracket.classList.add('hidden');
-        if (viewTitle) viewTitle.textContent = '積分排名';
     } else {
         contentStandings.classList.add('hidden');
         contentBracket.classList.remove('hidden');
-        if (viewTitle) viewTitle.textContent = '淘汰賽程';
     }
 
-    // Update Sidebar
+    // Update Title
+    const typeLabel = currentType === 'Individual' ? '個人賽' : '團體賽';
+    const viewLabel = currentView === 'standings' ? '積分排名' : '淘汰賽程';
+    if (viewTitle) viewTitle.textContent = `${typeLabel} | ${viewLabel}`;
+
+    // Update Sidebar Active State
     document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.view === view);
+        const isActive = btn.dataset.type === currentType && btn.dataset.view === currentView;
+        btn.classList.toggle('active', isActive);
     });
 
-    // Selection -> Collapse: Always close sidebar after clicking a menu item
-    toggleSidebar(true);
+    // Render Data
+    refreshUI();
 }
 
-// Attach Listeners to Sidebar
+function refreshUI() {
+    if (currentView === 'standings') {
+        renderStandings('standings-body', handler.getRankings(currentGroup));
+    } else {
+        renderBracket('bracket-container', handler.getFilteredMatches(currentType, currentGroup));
+    }
+}
+
+// Sidebar Event Listeners
 document.querySelectorAll('.nav-item').forEach(el => {
-    el.addEventListener('click', () => switchView(el.dataset.view));
+    el.addEventListener('click', () => {
+        currentType = el.dataset.type;
+        currentView = el.dataset.view;
+        updateView();
+        toggleSidebar(true);
+    });
 });
 
-// Auto-fetch logic for Frontend (Optimized with Parallel Fetching)
+// Group Selector Event Listeners
+groupSelector?.addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab-item');
+    if (!tab) return;
+
+    currentGroup = tab.dataset.group;
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t === tab));
+    refreshUI();
+});
+
+// Auto-fetch logic
 async function autoFetchData() {
     try {
-        console.time('DataLoad');
         showToast('正在獲取最新賽況...');
-        
-        // Parallel fetching to reduce waiting time
         const [playerResponse, matchResponse] = await Promise.all([
             fetch(`data/players.csv?v=${Date.now()}`),
             fetch(`data/matches.csv?v=${Date.now()}`)
         ]);
 
-        if (playerResponse.ok) {
-            const players = await handler.loadPlayers(await playerResponse.blob());
-            renderStandings('standings-body', handler.getRankings());
-        }
-
-        if (matchResponse.ok) {
-            const matches = await handler.loadMatches(await matchResponse.blob());
-            renderBracket('bracket-container', matches);
-        }
+        if (playerResponse.ok) await handler.loadPlayers(await playerResponse.blob());
+        if (matchResponse.ok) await handler.loadMatches(await matchResponse.blob());
         
-        console.timeEnd('DataLoad');
-        console.log('Initial data loaded successfully');
+        updateView();
     } catch (err) {
-        console.warn('Initial data load failed:', err);
         showToast('載入數據失敗，請重新整理', true);
     }
 }
 
-// File Upload Logic (for Admin)
-csvUpload?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    try {
-        showToast('正在處理檔案...');
-        
-        if (file.name.toLowerCase().includes('match')) {
-            const matches = await handler.loadMatches(file);
-            renderBracket('bracket-container', matches);
-            showToast('淘汰賽程已更新！');
-            switchView('bracket');
-        } else {
-            const players = await handler.loadPlayers(file);
-            renderStandings('standings-body', handler.getRankings());
-            showToast('積分排名已更新！');
-            switchView('standings');
-        }
-    } catch (err) {
-        console.error(err);
-        showToast('處理檔案失敗，請檢查格式。', true);
-    }
-});
-
 function showToast(message, isError = false) {
     if (!toast) return;
     toast.textContent = message;
-    toast.style.borderLeftColor = isError ? '#ef4444' : '#3b82f6';
+    toast.style.borderLeftColor = isError ? '#ef4444' : '#38bdf8';
     toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-// Initial state
 autoFetchData();
-console.log('Archery Race App Initialized');

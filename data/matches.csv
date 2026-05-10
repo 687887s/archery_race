@@ -1,16 +1,14 @@
-matchId,round,player1,player2,winner,score1,score2
-M1,1,陳姿璇,廖俊逸,陳姿璇,21,10
-M2,1,游舜勛,陳品希,游舜勛,15,21
-M3,1,李簇鑫,李采芊,李簇鑫,18,21
-M4,1,汪晁安,藍育德,汪晁安,12,21
-M5,1,黃泊羲,柯至家,黃泊羲,21,8
-M6,1,陳建中,蔡沅錡,陳建中,14,21
-M7,1,吳詠珍,王晨安,吳詠珍,19,21
-M8,1,劉奕成,張立旻,張立旻,16,21
-M9,2,陳姿璇,游舜勛,陳姿璇,21,18
-M10,2,李簇鑫,汪晁安,汪晁安,15,21
-M11,2,黃泊羲,陳建中,黃泊羲,21,12
-M12,2,吳詠珍,張立旻,張立旻,17,21
-M13,3,陳姿璇,汪晁安,陳姿璇,21,19
-M14,3,黃泊羲,張立旻,張立旻,20,22
-M15,4,陳姿璇,張立旻,陳姿璇,23,21
+matchId,type,group,round,player1,player2,winner,score1,score2
+M1,Individual,Recurve-70m,1,陳姿璇,廖俊逸,陳姿璇,21,10
+M2,Individual,Recurve-70m,1,游舜勛,汪晁安,游舜勛,15,21
+M3,Individual,Recurve-70m,1,李簇鑫,黃泊羲,李簇鑫,18,21
+M4,Individual,Recurve-70m,1,陳建中,張立旻,張立旻,12,21
+M5,Individual,Recurve-70m,2,陳姿璇,游舜勛,陳姿璇,21,18
+M6,Individual,Recurve-70m,2,李簇鑫,張立旻,張立旻,17,21
+M7,Individual,Recurve-70m,3,陳姿璇,張立旻,陳姿璇,23,21
+T1,Team,Recurve-70m,1,臺大 A,臺大 B,臺大 A,6,2
+T2,Team,Recurve-70m,1,石碇高中,百川射箭隊,石碇高中,5,3
+T3,Team,Recurve-70m,2,臺大 A,石碇高中,臺大 A,6,4
+M8,Individual,Recurve-30m,1,王晨安,陳品希,王晨安,21,15
+M9,Individual,Recurve-30m,1,蔡沅錡,李采芊,蔡沅錡,18,20
+M10,Individual,Recurve-30m,2,王晨安,蔡沅錡,王晨安,22,20

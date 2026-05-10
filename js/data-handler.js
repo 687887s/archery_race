@@ -24,6 +24,7 @@ export class DataHandler {
         this.players = data.map(p => ({
             name: p.name,
             unit: p.unit,
+            group: p.group,
             isSeed: p.isSeed === '1' || p.isSeed === 'true',
             points: parseInt(p.points) || 0,
             wins: parseInt(p.wins) || 0,
@@ -37,6 +38,8 @@ export class DataHandler {
         const data = await this.parseCSV(file);
         this.matches = data.map(m => ({
             matchId: m.matchId,
+            type: m.type,
+            group: m.group,
             round: parseInt(m.round),
             player1: m.player1,
             player2: m.player2,
@@ -47,8 +50,16 @@ export class DataHandler {
         return this.matches;
     }
 
-    getRankings() {
-        return [...this.players].sort((a, b) => {
+    getFilteredPlayers(group) {
+        return this.players.filter(p => p.group === group);
+    }
+
+    getFilteredMatches(type, group) {
+        return this.matches.filter(m => m.type === type && m.group === group);
+    }
+
+    getRankings(group) {
+        return [...this.getFilteredPlayers(group)].sort((a, b) => {
             if (b.points !== a.points) return b.points - a.points;
             if (b.wins !== a.wins) return b.wins - a.wins;
             return a.name.localeCompare(b.name);
