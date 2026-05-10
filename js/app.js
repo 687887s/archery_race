@@ -18,7 +18,7 @@ const sidebar = document.getElementById('main-sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const bracketWrapper = document.querySelector('.bracket-wrapper');
-const groupSelector = document.getElementById('group-selector');
+const groupSelect = document.getElementById('group-select');
 
 // Drag-to-scroll logic for Bracket
 let isDown = false;
@@ -115,12 +115,8 @@ document.querySelectorAll('.nav-item').forEach(el => {
 });
 
 // Group Selector Event Listeners
-groupSelector?.addEventListener('click', (e) => {
-    const tab = e.target.closest('.tab-item');
-    if (!tab) return;
-
-    currentGroup = tab.dataset.group;
-    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t === tab));
+groupSelect?.addEventListener('change', (e) => {
+    currentGroup = e.target.value;
     refreshUI();
 });
 

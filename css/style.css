@@ -203,35 +203,31 @@ body {
     margin-left: 3.5rem;
 }
 
-.group-tabs {
+.group-selector {
     display: flex;
+    align-items: center;
     gap: 0.5rem;
-    background: var(--sidebar-bg);
-    padding: 0.25rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--glass-border);
 }
 
-.tab-item {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
+.group-selector select {
+    background: var(--sidebar-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
     padding: 0.5rem 1rem;
-    font-size: 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    border-radius: 0.35rem;
+    outline: none;
     transition: all 0.2s;
-    white-space: nowrap;
 }
 
-.tab-item:hover {
-    color: var(--text-primary);
+.group-selector select:hover {
+    border-color: var(--accent-blue);
 }
 
-.tab-item.active {
-    background: var(--accent-blue);
-    color: white;
+.group-selector select:focus {
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
 }
 
 .upload-btn {
