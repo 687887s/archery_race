@@ -86,11 +86,22 @@
             <div class="admin-tab" data-target="matches-editor">🌿 淘汰賽管理</div>
         </div>
 
+        <div class="group-selector" style="margin-bottom: 1.5rem; justify-content: flex-start; gap: 1rem;">
+            <label style="color: var(--text-secondary); font-weight: 600;">選擇管理分組：</label>
+            <select id="admin-group-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
+                <option value="Recurve-70m">競技反曲弓 70m 公開組</option>
+                <option value="Recurve-30m">競技反曲弓 30m 公開組</option>
+                <option value="Traditional-30m">傳統弓 30m 公開組</option>
+                <option value="Traditional-20m-Open">傳統弓 20m 公開組</option>
+                <option value="Traditional-20m-Student">傳統弓 20m 學生組</option>
+            </select>
+        </div>
+
         <!-- Players Editor -->
         <div class="data-editor" id="players-editor">
             <div class="editor-header">
                 <h2>📊 積分賽排名管理</h2>
-                <button class="btn-save" id="save-players">同步積分至 GitHub</button>
+                <button class="btn-save" id="save-players">同步全部分組積分至 GitHub</button>
             </div>
             <div class="table-responsive">
                 <table id="edit-players-table">
@@ -108,7 +119,7 @@
         <div class="data-editor hidden" id="matches-editor">
             <div class="editor-header">
                 <h2>🌿 淘汰賽賽程管理</h2>
-                <button class="btn-save" id="save-matches">同步賽程至 GitHub</button>
+                <button class="btn-save" id="save-matches">同步全部分組賽程至 GitHub</button>
             </div>
             <div class="table-responsive">
                 <table id="edit-matches-table">
@@ -132,11 +143,19 @@
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
         let GITHUB_TOKEN = '';
+        
+        let fullPlayerData = [];
+        let fullMatchData = [];
+        let currentAdminGroup = 'Recurve-70m';
 
         // Attach event listeners
         document.getElementById('login-btn').addEventListener('click', checkAuth);
         document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
         document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
+        document.getElementById('admin-group-select').addEventListener('change', (e) => {
+            currentAdminGroup = e.target.value;
+            renderAllEditors();
+        });
 
         // Admin Tab Switching
         document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -157,37 +176,26 @@
 
         function checkAuth() {
             try {
-                console.log('Auth Button Clicked');
                 const pass = document.getElementById('admin-pass').value.trim();
                 const token = document.getElementById('github-token').value.trim();
-                
-                console.log('Password entered:', pass);
-                console.log('Token length:', token.length);
-                
-                // Allow the login even if token prefix is weird, but warn
                 const isValidToken = token.length > 20; 
                 
                 if (pass === '1234') {
                     if (isValidToken) {
-                        console.log('Credentials OK. Hiding overlay...');
                         GITHUB_TOKEN = token;
                         document.getElementById('auth-overlay').style.display = 'none';
                         document.getElementById('admin-ui').classList.remove('hidden');
-                        console.log('Loading current data...');
                         loadCurrentData();
                     } else {
-                        console.log('Token too short.');
                         document.getElementById('auth-error').style.display = 'block';
-                        document.getElementById('auth-error').textContent = 'Token 長度不足，請重新確認';
+                        document.getElementById('auth-error').textContent = 'Token 長度不足';
                     }
                 } else {
-                    console.log('Wrong password.');
                     document.getElementById('auth-error').style.display = 'block';
-                    document.getElementById('auth-error').textContent = '密碼錯誤 (預設為 1234)';
+                    document.getElementById('auth-error').textContent = '密碼錯誤';
                 }
             } catch (err) {
-                console.error('CRITICAL AUTH ERROR:', err);
-                alert('登入發生錯誤: ' + err.message);
+                alert('登入錯誤: ' + err.message);
             }
         }
 
@@ -195,30 +203,52 @@
 
         async function loadCurrentData() {
             try {
-                // Load Players
                 const pResp = await fetch('data/players.csv?t=' + Date.now());
-                const pData = await handler.loadPlayers(await pResp.blob());
-                renderEditor('edit-players-body', pData, ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']);
+                fullPlayerData = await handler.loadPlayers(await pResp.blob());
 
-                // Load Matches
                 const mResp = await fetch('data/matches.csv?t=' + Date.now());
-                const mData = await handler.loadMatches(await mResp.blob());
-                renderEditor('edit-matches-body', mData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
+                fullMatchData = await handler.loadMatches(await mResp.blob());
+                
+                renderAllEditors();
             } catch (err) {
                 showToast('讀取原始數據失敗', true);
             }
         }
 
+        function renderAllEditors() {
+            renderEditor('edit-players-body', fullPlayerData, ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']);
+            renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
+        }
+
         function renderEditor(tbodyId, data, keys) {
             const tbody = document.getElementById(tbodyId);
             tbody.innerHTML = '';
-            data.forEach((row, idx) => {
+            
+            // Filter by group
+            const filteredData = data.filter(row => row.group === currentAdminGroup);
+
+            filteredData.forEach((row) => {
                 const tr = document.createElement('tr');
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId');
-                    td.innerHTML = `<input type="text" value="${val}" data-idx="${idx}" data-key="${key}" ${isReadOnly ? 'readonly style="opacity: 0.7; cursor: not-allowed;"' : ''}>`;
+                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key === 'group' || key === 'type');
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = val;
+                    if (isReadOnly) {
+                        input.readOnly = true;
+                        input.style.opacity = '0.7';
+                        input.style.cursor = 'not-allowed';
+                    }
+                    
+                    input.addEventListener('change', (e) => {
+                        // Update the data in memory
+                        row[key] = e.target.value;
+                    });
+                    
+                    td.appendChild(input);
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -232,21 +262,12 @@
 
             try {
                 const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
-                const tbody = document.getElementById(`edit-${type}-body`);
-                const rows = Array.from(tbody.querySelectorAll('tr'));
-                const newData = rows.map(tr => {
-                    const obj = {};
-                    tr.querySelectorAll('input').forEach(input => {
-                        obj[input.dataset.key] = input.value;
-                    });
-                    return obj;
-                });
+                const newData = type === 'players' ? fullPlayerData : fullMatchData;
 
                 const newCsv = Papa.unparse(newData);
                 const path = `data/${type}.csv`;
                 const prevPath = `data/${type}_prev.csv`;
                 
-                // 1. Get current file content & SHA to backup
                 const currentFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': authHeader }
                 });
@@ -255,8 +276,6 @@
                 const currentContentBase64 = currentFileData.content;
                 const currentSha = currentFileData.sha;
 
-                // 2. Update _prev.csv with current content
-                // First get _prev.csv SHA if it exists
                 const prevFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${prevPath}`, {
                     headers: { 'Authorization': authHeader }
                 });
@@ -276,7 +295,6 @@
                     })
                 });
 
-                // 3. Update main .csv with new data
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     method: 'PUT',
                     headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
@@ -298,7 +316,7 @@
                 showToast('同步失敗: ' + err.message, true);
             } finally {
                 btn.disabled = false;
-                btn.textContent = `同步${type === 'players' ? '積分' : '賽程'}至 GitHub`;
+                btn.textContent = `同步全部分組${type === 'players' ? '積分' : '賽程'}至 GitHub`;
             }
         };
 
