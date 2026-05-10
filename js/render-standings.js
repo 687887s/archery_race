@@ -1,4 +1,19 @@
-export function renderStandings(containerId, players, prevPlayers = []) {
+const unitColors = {
+    '國立臺灣大學': '#38bdf8', // Light Blue
+    '陽明射箭社': '#f472b6',    // Pink
+    '輔大射箭社': '#fbbf24',    // Amber
+    '石碇高中': '#a78bfa',      // Violet
+    '百川射箭隊': '#34d399',    // Emerald
+    '國防大學理工學院': '#f87171', // Red
+    'G2C+ 射箭社': '#818cf8',    // Indigo
+    '功夫射箭隊': '#fb923c',     // Orange
+    '繹心山房': '#e879f9',       // Fuchsia
+    '佛光大學射箭社': '#94a3b8', // Slate
+    '清大射箭社': '#2dd4bf',     // Teal
+    '黑色會': '#4b5563',         // Dark Gray
+};
+
+export function renderStandings(containerId, players, prevPlayers = [], isTeam = false) {
     const tbody = document.getElementById(containerId);
     tbody.innerHTML = '';
 
@@ -6,13 +21,24 @@ export function renderStandings(containerId, players, prevPlayers = []) {
         const tr = document.createElement('tr');
         const prevPlayer = prevPlayers.find(p => p.name === player.name) || player;
         
+        // Color coding for units in team mode
+        let unitStyle = '';
+        if (isTeam) {
+            const color = unitColors[player.unit] || stringToColor(player.unit);
+            unitStyle = `style="border-left: 4px solid ${color}; padding-left: 10px;"`;
+        }
+
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td>
+            <td ${unitStyle}>
                 ${player.name}
                 ${player.isSeed ? '<span class="seed-badge">SEED</span>' : ''}
             </td>
-            <td>${player.unit}</td>
+            <td>
+                <span class="unit-tag" style="background: ${isTeam ? (unitColors[player.unit] || stringToColor(player.unit)) + '22' : 'transparent'}; color: ${isTeam ? (unitColors[player.unit] || stringToColor(player.unit)) : 'inherit'}; border-radius: 4px; padding: 2px 6px;">
+                    ${player.unit}
+                </span>
+            </td>
             <td class="animate-number" data-start="${prevPlayer.points}" data-end="${player.points}" style="font-weight: bold; color: var(--accent-blue)">
                 ${prevPlayer.points}
             </td>
@@ -27,6 +53,15 @@ export function renderStandings(containerId, players, prevPlayers = []) {
     animateNumbers(tbody);
 }
 
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return '#' + '00000'.substring(0, 6 - c.length) + c;
+}
+
 function animateNumbers(container) {
     const elements = container.querySelectorAll('.animate-number');
     elements.forEach(el => {
@@ -34,13 +69,12 @@ function animateNumbers(container) {
         const end = parseInt(el.dataset.end);
         if (start === end) return;
 
-        const duration = 1500; // 1.5 seconds
+        const duration = 1500;
         const startTime = performance.now();
 
         function update(currentTime) {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // Ease out quad
             const easedProgress = progress * (2 - progress);
             const currentValue = Math.floor(start + (end - start) * easedProgress);
             

@@ -18,7 +18,7 @@ const sidebar = document.getElementById('main-sidebar');
 const menuToggle = document.getElementById('menu-toggle');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
 const bracketWrapper = document.querySelector('.bracket-wrapper');
-const groupSelect = document.getElementById('group-select');
+const groupSelector = document.getElementById('group-selector');
 
 // Drag-to-scroll logic for Bracket
 let isDown = false;
@@ -98,7 +98,7 @@ function updateView() {
 
 function refreshUI() {
     if (currentView === 'standings') {
-        renderStandings('standings-body', handler.getRankings(currentGroup), handler.getRankings(currentGroup, true));
+        renderStandings('standings-body', handler.getRankings(currentGroup), handler.getRankings(currentGroup, true), currentType === 'Team');
     } else {
         renderBracket('bracket-container', handler.getFilteredMatches(currentType, currentGroup));
     }
@@ -115,8 +115,12 @@ document.querySelectorAll('.nav-item').forEach(el => {
 });
 
 // Group Selector Event Listeners
-groupSelect?.addEventListener('change', (e) => {
-    currentGroup = e.target.value;
+groupSelector?.addEventListener('click', (e) => {
+    const tab = e.target.closest('.tab-item');
+    if (!tab) return;
+
+    currentGroup = tab.dataset.group;
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t === tab));
     refreshUI();
 });
 

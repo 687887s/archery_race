@@ -224,7 +224,6 @@
             const tbody = document.getElementById(tbodyId);
             tbody.innerHTML = '';
             
-            // Filter by group
             const filteredData = data.filter(row => row.group === currentAdminGroup);
 
             filteredData.forEach((row) => {
@@ -232,23 +231,65 @@
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key === 'group' || key === 'type');
+                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId');
                     
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = val;
-                    if (isReadOnly) {
-                        input.readOnly = true;
-                        input.style.opacity = '0.7';
-                        input.style.cursor = 'not-allowed';
+                    if (key === 'group' || key === 'type' || key === 'isSeed') {
+                        const select = document.createElement('select');
+                        select.style.width = '100%';
+                        select.style.background = 'transparent';
+                        select.style.color = 'white';
+                        select.style.border = 'none';
+
+                        if (key === 'group') {
+                            const groups = ['Recurve-70m', 'Recurve-30m', 'Traditional-30m', 'Traditional-20m-Open', 'Traditional-20m-Student'];
+                            groups.forEach(g => {
+                                const opt = document.createElement('option');
+                                opt.value = g;
+                                opt.textContent = g;
+                                opt.style.background = '#1e293b';
+                                if (g === val) opt.selected = true;
+                                select.appendChild(opt);
+                            });
+                        } else if (key === 'type') {
+                            ['Individual', 'Team'].forEach(t => {
+                                const opt = document.createElement('option');
+                                opt.value = t;
+                                opt.textContent = t;
+                                opt.style.background = '#1e293b';
+                                if (t === val) opt.selected = true;
+                                select.appendChild(opt);
+                            });
+                        } else if (key === 'isSeed') {
+                            ['1', '0'].forEach(s => {
+                                const opt = document.createElement('option');
+                                opt.value = s;
+                                opt.textContent = s === '1' ? 'Seed' : 'Normal';
+                                opt.style.background = '#1e293b';
+                                if (s === val) opt.selected = true;
+                                select.appendChild(opt);
+                            });
+                        }
+
+                        select.addEventListener('change', (e) => {
+                            if (key === 'isSeed') row[key] = (e.target.value === '1');
+                            else row[key] = e.target.value;
+                        });
+                        td.appendChild(select);
+                    } else {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.value = val;
+                        if (isReadOnly) {
+                            input.readOnly = true;
+                            input.style.opacity = '0.7';
+                            input.style.cursor = 'not-allowed';
+                        }
+                        input.addEventListener('change', (e) => {
+                            row[key] = e.target.value;
+                        });
+                        td.appendChild(input);
                     }
                     
-                    input.addEventListener('change', (e) => {
-                        // Update the data in memory
-                        row[key] = e.target.value;
-                    });
-                    
-                    td.appendChild(input);
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);

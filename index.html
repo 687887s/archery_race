@@ -62,14 +62,12 @@
                 <div class="view-title">
                     <h2 id="current-view-name">個人賽 | 積分排名</h2>
                 </div>
-                <div class="group-selector">
-                    <select id="group-select">
-                        <option value="Recurve-70m">競技反曲弓 70m 公開組</option>
-                        <option value="Recurve-30m">競技反曲弓 30m 公開組</option>
-                        <option value="Traditional-30m">傳統弓 30m 公開組</option>
-                        <option value="Traditional-20m-Open">傳統弓 20m 公開組</option>
-                        <option value="Traditional-20m-Student">傳統弓 20m 學生組</option>
-                    </select>
+                <div class="group-tabs" id="group-selector">
+                    <button class="tab-item active" data-group="Recurve-70m">反曲 70m</button>
+                    <button class="tab-item" data-group="Recurve-30m">反曲 30m</button>
+                    <button class="tab-item" data-group="Traditional-30m">傳統 30m</button>
+                    <button class="tab-item" data-group="Traditional-20m-Open">傳統 20m(公)</button>
+                    <button class="tab-item" data-group="Traditional-20m-Student">傳統 20m(學)</button>
                 </div>
             </header>
 
