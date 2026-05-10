@@ -98,7 +98,7 @@ function updateView() {
 
 function refreshUI() {
     if (currentView === 'standings') {
-        renderStandings('standings-body', handler.getRankings(currentGroup));
+        renderStandings('standings-body', handler.getRankings(currentGroup), handler.getRankings(currentGroup, true));
     } else {
         renderBracket('bracket-container', handler.getFilteredMatches(currentType, currentGroup));
     }
@@ -128,13 +128,17 @@ groupSelector?.addEventListener('click', (e) => {
 async function autoFetchData() {
     try {
         showToast('正在獲取最新賽況...');
-        const [playerResponse, matchResponse] = await Promise.all([
+        const [pResp, mResp, ppResp, pmResp] = await Promise.all([
             fetch(`data/players.csv?v=${Date.now()}`),
-            fetch(`data/matches.csv?v=${Date.now()}`)
+            fetch(`data/matches.csv?v=${Date.now()}`),
+            fetch(`data/players_prev.csv?v=${Date.now()}`).catch(() => null),
+            fetch(`data/matches_prev.csv?v=${Date.now()}`).catch(() => null)
         ]);
 
-        if (playerResponse.ok) await handler.loadPlayers(await playerResponse.blob());
-        if (matchResponse.ok) await handler.loadMatches(await matchResponse.blob());
+        if (pResp.ok) await handler.loadPlayers(await pResp.blob());
+        if (mResp.ok) await handler.loadMatches(await mResp.blob());
+        if (ppResp && ppResp.ok) await handler.loadPlayers(await ppResp.blob(), true);
+        if (pmResp && pmResp.ok) await handler.loadMatches(await pmResp.blob(), true);
         
         updateView();
     } catch (err) {

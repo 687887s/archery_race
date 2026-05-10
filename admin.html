@@ -217,7 +217,8 @@
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    td.innerHTML = `<input type="text" value="${val}" data-idx="${idx}" data-key="${key}">`;
+                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId');
+                    td.innerHTML = `<input type="text" value="${val}" data-idx="${idx}" data-key="${key}" ${isReadOnly ? 'readonly style="opacity: 0.7; cursor: not-allowed;"' : ''}>`;
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -230,9 +231,10 @@
             btn.textContent = '同步中...';
 
             try {
+                const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
                 const tbody = document.getElementById(`edit-${type}-body`);
                 const rows = Array.from(tbody.querySelectorAll('tr'));
-                const data = rows.map(tr => {
+                const newData = rows.map(tr => {
                     const obj = {};
                     tr.querySelectorAll('input').forEach(input => {
                         obj[input.dataset.key] = input.value;
@@ -240,38 +242,53 @@
                     return obj;
                 });
 
-                const csv = Papa.unparse(data);
+                const newCsv = Papa.unparse(newData);
                 const path = `data/${type}.csv`;
+                const prevPath = `data/${type}_prev.csv`;
                 
-                // Get current file SHA for update
-                const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
-                
-                const fileInfoResponse = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                // 1. Get current file content & SHA to backup
+                const currentFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': authHeader }
                 });
+                if (!currentFileResp.ok) throw new Error('無法讀取目前檔案');
+                const currentFileData = await currentFileResp.json();
+                const currentContentBase64 = currentFileData.content;
+                const currentSha = currentFileData.sha;
 
-                if (!fileInfoResponse.ok) {
-                    const errData = await fileInfoResponse.json();
-                    throw new Error(`無法獲取檔案資訊: ${errData.message}`);
+                // 2. Update _prev.csv with current content
+                // First get _prev.csv SHA if it exists
+                const prevFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${prevPath}`, {
+                    headers: { 'Authorization': authHeader }
+                });
+                let prevSha = null;
+                if (prevFileResp.ok) {
+                    const prevFileData = await prevFileResp.json();
+                    prevSha = prevFileData.sha;
                 }
-                const fileInfo = await fileInfoResponse.json();
 
-                // Update file via API
+                await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${prevPath}`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: `Backup ${type} data`,
+                        content: currentContentBase64,
+                        sha: prevSha || undefined
+                    })
+                });
+
+                // 3. Update main .csv with new data
                 const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     method: 'PUT',
-                    headers: {
-                        'Authorization': authHeader,
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: `Update ${type} data via Admin Portal`,
-                        content: btoa(unescape(encodeURIComponent(csv))),
-                        sha: fileInfo.sha
+                        content: btoa(unescape(encodeURIComponent(newCsv))),
+                        sha: currentSha
                     })
                 });
 
                 if (response.ok) {
-                    showToast('同步成功！數據已更新至 GitHub。');
+                    showToast('同步成功！舊版本已暫存至 _prev 檔案。');
                 } else {
                     const err = await response.json();
                     throw new Error(err.message);

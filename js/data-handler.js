@@ -1,7 +1,9 @@
 export class DataHandler {
     constructor() {
         this.players = [];
+        this.prevPlayers = [];
         this.matches = [];
+        this.prevMatches = [];
     }
 
     async parseCSV(file) {
@@ -19,9 +21,9 @@ export class DataHandler {
         });
     }
 
-    async loadPlayers(file) {
+    async loadPlayers(file, isPrev = false) {
         const data = await this.parseCSV(file);
-        this.players = data.map(p => ({
+        const mapped = data.map(p => ({
             name: p.name,
             unit: p.unit,
             group: p.group,
@@ -31,12 +33,14 @@ export class DataHandler {
             losses: parseInt(p.losses) || 0,
             draws: parseInt(p.draws) || 0
         }));
-        return this.players;
+        if (isPrev) this.prevPlayers = mapped;
+        else this.players = mapped;
+        return mapped;
     }
 
-    async loadMatches(file) {
+    async loadMatches(file, isPrev = false) {
         const data = await this.parseCSV(file);
-        this.matches = data.map(m => ({
+        const mapped = data.map(m => ({
             matchId: m.matchId,
             type: m.type,
             group: m.group,
@@ -47,19 +51,23 @@ export class DataHandler {
             score1: m.score1,
             score2: m.score2
         }));
-        return this.matches;
+        if (isPrev) this.prevMatches = mapped;
+        else this.matches = mapped;
+        return mapped;
     }
 
-    getFilteredPlayers(group) {
-        return this.players.filter(p => p.group === group);
+    getFilteredPlayers(group, isPrev = false) {
+        const list = isPrev ? this.prevPlayers : this.players;
+        return list.filter(p => p.group === group);
     }
 
-    getFilteredMatches(type, group) {
-        return this.matches.filter(m => m.type === type && m.group === group);
+    getFilteredMatches(type, group, isPrev = false) {
+        const list = isPrev ? this.prevMatches : this.matches;
+        return list.filter(m => m.type === type && m.group === group);
     }
 
-    getRankings(group) {
-        return [...this.getFilteredPlayers(group)].sort((a, b) => {
+    getRankings(group, isPrev = false) {
+        return [...this.getFilteredPlayers(group, isPrev)].sort((a, b) => {
             if (b.points !== a.points) return b.points - a.points;
             if (b.wins !== a.wins) return b.wins - a.wins;
             return a.name.localeCompare(b.name);
