@@ -302,127 +302,118 @@ tr:last-child td {
 }
 
 /* Bracket Styling */
+/* Professional Horizontal Bracket Styling */
 .bracket-wrapper {
-    display: block;
-    width: 100%;
-    height: 80vh;
+    display: flex;
+    flex: 1;
     overflow: auto;
-    padding: 5rem 2rem;
-    cursor: grab;
+    padding: 3rem;
     background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    cursor: grab;
 }
 
-.bracket {
+.bracket-wrapper:active {
+    cursor: grabbing;
+}
+
+#bracket-container {
     display: flex;
-    flex-direction: column;
-    gap: 6rem;
+    gap: 4rem;
     min-width: max-content;
-    align-items: center;
+    align-items: stretch;
 }
 
 .round {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 4rem;
-    width: 100%;
-    position: relative;
+    flex-direction: column;
 }
 
 .round-title {
-    position: absolute;
-    top: -3rem;
-    left: 0;
-    width: 100%;
-    text-align: center;
     color: var(--accent-blue);
-    font-weight: 700;
-    letter-spacing: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+    text-align: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
 }
 
-.match {
-    position: relative;
+.matches-container {
     display: flex;
     flex-direction: column;
-    width: 180px;
-    z-index: 5;
+    justify-content: space-around;
+    flex: 1;
+    gap: 2rem;
 }
 
-.match::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -4rem;
-    width: 0;
-    height: 4rem;
-    border-left: 2px dashed rgba(255, 255, 255, 0.3);
-    z-index: 1;
-}
-
-.round:first-child .match::before {
-    display: none;
-}
-
-.match::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: -4rem;
-    width: 0;
-    height: 4rem;
-    border-left: 2px dashed rgba(255, 255, 255, 0.3);
-    z-index: 1;
-}
-
-.round:last-child .match::after {
-    display: none;
-}
-
-.player {
+.match-box {
+    width: 220px;
     background: var(--sidebar-bg);
     border: 1px solid var(--glass-border);
-    border-radius: 8px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 15px;
-    font-size: 0.9rem;
-    flex: 1;
-    min-width: 140px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s;
 }
 
-.player.winner {
-    background: rgba(56, 189, 248, 0.1);
+.match-box:hover {
+    transform: translateY(-2px);
     border-color: var(--accent-blue);
-    color: white;
 }
 
-.player .score {
-    background: rgba(0,0,0,0.4);
-    color: var(--accent-blue);
-    min-width: 32px;
-    height: 28px;
+.match-id {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    padding: 0.25rem 0.75rem;
+    background: rgba(0,0,0,0.2);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.player-slot {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.player-slot:last-child {
+    border-bottom: none;
+}
+
+.player-slot.winner {
+    background: rgba(56, 189, 248, 0.1);
+    color: white;
+    font-weight: 600;
+}
+
+.player-slot .score {
+    background: rgba(0,0,0,0.3);
+    color: var(--accent-blue);
+    padding: 0.15rem 0.5rem;
     border-radius: 4px;
+    font-family: monospace;
     font-weight: 700;
 }
 
-.player.winner .score {
+.player-slot.winner .score {
     background: var(--accent-blue);
     color: white;
 }
 
-.vs-divider {
-    color: var(--text-secondary);
-    font-size: 0.7rem;
-    font-weight: 700;
-    opacity: 0.8;
+/* Connectors */
+.round:not(:last-child) .match-box::after {
+    content: "";
+    position: absolute;
+    right: -2rem;
+    top: 50%;
+    width: 2rem;
+    height: 1px;
+    background: var(--glass-border);
 }
 
 .bracket-wrapper.active-dragging { cursor: grabbing; user-select: none; }

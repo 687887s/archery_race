@@ -2,43 +2,60 @@ export function renderBracket(containerId, matches) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
+    // Group matches by round
     const rounds = {};
     matches.forEach(match => {
-        if (!rounds[match.round]) rounds[match.round] = [];
-        rounds[match.round].push(match);
+        const r = parseInt(match.round);
+        if (!rounds[r]) rounds[r] = [];
+        rounds[r].push(match);
     });
 
-    Object.keys(rounds).sort((a, b) => a - b).forEach(roundKey => {
+    // Sort rounds descending (32 -> 16 -> 8 -> 4 -> 2 -> 1)
+    const sortedRoundKeys = Object.keys(rounds).sort((a, b) => b - a);
+
+    sortedRoundKeys.forEach((roundKey, roundIndex) => {
         const roundDiv = document.createElement('div');
         roundDiv.className = 'round';
         
-        // Add Round Title
-        const title = document.createElement('div');
-        title.className = 'round-title';
-        title.textContent = `ROUND ${roundKey}`;
-        roundDiv.appendChild(title);
+        // Round Heading
+        const heading = document.createElement('div');
+        heading.className = 'round-title';
+        heading.textContent = getRoundName(roundKey);
+        roundDiv.appendChild(heading);
+
+        const matchesDiv = document.createElement('div');
+        matchesDiv.className = 'matches-container';
 
         rounds[roundKey].forEach(match => {
             const matchDiv = document.createElement('div');
-            matchDiv.className = 'match';
+            matchDiv.className = 'match-box';
             
-            const isP1Winner = match.winner === match.player1 && match.winner !== '';
-            const isP2Winner = match.winner === match.player2 && match.winner !== '';
+            const isP1Winner = match.winner === match.player1 && match.winner !== '' && match.winner !== 'TBD';
+            const isP2Winner = match.winner === match.player2 && match.winner !== '' && match.winner !== 'TBD';
 
             matchDiv.innerHTML = `
-                <div class="player ${isP1Winner ? 'winner' : ''}">
+                <div class="match-id">${match.matchId}</div>
+                <div class="player-slot ${isP1Winner ? 'winner' : ''}">
                     <span class="name">${match.player1 || 'TBD'}</span>
                     <span class="score">${match.score1}</span>
                 </div>
-                <div class="vs-divider">VS</div>
-                <div class="player ${isP2Winner ? 'winner' : ''}">
+                <div class="player-slot ${isP2Winner ? 'winner' : ''}">
                     <span class="name">${match.player2 || 'TBD'}</span>
                     <span class="score">${match.score2}</span>
                 </div>
             `;
-            roundDiv.appendChild(matchDiv);
+            matchesDiv.appendChild(matchDiv);
         });
 
+        roundDiv.appendChild(matchesDiv);
         container.appendChild(roundDiv);
     });
+}
+
+function getRoundName(count) {
+    const c = parseInt(count);
+    if (c === 1) return 'FINAL 決賽';
+    if (c === 2) return 'SEMIFINALS 準決賽';
+    if (c === 4) return 'QUARTERFINALS 半準決賽';
+    return `${c} 強賽`;
 }
