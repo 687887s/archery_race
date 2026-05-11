@@ -106,6 +106,7 @@ export class DataHandler {
 
     async processFullWorkbook(file) {
         const allSheets = await this.parseExcel(file, true);
+        // FORCE CLEAR results before processing to ensure zero residual data
         const results = {
             individual: [],
             team: [],
@@ -113,8 +114,17 @@ export class DataHandler {
             teamMatches: []
         };
 
+        // Strict Tournament Sheet Filtering
+        const tournamentKeywords = ['反曲', '傳統', '公開', '對抗', '強', '排名', '團體'];
+
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
             if (rawData.length === 0) continue;
+            
+            // Skip sheets that don't match tournament keywords (e.g. Hidden Sheets, Notes, Registration)
+            if (!tournamentKeywords.some(k => sheetName.includes(k))) {
+                console.log(`Skipping non-tournament sheet: ${sheetName}`);
+                continue;
+            }
 
             let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
             if (group === '新公開女') group = '反曲70';

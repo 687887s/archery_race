@@ -387,7 +387,6 @@
                                 const val2 = parseInt(row.r2) || 0;
                                 row.total = val1 + val2;
                                 
-                                // Find the total input in the same row and update it
                                 const totalInput = tr.querySelector('input[data-key="total"]');
                                 if (totalInput) totalInput.value = row.total;
                             }
@@ -404,25 +403,43 @@
         }
 
         async function uploadToGithub(path, data) {
-            const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
+            const tokenInput = document.getElementById('github-token').value.trim();
+            const token = tokenInput.replace(/[^\x00-\x7F]/g, "");
+            
+            if (!token) throw new Error('請輸入 GitHub Token');
+
+            const owner = '687887s';
+            const repo = 'archery_race';
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
             const csv = Papa.unparse(data);
             
-            const resp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-                headers: { 'Authorization': authHeader }
-            });
-            if (!resp.ok) throw new Error(`無法獲取 ${path} 的 SHA`);
-            const fileData = await resp.json();
-            
-            const updateResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+            let sha = '';
+            try {
+                const resp = await fetch(url, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                if (resp.ok) {
+                    const fileData = await resp.json();
+                    sha = fileData.sha;
+                }
+            } catch (e) {}
+
+            const updateResp = await fetch(url, {
                 method: 'PUT',
-                headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+                headers: { 
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json' 
+                },
                 body: JSON.stringify({
-                    message: `Update ${path} via Admin Portal`,
+                    message: `Data Update ${new Date().toISOString()}`,
                     content: btoa(unescape(encodeURIComponent(csv))),
-                    sha: fileData.sha
+                    sha: sha
                 })
             });
-            if (!updateResp.ok) throw new Error(`${path} 同步失敗`);
+            if (!updateResp.ok) {
+                const errData = await updateResp.json();
+                throw new Error(errData.message || 'GitHub 同步失敗');
+            }
         }
 
         window.saveAll = async () => {
@@ -441,11 +458,14 @@
                 ];
 
                 for (const target of targets) {
-                    if (target.data.length > 0) await uploadToGithub(target.path, target.data);
+                    if (target.data && target.data.length > 0) {
+                        await uploadToGithub(target.path, target.data);
+                    }
                 }
-                showToast('全場數據同步成功！');
+                showToast('✅ 全場數據同步成功！');
             } catch (err) {
-                showToast('同步失敗: ' + err.message, true);
+                console.error(err);
+                showToast('❌ 同步失敗: ' + err.message, true);
             } finally {
                 if (btn) {
                     btn.disabled = false;
