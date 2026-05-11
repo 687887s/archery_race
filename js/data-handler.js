@@ -10,31 +10,55 @@ export class DataHandler {
         return new Promise((resolve, reject) => {
             Papa.parse(file, {
                 header: true,
-                skipEmptyLines: 'greedy', // More aggressive skip
+                skipEmptyLines: 'greedy',
                 complete: (results) => {
-                    // Universal Normalization for both FE and Admin
-                    const cleanData = results.data
-                        .filter(row => Object.values(row).some(v => v && v.toString().trim() !== ''))
-                        .map(row => {
-                            const newRow = {};
-                            Object.keys(row).forEach(key => {
-                                const cleanKey = key.trim().replace(/^\uFEFF/, '');
-                                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
-                                newRow[cleanKey] = val;
-                            });
-                            return newRow;
-                        });
-                    resolve(cleanData);
+                    resolve(this.normalizeData(results.data));
                 },
-                error: (error) => {
-                    reject(error);
-                }
+                error: (error) => reject(error)
             });
         });
     }
 
+    async parseExcel(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    // Default to the first sheet
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const json = XLSX.utils.sheet_to_json(worksheet);
+                    resolve(this.normalizeData(json));
+                } catch (err) {
+                    reject(err);
+                }
+            };
+            reader.onerror = (err) => reject(err);
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    normalizeData(data) {
+        // Universal Normalization logic moved here
+        return data
+            .filter(row => Object.values(row).some(v => v !== undefined && v !== null && v.toString().trim() !== ''))
+            .map(row => {
+                const newRow = {};
+                Object.keys(row).forEach(key => {
+                    const cleanKey = key.trim().replace(/^\uFEFF/, '');
+                    const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
+                    newRow[cleanKey] = val;
+                });
+                return newRow;
+            });
+    }
+
     async loadPlayers(file, isPrev = false) {
-        const data = await this.parseCSV(file);
+        const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
+        const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
+        
         const mapped = data.map(p => {
             const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
             
@@ -69,7 +93,9 @@ export class DataHandler {
     }
 
     async loadMatches(file, isPrev = false) {
-        const data = await this.parseCSV(file);
+        const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
+        const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
+        
         const mapped = data.map(m => ({
             matchId: m.matchId,
             type: m.type,

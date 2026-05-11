@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css?v=1.0.4">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         .admin-wrapper { max-width: 1000px; margin: 2rem auto; padding: 2rem; }
         .auth-overlay {
@@ -76,8 +77,8 @@
                 <p style="color: var(--text-secondary)">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
-                <input type="file" id="csv-import" accept=".csv" style="display: none;">
-                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 批量匯入 CSV</button>
+                <input type="file" id="csv-import" accept=".csv, .xlsx" style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 批量匯入 CSV / Excel</button>
                 <button class="upload-btn" onclick="logout()">登出</button>
                 <a href="index.html" class="upload-btn" style="text-decoration:none">返回前端</a>
             </div>
@@ -171,7 +172,7 @@
             if (!file) return;
 
             try {
-                showToast('正在解析 CSV...');
+                showToast('正在解析檔案...');
                 const activeTab = document.querySelector('.admin-tab.active').dataset.target;
                 
                 if (activeTab === 'players-editor') {
