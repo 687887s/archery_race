@@ -295,9 +295,23 @@
                             input.style.opacity = '0.7';
                             input.style.cursor = 'not-allowed';
                         }
-                        input.addEventListener('change', (e) => {
+                        input.addEventListener('input', (e) => {
                             row[key] = e.target.value;
+                            
+                            // Auto-calculate Total if R1 or R2 changes
+                            if (key === 'R1' || key === 'R2') {
+                                const r1 = parseInt(row.R1) || 0;
+                                const r2 = parseInt(row.R2) || 0;
+                                row.Total = r1 + r2;
+                                
+                                // Find the Total input in the same row and update it
+                                const totalInput = tr.querySelector('input[data-key="Total"]');
+                                if (totalInput) totalInput.value = row.Total;
+                            }
                         });
+                        
+                        // Add data-key attribute for easy lookup
+                        input.setAttribute('data-key', key);
                         td.appendChild(input);
                     }
                     

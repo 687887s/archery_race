@@ -173,6 +173,15 @@ async function autoFetchData() {
         }
         
         console.log('Data loaded successfully');
+        
+        // Update last refresh time
+        const now = new Date();
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
+                        now.getMinutes().toString().padStart(2, '0') + ':' + 
+                        now.getSeconds().toString().padStart(2, '0');
+        const lastUpdateEl = document.getElementById('last-update-time');
+        if (lastUpdateEl) lastUpdateEl.textContent = `最後更新: ${timeStr}`;
+
         updateView();
     } catch (err) {
         console.error('Data Load Error:', err);
@@ -188,4 +197,11 @@ function showToast(message, isError = false) {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+// Initial fetch
 autoFetchData();
+
+// Strategy A: Auto-polling every 60 seconds
+setInterval(() => {
+    console.log('Auto-polling refresh triggered...');
+    autoFetchData();
+}, 60000);
