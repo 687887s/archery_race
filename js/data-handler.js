@@ -126,19 +126,18 @@ export class DataHandler {
                 continue;
             }
 
-            let group = sheetName.replace('個人', '').replace('對抗', '').replace(/\s*\d+強/g, '').trim();
-            // classification priority
+            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
             const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
-            const isTeam = sheetName.includes('團體') && !sheetName.includes('個人'); 
+            const isTeam = sheetName.includes('團體'); 
             
-            // Re-check group name: if it becomes empty or just '團體'/'個人' after stripping, skip it
+            // Skip administrative sheets that become empty or generic names after stripping
             if (group === '' || group === '個人' || group === '團體' || group.includes('新公開女')) {
-                console.log(`Skipping invalid or administrative sheet: ${sheetName}`);
+                console.log(`Skipping administrative or excluded sheet: ${sheetName}`);
                 continue;
             }
 
             if (isMatch) {
-                const actualIsTeam = sheetName.includes('團體');
+                const actualIsTeam = isTeam;
 
                 const mapped = rawData.map((m, idx) => {
                     // BRUTE FORCE: Extract all strings from the row
