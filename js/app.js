@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.2.0';
-import { renderStandings } from './render-standings.js?v=1.2.0';
-import { renderBracket } from './render-bracket.js?v=1.2.0';
+import { DataHandler } from './data-handler.js?v=1.2.1';
+import { renderStandings } from './render-standings.js?v=1.2.1';
+import { renderBracket } from './render-bracket.js?v=1.2.1';
 
 const handler = new DataHandler();
 
@@ -135,25 +135,42 @@ groupSelector?.addEventListener('click', (e) => {
 async function autoFetchData() {
     try {
         console.log('Fetching data for type:', currentType);
-        showToast('正在獲取最新賽況...');
+        showToast('正在獲獲取最新賽況...');
         
-        const pFile = currentType === 'Individual' ? 'individual_players.csv' : 'team_players.csv';
-        const mFile = currentType === 'Individual' ? 'individual_matches.csv' : 'team_matches.csv';
+        const prefix = currentType === 'Individual' ? 'individual_' : 'team_';
+        const pFile = `${prefix}players.csv`;
+        const mFile = `${prefix}matches.csv`;
+        const pPrevFile = `${prefix}players_prev.csv`;
+        const mPrevFile = `${prefix}matches_prev.csv`;
         
-        const [pResp, mResp] = await Promise.all([
+        // Fetch current and previous data in parallel
+        const fetchResults = await Promise.allSettled([
             fetch(`data/${pFile}?v=${Date.now()}`),
-            fetch(`data/${mFile}?v=${Date.now()}`)
+            fetch(`data/${mFile}?v=${Date.now()}`),
+            fetch(`data/${pPrevFile}?v=${Date.now()}`),
+            fetch(`data/${mPrevFile}?v=${Date.now()}`)
         ]);
 
-        if (!pResp.ok || !mResp.ok) {
-            throw new Error(`Fetch failed: ${pFile} (${pResp.status}), ${mFile} (${mResp.status})`);
+        // Process Current Players & Matches (Must succeed)
+        if (fetchResults[0].status === 'fulfilled' && fetchResults[0].value.ok) {
+            await handler.loadPlayers(await fetchResults[0].value.blob());
+        } else {
+            throw new Error(`Critical fetch failed: ${pFile}`);
         }
 
-        const pBlob = await pResp.blob();
-        const mBlob = await mResp.blob();
-        
-        await handler.loadPlayers(pBlob);
-        await handler.loadMatches(mBlob);
+        if (fetchResults[1].status === 'fulfilled' && fetchResults[1].value.ok) {
+            await handler.loadMatches(await fetchResults[1].value.blob());
+        } else {
+            throw new Error(`Critical fetch failed: ${mFile}`);
+        }
+
+        // Process Previous Players & Matches (Optional, for animation)
+        if (fetchResults[2].status === 'fulfilled' && fetchResults[2].value.ok) {
+            await handler.loadPlayers(await fetchResults[2].value.blob(), true);
+        }
+        if (fetchResults[3].status === 'fulfilled' && fetchResults[3].value.ok) {
+            await handler.loadMatches(await fetchResults[3].value.blob(), true);
+        }
         
         console.log('Data loaded successfully');
         updateView();

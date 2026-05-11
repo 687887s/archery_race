@@ -46,14 +46,21 @@ export class DataHandler {
                 return found ? row[found] : 0;
             };
 
+            const r1 = parseInt(getVal(p, ['r1', 'round1', '第一輪', '第一場', 'score1'])) || 0;
+            const r2 = parseInt(getVal(p, ['r2', 'round2', '第二輪', '第二場', 'score2'])) || 0;
+            let total = parseInt(getVal(p, ['total', 'points', '總分', '積分', 'score', 'pts'])) || 0;
+
+            // Fix: If total is 0, calculate it from r1 + r2
+            if (total === 0) total = r1 + r2;
+
             return {
                 name: p.name,
                 unit: unitVal,
                 team: p.team || unitVal,
                 group: p.group,
-                r1: parseInt(getVal(p, ['r1', 'round1', '第一輪', '第一場', 'score1'])) || 0,
-                r2: parseInt(getVal(p, ['r2', 'round2', '第二輪', '第二場', 'score2'])) || 0,
-                total: parseInt(getVal(p, ['total', 'points', '總分', '積分', 'score', 'pts'])) || 0
+                r1: r1,
+                r2: r2,
+                total: total
             };
         });
         if (isPrev) this.prevPlayers = mapped;
