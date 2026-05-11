@@ -1,48 +1,33 @@
-matchId,type,group,round,player1,player2,winner,score1,score2
-R70-16-1,Individual,Recurve-70m,16,陳姿璇,廖俊逸,,0,0
-R70-16-2,Individual,Recurve-70m,16,李簇鑫,謝慶威,,0,0
-R70-16-3,Individual,Recurve-70m,16,黃泊羲,杜展廷,,0,0
-R70-16-4,Individual,Recurve-70m,16,汪晁安,吳東洋,,0,0
-R70-16-5,Individual,Recurve-70m,16,張立旻,陳宇靖,,0,0
-R70-16-6,Individual,Recurve-70m,16,藍慶同,盧建銘,,0,0
-R70-16-7,Individual,Recurve-70m,16,傅昱智,鍾文景,,0,0
-R70-16-8,Individual,Recurve-70m,16,游舜勛,李庭寬,,0,0
-R70-8-1,Individual,Recurve-70m,8,TBD,TBD,,0,0
-R70-8-2,Individual,Recurve-70m,8,TBD,TBD,,0,0
-R70-8-3,Individual,Recurve-70m,8,TBD,TBD,,0,0
-R70-8-4,Individual,Recurve-70m,8,TBD,TBD,,0,0
-R70-4-1,Individual,Recurve-70m,4,TBD,TBD,,0,0
-R70-4-2,Individual,Recurve-70m,4,TBD,TBD,,0,0
-R70-2-1,Individual,Recurve-70m,2,TBD,TBD,,0,0
-R70-1-1,Individual,Recurve-70m,1,TBD,TBD,,0,0
-R30-32-1,Individual,Recurve-30m,32,王晨安,羅英瑞,,0,0
-R30-32-16,Individual,Recurve-30m,32,陳品希,TBD,,0,0
-R30-16-1,Individual,Recurve-30m,16,TBD,TBD,,0,0
-R30-8-1,Individual,Recurve-30m,8,TBD,TBD,,0,0
-R30-4-1,Individual,Recurve-30m,4,TBD,TBD,,0,0
-R30-1-1,Individual,Recurve-30m,1,TBD,TBD,,0,0
-T30-16-1,Individual,Traditional-30m,16,林哲仲,翁孟晴,,0,0
-T30-16-2,Individual,Traditional-30m,16,陳成熠,蔡學維,,0,0
-T30-16-3,Individual,Traditional-30m,16,吳柏漢,汪安,,0,0
-T30-16-4,Individual,Traditional-30m,16,徐浩淳,林以涵,,0,0
-T30-8-1,Individual,Traditional-30m,8,TBD,TBD,,0,0
-T30-4-1,Individual,Traditional-30m,4,TBD,TBD,,0,0
-T30-1-1,Individual,Traditional-30m,1,TBD,TBD,,0,0
-T20O-16-1,Individual,Traditional-20m-Open,16,詹文傑,張尊皓,,0,0
-T20O-16-2,Individual,Traditional-20m-Open,16,黃昱展,顏郡毅,,0,0
-T20O-16-3,Individual,Traditional-20m-Open,16,吳琮偉,陳勝維,,0,0
-T20O-16-4,Individual,Traditional-20m-Open,16,李承隆,張瑞源,,0,0
-T20O-8-1,Individual,Traditional-20m-Open,8,TBD,TBD,,0,0
-T20O-4-1,Individual,Traditional-20m-Open,4,TBD,TBD,,0,0
-T20O-1-1,Individual,Traditional-20m-Open,1,TBD,TBD,,0,0
-T20S-16-1,Individual,Traditional-20m-Student,16,廖昱皓,黃芷榆,,0,0
-T20S-16-2,Individual,Traditional-20m-Student,16,葉芯宇,邱苡慈,,0,0
-T20S-16-3,Individual,Traditional-20m-Student,16,張智博,黃若彤,,0,0
-T20S-16-4,Individual,Traditional-20m-Student,16,楊樺雯,崔伯朗,,0,0
-T20S-16-5,Individual,Traditional-20m-Student,16,施秉辰,韓夏齊,,0,0
-T20S-16-6,Individual,Traditional-20m-Student,16,任宇欽,郭牧宸,,0,0
-T20S-16-7,Individual,Traditional-20m-Student,16,詹智捷,王志賢,,0,0
-T20S-16-8,Individual,Traditional-20m-Student,16,阮福安,杜誠寶,,0,0
-T20S-8-1,Individual,Traditional-20m-Student,8,TBD,TBD,,0,0
-T20S-4-1,Individual,Traditional-20m-Student,4,TBD,TBD,,0,0
-T20S-1-1,Individual,Traditional-20m-Student,1,TBD,TBD,,0,0
+matchId,type,group,round,player1,player2,winner,score1,score2,target,isSeed
+M1,Individual,傳統20,,名次,單　位,,0,0,,false
+M2,Individual,傳統20,,名次,單　位,,0,0,,false
+M3,Individual,傳統20,,(一),TBD,,0,0,,false
+M7,Individual,傳統20,,(二),TBD,,0,0,,false
+M17,Individual,傳統20,,金牌戰,TBD,,0,0,,false
+M19,Individual,傳統20,,(一),TBD,,0,0,,false
+M22,Individual,傳統20,,(二),TBD,,0,0,,false
+M30,Individual,傳統20,,銅牌戰,TBD,,0,0,,false
+M1,Individual,傳統30,,名次,單　位,,0,0,,false
+M2,Individual,傳統30,,名次,單　位,,0,0,,false
+M3,Individual,傳統30,,(一),TBD,,0,0,,false
+M7,Individual,傳統30,,(二),TBD,,0,0,,false
+M17,Individual,傳統30,,金牌戰,TBD,,0,0,,false
+M19,Individual,傳統30,,(一),TBD,,0,0,,false
+M23,Individual,傳統30,,(二),TBD,,0,0,,false
+M32,Individual,傳統30,,銅牌戰,TBD,,0,0,,false
+M1,Individual,反曲30,,名次,單　位,,0,0,,false
+M2,Individual,反曲30,,名次,單　位,,0,0,,false
+M3,Individual,反曲30,,(一),TBD,,0,0,,false
+M7,Individual,反曲30,,(二),TBD,,0,0,,false
+M17,Individual,反曲30,,金牌戰,TBD,,0,0,,false
+M19,Individual,反曲30,,(一),TBD,,0,0,,false
+M22,Individual,反曲30,,(二),TBD,,0,0,,false
+M30,Individual,反曲30,,銅牌戰,TBD,,0,0,,false
+M1,Individual,反曲70,,名次,單　位,,0,0,,false
+M2,Individual,反曲70,,名次,單　位,,0,0,,false
+M3,Individual,反曲70,,(一),TBD,,0,0,,false
+M7,Individual,反曲70,,(二),TBD,,0,0,,false
+M17,Individual,反曲70,,金牌戰,TBD,,0,0,,false
+M19,Individual,反曲70,,(一),TBD,,0,0,,false
+M22,Individual,反曲70,,(二),TBD,,0,0,,false
+M30,Individual,反曲70,,銅牌戰,TBD,,0,0,,false
