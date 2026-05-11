@@ -29,7 +29,7 @@ export class DataHandler {
 
                     if (readAll) {
                         const allData = {};
-                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
+                        const potentialHeaders = ['姓', '名', '單', '位', '對', '抗', '選', '手', '編', '序', '場', '靶'];
 
                         workbook.SheetNames.forEach(name => {
                             const worksheet = workbook.Sheets[name];
@@ -53,7 +53,7 @@ export class DataHandler {
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
-                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
+                        const potentialHeaders = ['姓', '名', '單', '位', '對', '抗', '選', '手', '編', '序', '場', '靶'];
 
                         let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
                         let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
@@ -122,23 +122,23 @@ export class DataHandler {
                 const isTeam = sheetName.includes('團體');
                 
                 const mapped = rawData.map((m, idx) => {
-                    // BRUTE FORCE: Extract all non-empty string values from the row to handle visual brackets
-                    const values = Object.values(m).map(v => v ? v.toString().trim() : '').filter(v => v.length > 1);
+                    // BRUTE FORCE: Extract all strings from the row
+                    const allKeys = Object.keys(m);
+                    const values = allKeys.map(k => m[k] ? m[k].toString().trim() : '').filter(v => v.length >= 2);
                     
-                    // Try to find standard fields first
-                    let p1 = this.getVal(m, ['player1', '選手1', '左側選手', '單位', '姓名'], '');
-                    let p2 = this.getVal(m, ['player2', '選手2', '右側選手'], '');
+                    // Filter out round titles and header-like text
+                    const filterGarbage = (s) => s && !s.includes('對抗') && !s.includes('強') && !s.includes('淘汰') && !s.includes('組') && !s.includes('分') && !/^\d+$/.test(s);
+                    const candidates = values.filter(filterGarbage);
                     
-                    // If standard mapping fails, take the first two strings that aren't numeric/IDs or round titles
-                    const filterTitles = (s) => s && !s.includes('對抗') && !s.includes('強') && !s.includes('淘汰') && !s.includes('組別');
-                    
-                    if (!p1) {
-                        const candidates = values.filter(filterTitles);
+                    let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
+                    let p2 = 'TBD';
+
+                    if (!p1 || p1 === '') {
                         p1 = candidates[0] || 'TBD';
                         p2 = candidates[1] || 'TBD';
-                        
-                        // Heuristic for bracket sheets: sometimes names are at index 1 and 3 if cell merging is involved
-                        if (values.length >= 4 && p2 === 'TBD') p2 = values[2];
+                    } else {
+                        // If p1 found via header, p2 might be the next candidate
+                        p2 = candidates.find(c => c !== p1) || 'TBD';
                     }
 
                     return {
@@ -156,10 +156,10 @@ export class DataHandler {
                     };
                 });
                 
-                // Only push if it actually looks like a match row (player1 is a real name, not a header)
+                // Only push if it actually looks like a match row (player1 is a real name)
                 const validMatches = mapped.filter(m => 
-                    m.player1 && m.player1 !== 'TBD' && m.player1.length > 1 &&
-                    !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('組')
+                    m.player1 && m.player1 !== 'TBD' && m.player1.length >= 2 &&
+                    !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('排名')
                 );
                 
                 if (isTeam) results.teamMatches.push(...validMatches);
