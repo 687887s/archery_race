@@ -36,14 +36,21 @@ export class DataHandler {
 
         const mapped = data.map(p => {
             const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
+            
+            // Find score keys case-insensitively
+            const getVal = (row, keys) => {
+                const found = Object.keys(row).find(k => keys.includes(k.toLowerCase()));
+                return found ? row[found] : 0;
+            };
+
             return {
                 name: p.name,
                 unit: unitVal,
                 team: p.team || unitVal,
                 group: p.group,
-                r1: parseInt(p.R1) || 0,
-                r2: parseInt(p.R2) || 0,
-                total: parseInt(p.Total) || 0
+                r1: parseInt(getVal(p, ['r1', 'round1', '第一輪'])) || 0,
+                r2: parseInt(getVal(p, ['r2', 'round2', '第二輪'])) || 0,
+                total: parseInt(getVal(p, ['total', 'points', '總分', '積分'])) || 0
             };
         });
         if (isPrev) this.prevPlayers = mapped;

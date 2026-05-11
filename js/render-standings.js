@@ -27,29 +27,32 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
     if (headUnit) headUnit.textContent = isTeam ? '所屬單位' : '參賽單位';
 
     let displayData = [];
-    if (isTeam) {
-        // Aggregate by team
+    let prevDisplayData = [];
+
+    const aggregate = (list) => {
         const teams = {};
-        players.forEach(p => {
+        list.forEach(p => {
             if (!teams[p.team]) {
-                teams[p.team] = { 
-                    name: p.team, 
-                    unit: p.unit, 
-                    r1: 0, r2: 0, total: 0
-                };
+                teams[p.team] = { name: p.team, unit: p.unit, r1: 0, r2: 0, total: 0 };
             }
             teams[p.team].r1 += p.r1;
             teams[p.team].r2 += p.r2;
             teams[p.team].total += p.total;
         });
-        displayData = Object.values(teams).sort((a, b) => b.total - a.total || b.r2 - a.r2);
+        return Object.values(teams).sort((a, b) => b.total - a.total || b.r2 - a.r2);
+    };
+
+    if (isTeam) {
+        displayData = aggregate(players);
+        prevDisplayData = aggregate(prevPlayers);
     } else {
         displayData = players;
+        prevDisplayData = prevPlayers;
     }
 
     displayData.forEach((player, index) => {
         const tr = document.createElement('tr');
-        const prevPlayer = prevPlayers.find(p => (isTeam ? p.team : p.name) === (isTeam ? player.name : player.name)) || player;
+        const prevPlayer = prevDisplayData.find(p => p.name === player.name) || player;
 
         const displayName = isTeam ? player.name : player.name;
         const color = unitColors[player.unit] || stringToColor(player.unit);
