@@ -126,13 +126,19 @@ export class DataHandler {
                 continue;
             }
 
-            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
+            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace('排名', '').replace('賽', '').replace(/\s*\d+強/g, '').trim();
+            
+            // If the name becomes too short or empty after stripping, fall back to a safer version of the sheet name
+            if (group.length < 2) {
+                group = sheetName.replace('分頁', '').replace('Sheet', '').trim();
+            }
+
             const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
             const isTeam = sheetName.includes('團體'); 
             
-            // Skip administrative sheets that become empty or generic names after stripping
-            if (group === '' || group === '個人' || group === '團體' || group.includes('新公開女')) {
-                console.log(`Skipping administrative or excluded sheet: ${sheetName}`);
+            // Only skip known junk sheets
+            if (sheetName.includes('新公開女') || group === '') {
+                console.log(`Skipping excluded or empty sheet: ${sheetName}`);
                 continue;
             }
 
