@@ -160,7 +160,7 @@
         let fullTeamData = [];
         let fullIndividualMatches = [];
         let fullTeamMatches = [];
-        let GITHUB_TOKEN = localStorage.getItem('github_token') || '';
+        let GITHUB_TOKEN = (localStorage.getItem('github_token') || '').replace(/[^\x00-\x7F]/g, "");
         let currentAdminMode = 'Individual';
         let currentAdminGroup = '反曲70';
 
@@ -253,7 +253,9 @@
         function checkAuth() {
             try {
                 const pass = document.getElementById('admin-pass').value.trim();
-                const token = document.getElementById('github-token').value.trim();
+                const rawToken = document.getElementById('github-token').value.trim();
+                // Strictly filter to ASCII only to prevent ISO-8859-1 fetch errors
+                const token = rawToken.replace(/[^\x00-\x7F]/g, "");
                 
                 if (pass === '1234' && token.length > 20) {
                     GITHUB_TOKEN = token;
