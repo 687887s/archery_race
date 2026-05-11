@@ -32,6 +32,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
     const aggregate = (list) => {
         const teams = {};
         list.forEach(p => {
+            // SKIP ghost teams or invalid names
+            if (!p.team || p.team === '' || p.team === '個人' || p.team === '-') return;
+            
             if (!teams[p.team]) {
                 teams[p.team] = { name: p.team, unit: p.unit, r1: 0, r2: 0, total: 0 };
             }

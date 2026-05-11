@@ -110,12 +110,12 @@ document.querySelectorAll('.nav-item').forEach(el => {
         const oldType = currentType;
         currentType = el.dataset.type;
         currentView = el.dataset.view;
-        
+
         // If type changed, we must re-fetch the specific data files
         if (currentType !== oldType) {
             await autoFetchData();
         }
-        
+
         updateView();
         toggleSidebar(true);
     });
@@ -136,13 +136,13 @@ async function autoFetchData() {
     try {
         console.log('Fetching data for type:', currentType);
         showToast('正在獲獲取最新賽況...');
-        
+
         const prefix = currentType === 'Individual' ? 'individual_' : 'team_';
         const pFile = `${prefix}players.csv`;
         const mFile = `${prefix}matches.csv`;
         const pPrevFile = `${prefix}players_prev.csv`;
         const mPrevFile = `${prefix}matches_prev.csv`;
-        
+
         // Fetch current and previous data in parallel
         const fetchResults = await Promise.allSettled([
             fetch(`data/${pFile}?v=${Date.now()}`),
@@ -171,14 +171,14 @@ async function autoFetchData() {
         if (fetchResults[3].status === 'fulfilled' && fetchResults[3].value.ok) {
             await handler.loadMatches(await fetchResults[3].value.blob(), true);
         }
-        
+
         console.log('Data loaded successfully');
-        
+
         // Update last refresh time
         const now = new Date();
-        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + 
-                        now.getMinutes().toString().padStart(2, '0') + ':' + 
-                        now.getSeconds().toString().padStart(2, '0');
+        const timeStr = now.getHours().toString().padStart(2, '0') + ':' +
+            now.getMinutes().toString().padStart(2, '0') + ':' +
+            now.getSeconds().toString().padStart(2, '0');
         const lastUpdateEl = document.getElementById('last-update-time');
         if (lastUpdateEl) lastUpdateEl.textContent = `最後更新: ${timeStr}`;
 
