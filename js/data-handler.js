@@ -171,7 +171,7 @@ export class DataHandler {
                     const unitVal = this.getVal(p, ['unit', '單位', '參賽單位'], '未知');
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績'], 0)) || 0;
                     return {
-                        id: this.getVal(p, ['id', '編號'], ''),
+                        id: this.getVal(p, ['id', '編號', '序號', 'No', 'no'], ''),
                         unit: unitVal,
                         name: this.getVal(p, ['name', '姓名', '選手'], ''),
                         target: this.getVal(p, ['target', '靶位'], ''),
@@ -184,7 +184,7 @@ export class DataHandler {
                         group: group,
                         team: this.getVal(p, ['team', '隊伍'], unitVal)
                     };
-                }).filter(p => p.name && p.name.trim() !== '' && p.name !== '未知');
+                }).filter(p => p.name && p.name.length >= 2 && (parseInt(p.total) > 0 || p.target !== ''));
                 results.team.push(...mapped);
             } else {
                 // Process as Individual Players
@@ -202,21 +202,35 @@ export class DataHandler {
                     }
 
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績', '成績'], 0)) || 0;
+                    const r2 = parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0;
+                    const total = parseInt(this.getVal(p, ['total', '總分'], r1 + r2)) || (r1 + r2);
+
+                    // VALIDATION: In ranking sheets, a real player MUST have at least one score or a target
+                    const hasData = r1 > 0 || r2 > 0 || total > 0;
+                    
+                    // Brute force fallback for Individual names
+                    if (!name || name === '') {
+                        const nameBlacklist = ['對抗', '賽', '名單', '單位', '裁判', '長', '日期', '備註', '組別', '成績', '排名'];
+                        const nameCandidates = allVals.filter(v => !nameBlacklist.some(b => v.includes(b)) && !/^\d+$/.test(v));
+                        name = nameCandidates[0] || '';
+                        if (!unit) unit = nameCandidates[1] || '個人';
+                    }
+
                     return {
-                        id: this.getVal(p, ['id', '編號', '序號'], `P${idx+1}`),
+                        id: this.getVal(p, ['id', '編號', '序號', 'No', 'no'], ''),
                         unit: unit || '未知',
                         name: name,
                         target: this.getVal(p, ['target', '靶位', '靶號'], ''),
                         r1: r1,
-                        r2: parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0,
-                        total: parseInt(this.getVal(p, ['total', '總分'], r1)) || r1,
+                        r2: r2,
+                        total: total,
                         rank: this.getVal(p, ['rank', '排名'], ''),
                         xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
                         tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
                         group: group,
                         team: unit || '個人'
                     };
-                }).filter(p => p.name && p.name.length >= 2 && !p.name.includes('對抗') && !p.name.includes('名單'));
+                }).filter(p => p.name && p.name.length >= 2 && (parseInt(p.total) > 0 || p.target !== ''));
                 results.individual.push(...mapped);
             }
         }
