@@ -221,11 +221,11 @@
 
         function renderAllEditors() {
             const playerKeys = currentAdminMode === 'Individual' 
-                ? ['name', 'unit', 'group', 'R1', 'R2', 'Total']
-                : ['name', 'team', 'group', 'R1', 'R2', 'Total'];
+                ? ['name', 'unit', 'group', 'r1', 'r2', 'total']
+                : ['name', 'team', 'group', 'r1', 'r2', 'total'];
             
             const head = document.getElementById('players-table-head');
-            head.innerHTML = playerKeys.map(k => `<th>${k === 'team' ? '隊伍' : k}</th>`).join('');
+            head.innerHTML = playerKeys.map(k => `<th>${k.toUpperCase() === 'TEAM' ? '隊伍' : k.toUpperCase()}</th>`).join('');
 
             renderEditor('edit-players-body', fullPlayerData, playerKeys);
             renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
@@ -242,10 +242,11 @@
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId');
+                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total');
                     
                     if (key === 'group' || key === 'type' || key === 'isSeed') {
                         const select = document.createElement('select');
+                        // ... select setup code ...
                         select.style.width = '100%';
                         select.style.background = 'transparent';
                         select.style.color = 'white';
@@ -289,28 +290,28 @@
                     } else {
                         const input = document.createElement('input');
                         input.type = 'text';
-                        input.value = val;
+                        input.value = val !== undefined ? val : '';
                         if (isReadOnly) {
                             input.readOnly = true;
                             input.style.opacity = '0.7';
                             input.style.cursor = 'not-allowed';
                         }
+                        
                         input.addEventListener('input', (e) => {
                             row[key] = e.target.value;
                             
-                            // Auto-calculate Total if R1 or R2 changes
-                            if (key === 'R1' || key === 'R2') {
-                                const r1 = parseInt(row.R1) || 0;
-                                const r2 = parseInt(row.R2) || 0;
-                                row.Total = r1 + r2;
+                            // Auto-calculate total if r1 or r2 changes
+                            if (key === 'r1' || key === 'r2') {
+                                const val1 = parseInt(row.r1) || 0;
+                                const val2 = parseInt(row.r2) || 0;
+                                row.total = val1 + val2;
                                 
-                                // Find the Total input in the same row and update it
-                                const totalInput = tr.querySelector('input[data-key="Total"]');
-                                if (totalInput) totalInput.value = row.Total;
+                                // Find the total input in the same row and update it
+                                const totalInput = tr.querySelector('input[data-key="total"]');
+                                if (totalInput) totalInput.value = row.total;
                             }
                         });
                         
-                        // Add data-key attribute for easy lookup
                         input.setAttribute('data-key', key);
                         td.appendChild(input);
                     }
