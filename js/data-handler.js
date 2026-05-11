@@ -137,8 +137,6 @@ export class DataHandler {
                 continue;
             }
 
-            if (isTeam && !group.includes('團體')) group += ' 團體';
-
             if (isMatch) {
                 const actualIsTeam = sheetName.includes('團體');
 
