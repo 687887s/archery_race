@@ -2,15 +2,17 @@ const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
     '輔大射箭社': '#fbbf24',    // Amber
-    '石碇高中': '#a78bfa',      // Violet
+    '新北市立石碇高中': '#a78bfa', // Violet
     '百川射箭隊': '#34d399',    // Emerald
     '國防大學理工學院': '#f87171', // Red
-    'G2C+ 射箭社': '#818cf8',    // Indigo
+    'G2C+': '#818cf8',         // Indigo
     '功夫射箭隊': '#fb923c',     // Orange
     '繹心山房': '#e879f9',       // Fuchsia
-    '佛光大學射箭社': '#94a3b8', // Slate
+    '佛光大學': '#94a3b8',       // Slate
     '清大射箭社': '#2dd4bf',     // Teal
     '黑色會': '#4b5563',         // Dark Gray
+    '桃園高中': '#6366f1',       // Indigo-500
+    '中教大': '#ec4899',         // Pink-500
 };
 
 export function renderStandings(containerId, players, prevPlayers = [], isTeam = false) {
@@ -20,7 +22,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
     players.forEach((player, index) => {
         const tr = document.createElement('tr');
         const prevPlayer = prevPlayers.find(p => p.name === player.name) || player;
-        
+
         // Color coding for units in team mode
         let unitStyle = '';
         if (isTeam) {
@@ -77,7 +79,7 @@ function animateNumbers(container) {
             const progress = Math.min(elapsed / duration, 1);
             const easedProgress = progress * (2 - progress);
             const currentValue = Math.floor(start + (end - start) * easedProgress);
-            
+
             el.textContent = currentValue;
 
             if (progress < 1) {

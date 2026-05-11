@@ -106,9 +106,16 @@ function refreshUI() {
 
 // Sidebar Event Listeners
 document.querySelectorAll('.nav-item').forEach(el => {
-    el.addEventListener('click', () => {
+    el.addEventListener('click', async () => {
+        const oldType = currentType;
         currentType = el.dataset.type;
         currentView = el.dataset.view;
+        
+        // If type changed, we must re-fetch the specific data files
+        if (currentType !== oldType) {
+            await autoFetchData();
+        }
+        
         updateView();
         toggleSidebar(true);
     });
@@ -128,17 +135,18 @@ groupSelector?.addEventListener('click', (e) => {
 async function autoFetchData() {
     try {
         showToast('正在獲取最新賽況...');
-        const [pResp, mResp, ppResp, pmResp] = await Promise.all([
-            fetch(`data/players.csv?v=${Date.now()}`),
-            fetch(`data/matches.csv?v=${Date.now()}`),
-            fetch(`data/players_prev.csv?v=${Date.now()}`).catch(() => null),
-            fetch(`data/matches_prev.csv?v=${Date.now()}`).catch(() => null)
+        
+        // Dynamic file selection based on currentType
+        const pFile = currentType === 'Individual' ? 'individual_players.csv' : 'team_players.csv';
+        const mFile = currentType === 'Individual' ? 'individual_matches.csv' : 'team_matches.csv';
+        
+        const [pResp, mResp] = await Promise.all([
+            fetch(`data/${pFile}?v=${Date.now()}`),
+            fetch(`data/${mFile}?v=${Date.now()}`)
         ]);
 
         if (pResp.ok) await handler.loadPlayers(await pResp.blob());
         if (mResp.ok) await handler.loadMatches(await mResp.blob());
-        if (ppResp && ppResp.ok) await handler.loadPlayers(await ppResp.blob(), true);
-        if (pmResp && pmResp.ok) await handler.loadMatches(await pmResp.blob(), true);
         
         updateView();
     } catch (err) {

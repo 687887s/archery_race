@@ -86,28 +86,37 @@
             <div class="admin-tab" data-target="matches-editor">🌿 淘汰賽管理</div>
         </div>
 
-        <div class="group-selector" style="margin-bottom: 1.5rem; justify-content: flex-start; gap: 1rem;">
-            <label style="color: var(--text-secondary); font-weight: 600;">選擇管理分組：</label>
-            <select id="admin-group-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
-                <option value="Recurve-70m">競技反曲弓 70m 公開組</option>
-                <option value="Recurve-30m">競技反曲弓 30m 公開組</option>
-                <option value="Traditional-30m">傳統弓 30m 公開組</option>
-                <option value="Traditional-20m-Open">傳統弓 20m 公開組</option>
-                <option value="Traditional-20m-Student">傳統弓 20m 學生組</option>
-            </select>
+        <div class="group-selector" style="margin-bottom: 1.5rem; justify-content: flex-start; gap: 1.5rem;">
+            <div>
+                <label style="color: var(--text-secondary); font-weight: 600;">管理模式：</label>
+                <select id="admin-mode-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
+                    <option value="Individual">個人賽 (Individual)</option>
+                    <option value="Team">團體賽 (Team)</option>
+                </select>
+            </div>
+            <div>
+                <label style="color: var(--text-secondary); font-weight: 600;">選擇分組：</label>
+                <select id="admin-group-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
+                    <option value="Recurve-70m">競技反曲弓 70m 公開組</option>
+                    <option value="Recurve-30m">競技反曲弓 30m 公開組</option>
+                    <option value="Traditional-30m">傳統弓 30m 公開組</option>
+                    <option value="Traditional-20m-Open">傳統弓 20m 公開組</option>
+                    <option value="Traditional-20m-Student">傳統弓 20m 學生組</option>
+                </select>
+            </div>
         </div>
 
         <!-- Players Editor -->
         <div class="data-editor" id="players-editor">
             <div class="editor-header">
-                <h2>📊 積分賽排名管理</h2>
-                <button class="btn-save" id="save-players">同步全部分組積分至 GitHub</button>
+                <h2>📊 名單管理</h2>
+                <button class="btn-save" id="save-players">同步全部分組名單至 GitHub</button>
             </div>
             <div class="table-responsive">
                 <table id="edit-players-table">
                     <thead>
-                        <tr>
-                            <th>姓名</th><th>單位</th><th>分組</th><th>種子(1/0)</th><th>積分</th><th>勝</th><th>負</th><th>平</th>
+                        <tr id="players-table-head">
+                            <!-- Dynamic Head -->
                         </tr>
                     </thead>
                     <tbody id="edit-players-body"></tbody>
@@ -118,7 +127,7 @@
         <!-- Matches Editor -->
         <div class="data-editor hidden" id="matches-editor">
             <div class="editor-header">
-                <h2>🌿 淘汰賽賽程管理</h2>
+                <h2>🌿 賽程管理</h2>
                 <button class="btn-save" id="save-matches">同步全部分組賽程至 GitHub</button>
             </div>
             <div class="table-responsive">
@@ -146,12 +155,19 @@
         
         let fullPlayerData = [];
         let fullMatchData = [];
+        let currentAdminMode = 'Individual';
         let currentAdminGroup = 'Recurve-70m';
 
         // Attach event listeners
         document.getElementById('login-btn').addEventListener('click', checkAuth);
         document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
         document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
+        
+        document.getElementById('admin-mode-select').addEventListener('change', (e) => {
+            currentAdminMode = e.target.value;
+            loadCurrentData();
+        });
+        
         document.getElementById('admin-group-select').addEventListener('change', (e) => {
             currentAdminGroup = e.target.value;
             renderAllEditors();
@@ -167,46 +183,34 @@
             });
         });
 
-        // Also allow Enter key
-        document.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !document.getElementById('auth-overlay').classList.contains('hidden')) {
-                checkAuth();
-            }
-        });
-
         function checkAuth() {
             try {
                 const pass = document.getElementById('admin-pass').value.trim();
                 const token = document.getElementById('github-token').value.trim();
-                const isValidToken = token.length > 20; 
                 
-                if (pass === '1234') {
-                    if (isValidToken) {
-                        GITHUB_TOKEN = token;
-                        document.getElementById('auth-overlay').style.display = 'none';
-                        document.getElementById('admin-ui').classList.remove('hidden');
-                        loadCurrentData();
-                    } else {
-                        document.getElementById('auth-error').style.display = 'block';
-                        document.getElementById('auth-error').textContent = 'Token 長度不足';
-                    }
+                if (pass === '1234' && token.length > 20) {
+                    GITHUB_TOKEN = token;
+                    document.getElementById('auth-overlay').style.display = 'none';
+                    document.getElementById('admin-ui').classList.remove('hidden');
+                    loadCurrentData();
                 } else {
                     document.getElementById('auth-error').style.display = 'block';
-                    document.getElementById('auth-error').textContent = '密碼錯誤';
                 }
-            } catch (err) {
-                alert('登入錯誤: ' + err.message);
-            }
+            } catch (err) { alert(err.message); }
         }
 
         window.logout = () => location.reload();
 
         async function loadCurrentData() {
             try {
-                const pResp = await fetch('data/players.csv?t=' + Date.now());
+                showToast(`正在讀取 ${currentAdminMode} 數據...`);
+                const pFile = currentAdminMode === 'Individual' ? 'individual_players.csv' : 'team_players.csv';
+                const mFile = currentAdminMode === 'Individual' ? 'individual_matches.csv' : 'team_matches.csv';
+
+                const pResp = await fetch(`data/${pFile}?t=${Date.now()}`);
                 fullPlayerData = await handler.loadPlayers(await pResp.blob());
 
-                const mResp = await fetch('data/matches.csv?t=' + Date.now());
+                const mResp = await fetch(`data/${mFile}?t=${Date.now()}`);
                 fullMatchData = await handler.loadMatches(await mResp.blob());
                 
                 renderAllEditors();
@@ -216,7 +220,14 @@
         }
 
         function renderAllEditors() {
-            renderEditor('edit-players-body', fullPlayerData, ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']);
+            const playerKeys = currentAdminMode === 'Individual' 
+                ? ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']
+                : ['name', 'team', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws'];
+            
+            const head = document.getElementById('players-table-head');
+            head.innerHTML = playerKeys.map(k => `<th>${k === 'team' ? '隊伍' : k}</th>`).join('');
+
+            renderEditor('edit-players-body', fullPlayerData, playerKeys);
             renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
         }
 
@@ -306,8 +317,9 @@
                 const newData = type === 'players' ? fullPlayerData : fullMatchData;
 
                 const newCsv = Papa.unparse(newData);
-                const path = `data/${type}.csv`;
-                const prevPath = `data/${type}_prev.csv`;
+                const prefix = currentAdminMode === 'Individual' ? 'individual_' : 'team_';
+                const path = `data/${prefix}${type}.csv`;
+                const prevPath = `data/${prefix}${type}_prev.csv`;
                 
                 const currentFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
                     headers: { 'Authorization': authHeader }
