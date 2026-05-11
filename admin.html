@@ -102,11 +102,10 @@
             <div>
                 <label style="color: var(--text-secondary); font-weight: 600;">選擇分組：</label>
                 <select id="admin-group-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
-                    <option value="Recurve-70m">競技反曲弓 70m 公開組</option>
-                    <option value="Recurve-30m">競技反曲弓 30m 公開組</option>
-                    <option value="Traditional-30m">傳統弓 30m 公開組</option>
-                    <option value="Traditional-20m-Open">傳統弓 20m 公開組</option>
-                    <option value="Traditional-20m-Student">傳統弓 20m 學生組</option>
+                    <option value="反曲70">競技反曲弓 70m 公開組</option>
+                    <option value="反曲30">競技反曲弓 30m 公開組</option>
+                    <option value="傳統30">傳統弓 30m 公開組</option>
+                    <option value="傳統20">傳統弓 20m 公開組</option>
                 </select>
             </div>
         </div>
@@ -163,7 +162,7 @@
         let fullIndividualMatches = [];
         let fullTeamMatches = [];
         let currentAdminMode = 'Individual';
-        let currentAdminGroup = 'Recurve-70m';
+        let currentAdminGroup = '反曲70';
 
         // Attach event listeners
         document.getElementById('login-btn').addEventListener('click', checkAuth);
