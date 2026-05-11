@@ -155,12 +155,12 @@
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
-        let GITHUB_TOKEN = '';
         
         let fullIndividualData = [];
         let fullTeamData = [];
         let fullIndividualMatches = [];
         let fullTeamMatches = [];
+        let GITHUB_TOKEN = localStorage.getItem('github_token') || '';
         let currentAdminMode = 'Individual';
         let currentAdminGroup = '反曲70';
 
@@ -257,6 +257,7 @@
                 
                 if (pass === '1234' && token.length > 20) {
                     GITHUB_TOKEN = token;
+                    localStorage.setItem('github_token', token);
                     document.getElementById('auth-overlay').style.display = 'none';
                     document.getElementById('admin-ui').classList.remove('hidden');
                     loadCurrentData();
@@ -268,6 +269,13 @@
 
         window.logout = () => location.reload();
 
+        // Initialize UI with saved token
+        window.addEventListener('DOMContentLoaded', () => {
+            if (GITHUB_TOKEN) {
+                document.getElementById('github-token').value = GITHUB_TOKEN;
+            }
+        });
+        
         async function loadCurrentData() {
             try {
                 showToast(`正在讀取全場數據...`);
@@ -407,10 +415,8 @@
         }
 
         async function uploadToGithub(path, data) {
-            const tokenInput = document.getElementById('github-token').value.trim();
-            const token = tokenInput.replace(/[^\x00-\x7F]/g, "");
-            
-            if (!token) throw new Error('請輸入 GitHub Token');
+            const token = GITHUB_TOKEN;
+            if (!token) throw new Error('請先登入並輸入 GitHub Token');
 
             const owner = '687887s';
             const repo = 'archery_race';
