@@ -26,19 +26,19 @@ export class DataHandler {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, { type: 'array' });
-                    
+
                     if (readAll) {
                         const allData = {};
                         const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
-                        
+
                         workbook.SheetNames.forEach(name => {
                             const worksheet = workbook.Sheets[name];
                             let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-                            
+
                             let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
-                            
+
                             if (!foundHeader) {
-                                for (let skip = 1; skip <= 8; skip++) {
+                                for (let skip = 1; skip <= 15; skip++) {
                                     const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
                                     if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
                                         json = testJson;
@@ -54,12 +54,12 @@ export class DataHandler {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
                         const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
-                        
+
                         let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
                         let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
-                        
+
                         if (!foundHeader) {
-                            for (let skip = 1; skip <= 8; skip++) {
+                            for (let skip = 1; skip <= 15; skip++) {
                                 const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
                                 if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
                                     json = testJson;
@@ -120,27 +120,34 @@ export class DataHandler {
 
             if (sheetName.includes('對抗') || sheetName.includes('強')) {
                 const isTeam = sheetName.includes('團體');
-                const matchHeaders = ['對抗', '強', '場次', '選手', '姓名', '單位'];
                 
                 const mapped = rawData.map((m, idx) => {
-                    // Try to find ANY column that might contain player names if standard ones fail
-                    const allKeys = Object.keys(m);
-                    const playerCols = allKeys.filter(k => k.includes('選手') || k.includes('對抗') || k.includes('姓名'));
+                    // BRUTE FORCE: Extract all non-empty string values from the row to handle visual brackets
+                    const values = Object.values(m).map(v => v ? v.toString().trim() : '').filter(v => v.length > 1);
                     
-                    const p1 = this.getVal(m, ['player1', '選手1', '左側選手'], '');
-                    const p2 = this.getVal(m, ['player2', '選手2', '右側選手'], '');
+                    // Try to find standard fields first
+                    let p1 = this.getVal(m, ['player1', '選手1', '左側選手', '單位', '姓名'], '');
+                    let p2 = this.getVal(m, ['player2', '選手2', '右側選手'], '');
                     
-                    // Fallback to searching the first two columns that look like players if p1/p2 are empty
-                    const finalP1 = p1 || (playerCols[0] ? m[playerCols[0]] : 'TBD');
-                    const finalP2 = p2 || (playerCols[1] ? m[playerCols[1]] : 'TBD');
+                    // If standard mapping fails, take the first two strings that aren't numeric/IDs or round titles
+                    const filterTitles = (s) => s && !s.includes('對抗') && !s.includes('強') && !s.includes('淘汰') && !s.includes('組別');
+                    
+                    if (!p1) {
+                        const candidates = values.filter(filterTitles);
+                        p1 = candidates[0] || 'TBD';
+                        p2 = candidates[1] || 'TBD';
+                        
+                        // Heuristic for bracket sheets: sometimes names are at index 1 and 3 if cell merging is involved
+                        if (values.length >= 4 && p2 === 'TBD') p2 = values[2];
+                    }
 
                     return {
-                        matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx+1}`),
+                        matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx + 1}`),
                         type: isTeam ? 'Team' : 'Individual',
                         group: group,
-                        round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗'], '1/8'),
-                        player1: finalP1,
-                        player2: finalP2,
+                        round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗', '強'], '1/8'),
+                        player1: p1,
+                        player2: p2,
                         winner: this.getVal(m, ['winner', '勝者'], ''),
                         score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
                         score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
@@ -149,10 +156,10 @@ export class DataHandler {
                     };
                 });
                 
-                // Only push if it actually looks like a match row (at least one player isn't empty/TBD)
+                // Only push if it actually looks like a match row (player1 is a real name, not a header)
                 const validMatches = mapped.filter(m => 
-                    m.player1 && m.player1 !== 'TBD' && m.player1 !== '' &&
-                    (m.player2 || m.player1.length > 1) // Basic heuristic to avoid empty rows
+                    m.player1 && m.player1 !== 'TBD' && m.player1.length > 1 &&
+                    !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('組')
                 );
                 
                 if (isTeam) results.teamMatches.push(...validMatches);
@@ -207,7 +214,7 @@ export class DataHandler {
     async loadPlayers(file, isPrev = false) {
         const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
         const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
-        
+
         const mapped = data.map(p => {
             const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '個人');
             const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '單局成績'], 0)) || 0;
@@ -237,7 +244,7 @@ export class DataHandler {
     async loadMatches(file, isPrev = false) {
         const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
         const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
-        
+
         const mapped = data.map(m => ({
             matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號'], 'TBD'),
             type: this.getVal(m, ['type', '類型'], 'Individual'),
