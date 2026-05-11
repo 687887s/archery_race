@@ -55,36 +55,37 @@ export class DataHandler {
             });
     }
 
+    // Helper to find value by various possible keys
+    getVal(obj, keys, defaultVal = '') {
+        const foundKey = Object.keys(obj).find(k => {
+            const lowKey = k.toLowerCase().trim();
+            return keys.some(target => lowKey.includes(target.toLowerCase()));
+        });
+        return (foundKey !== undefined && obj[foundKey] !== null) ? obj[foundKey] : defaultVal;
+    }
+
     async loadPlayers(file, isPrev = false) {
         const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
         const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
         
         const mapped = data.map(p => {
-            const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
-            
-            const getVal = (row, keys) => {
-                const found = Object.keys(row).find(k => {
-                    const lowKey = k.toLowerCase().trim();
-                    return keys.some(target => lowKey.includes(target.toLowerCase()));
-                });
-                return found ? row[found] : 0;
-            };
+            const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '個人');
+            const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '第一場', 'score1', '單局成績'], 0)) || 0;
+            const r2 = parseInt(this.getVal(p, ['r2', 'round2', '第二輪', '第二場', 'score2'], 0)) || 0;
+            let total = parseInt(this.getVal(p, ['total', 'points', '總分', '積分', 'score', 'pts'], 0)) || 0;
 
-            const r1 = parseInt(getVal(p, ['r1', 'round1', '第一輪', '第一場', 'score1'])) || 0;
-            const r2 = parseInt(getVal(p, ['r2', 'round2', '第二輪', '第二場', 'score2'])) || 0;
-            let total = parseInt(getVal(p, ['total', 'points', '總分', '積分', 'score', 'pts'])) || 0;
-
-            // Fix: If total is 0, calculate it from r1 + r2
             if (total === 0) total = r1 + r2;
 
             return {
-                name: p.name,
+                name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
                 unit: unitVal,
-                team: p.team || unitVal,
-                group: p.group,
+                team: this.getVal(p, ['team', '隊伍', '小隊'], unitVal),
+                group: this.getVal(p, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
                 r1: r1,
                 r2: r2,
-                total: total
+                total: total,
+                xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
+                tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0
             };
         });
         if (isPrev) this.prevPlayers = mapped;
@@ -97,15 +98,16 @@ export class DataHandler {
         const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
         
         const mapped = data.map(m => ({
-            matchId: m.matchId,
-            type: m.type,
-            group: m.group,
-            round: parseInt(m.round) || 0,
-            player1: m.player1 || 'TBD',
-            player2: m.player2 || 'TBD',
-            winner: m.winner || '',
-            score1: m.score1 || '0',
-            score2: m.score2 || '0'
+            matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號'], 'TBD'),
+            type: this.getVal(m, ['type', '類型'], 'Individual'),
+            group: this.getVal(m, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
+            round: this.getVal(m, ['round', '輪次', '階段'], '1/8'),
+            player1: this.getVal(m, ['player1', '選手1', '左側選手'], 'TBD'),
+            player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
+            winner: this.getVal(m, ['winner', '勝者'], ''),
+            score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
+            score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
+            isSeed: this.getVal(m, ['isSeed', 'seed', '種子'], '0') === '1'
         }));
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
