@@ -75,7 +75,9 @@
                 <h1>第二屆長庚射箭公開邀請賽</h1>
                 <p style="color: var(--text-secondary)">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
-            <div style="display: flex; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <input type="file" id="csv-import" accept=".csv" style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 批量匯入 CSV</button>
                 <button class="upload-btn" onclick="logout()">登出</button>
                 <a href="index.html" class="upload-btn" style="text-decoration:none">返回前端</a>
             </div>
@@ -162,6 +164,45 @@
         document.getElementById('login-btn').addEventListener('click', checkAuth);
         document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
         document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
+        
+        // CSV Import Logic
+        document.getElementById('csv-import').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                showToast('正在解析 CSV...');
+                const activeTab = document.querySelector('.admin-tab.active').dataset.target;
+                
+                if (activeTab === 'players-editor') {
+                    const importedPlayers = await handler.loadPlayers(file);
+                    if (importedPlayers.length > 0) {
+                        // Check if the imported data has the current group
+                        const hasCurrentGroup = importedPlayers.some(p => p.group === currentAdminGroup);
+                        
+                        if (!hasCurrentGroup) {
+                            if (!confirm('匯入的資料中不包含目前選取的組別，是否仍要替換全部分組名單？')) return;
+                        }
+                        
+                        fullPlayerData = importedPlayers;
+                        showToast(`成功匯入 ${importedPlayers.length} 筆選手資料`);
+                    }
+                } else {
+                    const importedMatches = await handler.loadMatches(file);
+                    if (importedMatches.length > 0) {
+                        fullMatchData = importedMatches;
+                        showToast(`成功匯入 ${importedMatches.length} 筆賽程資料`);
+                    }
+                }
+                
+                renderAllEditors();
+                // Reset file input
+                e.target.value = '';
+            } catch (err) {
+                console.error(err);
+                showToast('匯入失敗：' + err.message, true);
+            }
+        });
         
         document.getElementById('admin-mode-select').addEventListener('change', (e) => {
             currentAdminMode = e.target.value;
