@@ -41,11 +41,9 @@ export class DataHandler {
                 unit: unitVal,
                 team: p.team || unitVal,
                 group: p.group,
-                isSeed: p.isSeed === '1' || p.isSeed === 'true',
-                points: parseInt(p.points) || 0,
-                wins: parseInt(p.wins) || 0,
-                losses: parseInt(p.losses) || 0,
-                draws: parseInt(p.draws) || 0
+                r1: parseInt(p.R1) || 0,
+                r2: parseInt(p.R2) || 0,
+                total: parseInt(p.Total) || 0
             };
         });
         if (isPrev) this.prevPlayers = mapped;
@@ -83,8 +81,8 @@ export class DataHandler {
 
     getRankings(group, isPrev = false) {
         return [...this.getFilteredPlayers(group, isPrev)].sort((a, b) => {
-            if (b.points !== a.points) return b.points - a.points;
-            if (b.wins !== a.wins) return b.wins - a.wins;
+            if (b.total !== a.total) return b.total - a.total;
+            if (b.r2 !== a.r2) return b.r2 - a.r2; // Tie-break with R2
             return a.name.localeCompare(b.name);
         });
     }

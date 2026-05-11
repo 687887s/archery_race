@@ -35,17 +35,14 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                 teams[p.team] = { 
                     name: p.team, 
                     unit: p.unit, 
-                    points: 0, wins: 0, losses: 0, draws: 0,
-                    isSeed: p.isSeed // If any member is seed, mark team? (optional)
+                    r1: 0, r2: 0, total: 0
                 };
             }
-            teams[p.team].points += p.points;
-            teams[p.team].wins += p.wins;
-            teams[p.team].losses += p.losses;
-            teams[p.team].draws += p.draws;
-            if (p.isSeed) teams[p.team].isSeed = true;
+            teams[p.team].r1 += p.r1;
+            teams[p.team].r2 += p.r2;
+            teams[p.team].total += p.total;
         });
-        displayData = Object.values(teams).sort((a, b) => b.points - a.points || b.wins - a.wins);
+        displayData = Object.values(teams).sort((a, b) => b.total - a.total || b.r2 - a.r2);
     } else {
         displayData = players;
     }
@@ -54,7 +51,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         const tr = document.createElement('tr');
         const prevPlayer = prevPlayers.find(p => (isTeam ? p.team : p.name) === (isTeam ? player.name : player.name)) || player;
 
-        const displayName = isTeam ? player.name : player.name; // In team mode, 'name' is the team name from aggregation
+        const displayName = isTeam ? player.name : player.name;
         const color = unitColors[player.unit] || stringToColor(player.unit);
 
         let unitStyle = '';
@@ -66,19 +63,17 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             <td>${index + 1}</td>
             <td ${unitStyle}>
                 ${displayName}
-                ${player.isSeed ? '<span class="seed-badge">SEED</span>' : ''}
             </td>
             <td>
                 <span class="unit-tag" style="background: ${color}22; color: ${color}; border-radius: 4px; padding: 2px 6px;">
                     ${player.unit}
                 </span>
             </td>
-            <td class="animate-number" data-start="${prevPlayer.points}" data-end="${player.points}" style="font-weight: bold; color: var(--accent-blue)">
-                ${player.points}
+            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}">${player.r1}</td>
+            <td class="animate-number" data-start="${prevPlayer.r2 || 0}" data-end="${player.r2}">${player.r2}</td>
+            <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-blue)">
+                ${player.total}
             </td>
-            <td class="animate-number" data-start="${prevPlayer.wins}" data-end="${player.wins}">${player.wins}</td>
-            <td class="animate-number" data-start="${prevPlayer.losses}" data-end="${player.losses}">${player.losses}</td>
-            <td class="animate-number" data-start="${prevPlayer.draws}" data-end="${player.draws}">${player.draws}</td>
         `;
         tbody.appendChild(tr);
     });

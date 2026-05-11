@@ -221,8 +221,8 @@
 
         function renderAllEditors() {
             const playerKeys = currentAdminMode === 'Individual' 
-                ? ['name', 'unit', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws']
-                : ['name', 'team', 'group', 'isSeed', 'points', 'wins', 'losses', 'draws'];
+                ? ['name', 'unit', 'group', 'R1', 'R2', 'Total']
+                : ['name', 'team', 'group', 'R1', 'R2', 'Total'];
             
             const head = document.getElementById('players-table-head');
             head.innerHTML = playerKeys.map(k => `<th>${k === 'team' ? '隊伍' : k}</th>`).join('');
