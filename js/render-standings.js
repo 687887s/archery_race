@@ -82,7 +82,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         `;
         tbody.appendChild(tr);
     });
-}
+
     // Start animation
     animateNumbers(tbody);
 }
