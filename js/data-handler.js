@@ -120,14 +120,15 @@ export class DataHandler {
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
             if (rawData.length === 0) continue;
             
-            // Skip sheets that don't match tournament keywords (e.g. Hidden Sheets, Notes, Registration)
-            if (!tournamentKeywords.some(k => sheetName.includes(k))) {
-                console.log(`Skipping non-tournament sheet: ${sheetName}`);
+            // Skip sheets that don't match tournament keywords or are known junk/hidden sheets
+            if (!tournamentKeywords.some(k => sheetName.includes(k)) || sheetName === '新公開女') {
+                console.log(`Skipping non-tournament or excluded sheet: ${sheetName}`);
                 continue;
             }
 
             let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
-            if (group === '新公開女') group = '反曲70';
+            // Group mapping cleanup
+            if (group === '新公開女') continue; // Extra safety
 
             if (sheetName.includes('對抗') || sheetName.includes('強')) {
                 const isTeam = sheetName.includes('團體');
