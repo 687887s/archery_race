@@ -23,16 +23,20 @@ export class DataHandler {
 
     async loadPlayers(file, isPrev = false) {
         const data = await this.parseCSV(file);
-        const mapped = data.map(p => ({
-            name: p.name,
-            unit: p.unit,
-            group: p.group,
-            isSeed: p.isSeed === '1' || p.isSeed === 'true',
-            points: parseInt(p.points) || 0,
-            wins: parseInt(p.wins) || 0,
-            losses: parseInt(p.losses) || 0,
-            draws: parseInt(p.draws) || 0
-        }));
+        const mapped = data.map(p => {
+            const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
+            return {
+                name: p.name,
+                unit: unitVal,
+                team: p.team || unitVal,
+                group: p.group,
+                isSeed: p.isSeed === '1' || p.isSeed === 'true',
+                points: parseInt(p.points) || 0,
+                wins: parseInt(p.wins) || 0,
+                losses: parseInt(p.losses) || 0,
+                draws: parseInt(p.draws) || 0
+            };
+        });
         if (isPrev) this.prevPlayers = mapped;
         else this.players = mapped;
         return mapped;

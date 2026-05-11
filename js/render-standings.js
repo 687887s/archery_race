@@ -23,10 +23,12 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         const tr = document.createElement('tr');
         const prevPlayer = prevPlayers.find(p => p.name === player.name) || player;
 
+        const displayName = isTeam ? player.team : player.unit;
+        const color = unitColors[player.unit] || stringToColor(player.unit);
+
         // Color coding for units in team mode
         let unitStyle = '';
         if (isTeam) {
-            const color = unitColors[player.unit] || stringToColor(player.unit);
             unitStyle = `style="border-left: 4px solid ${color}; padding-left: 10px;"`;
         }
 
@@ -37,8 +39,8 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                 ${player.isSeed ? '<span class="seed-badge">SEED</span>' : ''}
             </td>
             <td>
-                <span class="unit-tag" style="background: ${isTeam ? (unitColors[player.unit] || stringToColor(player.unit)) + '22' : 'transparent'}; color: ${isTeam ? (unitColors[player.unit] || stringToColor(player.unit)) : 'inherit'}; border-radius: 4px; padding: 2px 6px;">
-                    ${player.unit}
+                <span class="unit-tag" style="background: ${isTeam ? color + '22' : 'transparent'}; color: ${isTeam ? color : 'inherit'}; border-radius: 4px; padding: 2px 6px;">
+                    ${displayName}
                 </span>
             </td>
             <td class="animate-number" data-start="${prevPlayer.points}" data-end="${player.points}" style="font-weight: bold; color: var(--accent-blue)">
