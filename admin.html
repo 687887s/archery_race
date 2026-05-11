@@ -334,7 +334,7 @@
                         select.style.border = 'none';
 
                         if (key === 'group') {
-                            const groups = ['Recurve-70m', 'Recurve-30m', 'Traditional-30m', 'Traditional-20m-Open', 'Traditional-20m-Student'];
+                            const groups = ['反曲70', '反曲30', '傳統30', '傳統20'];
                             groups.forEach(g => {
                                 const opt = document.createElement('option');
                                 opt.value = g;
@@ -344,12 +344,16 @@
                                 select.appendChild(opt);
                             });
                         } else if (key === 'type') {
-                            ['Individual', 'Team'].forEach(t => {
+                            const types = [
+                                { val: 'Individual', label: '個人 (Individual)' },
+                                { val: 'Team', label: '團體 (Team)' }
+                            ];
+                            types.forEach(t => {
                                 const opt = document.createElement('option');
-                                opt.value = t;
-                                opt.textContent = t;
+                                opt.value = t.val;
+                                opt.textContent = t.label;
                                 opt.style.background = '#1e293b';
-                                if (t === val) opt.selected = true;
+                                if (t.val === val) opt.selected = true;
                                 select.appendChild(opt);
                             });
                         } else if (key === 'isSeed') {

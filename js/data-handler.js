@@ -127,15 +127,15 @@ export class DataHandler {
             }
 
             let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace('排名', '').replace('賽', '').replace(/\s*\d+強/g, '').trim();
-            
+
             // If the name becomes too short or empty after stripping, fall back to a safer version of the sheet name
             if (group.length < 2) {
                 group = sheetName.replace('分頁', '').replace('Sheet', '').trim();
             }
 
             const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
-            const isTeam = sheetName.includes('團體'); 
-            
+            const isTeam = sheetName.includes('團體');
+
             // Only skip known junk sheets or administrative names
             if (sheetName.includes('新公開女') || group === '' || group === '個人' || group === '團體') {
                 console.log(`Skipping excluded or administrative sheet: ${sheetName}`);
@@ -186,8 +186,13 @@ export class DataHandler {
                     !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('排名')
                 );
 
-                if (isTeam) results.teamMatches.push(...validMatches);
-                else results.individualMatches.push(...validMatches);
+                if (isTeam) {
+                    const teamMatchesWithType = validMatches.map(m => ({ ...m, type: 'Team' }));
+                    results.teamMatches.push(...teamMatchesWithType);
+                } else {
+                    const individualMatchesWithType = validMatches.map(m => ({ ...m, type: 'Individual' }));
+                    results.individualMatches.push(...individualMatchesWithType);
+                }
             } else if (sheetName.includes('團體')) {
                 // Process as Team Players
                 const mapped = rawData.map(p => {
