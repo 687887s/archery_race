@@ -134,9 +134,9 @@ groupSelector?.addEventListener('click', (e) => {
 // Auto-fetch logic
 async function autoFetchData() {
     try {
+        console.log('Fetching data for type:', currentType);
         showToast('正在獲取最新賽況...');
         
-        // Dynamic file selection based on currentType
         const pFile = currentType === 'Individual' ? 'individual_players.csv' : 'team_players.csv';
         const mFile = currentType === 'Individual' ? 'individual_matches.csv' : 'team_matches.csv';
         
@@ -145,11 +145,20 @@ async function autoFetchData() {
             fetch(`data/${mFile}?v=${Date.now()}`)
         ]);
 
-        if (pResp.ok) await handler.loadPlayers(await pResp.blob());
-        if (mResp.ok) await handler.loadMatches(await mResp.blob());
+        if (!pResp.ok || !mResp.ok) {
+            throw new Error(`Fetch failed: ${pFile} (${pResp.status}), ${mFile} (${mResp.status})`);
+        }
+
+        const pBlob = await pResp.blob();
+        const mBlob = await mResp.blob();
         
+        await handler.loadPlayers(pBlob);
+        await handler.loadMatches(mBlob);
+        
+        console.log('Data loaded successfully');
         updateView();
     } catch (err) {
+        console.error('Data Load Error:', err);
         showToast('載入數據失敗，請重新整理', true);
     }
 }
