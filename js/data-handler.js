@@ -29,18 +29,19 @@ export class DataHandler {
 
                     if (readAll) {
                         const allData = {};
-                        const potentialHeaders = ['姓', '名', '單', '位', '對', '抗', '選', '手', '編', '序', '場', '靶'];
-
+                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '總分', '靶位', '強', '淘汰'];
+                        
                         workbook.SheetNames.forEach(name => {
                             const worksheet = workbook.Sheets[name];
                             let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-                            let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
-
+                            
+                            // Require at least 2 keywords to be considered a header row
+                            let foundHeader = Object.keys(json[0] || {}).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 2;
+                            
                             if (!foundHeader) {
                                 for (let skip = 1; skip <= 15; skip++) {
                                     const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
-                                    if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
+                                    if (testJson.length > 0 && Object.keys(testJson[0]).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 2) {
                                         json = testJson;
                                         foundHeader = true;
                                         break;
@@ -53,15 +54,15 @@ export class DataHandler {
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
-                        const potentialHeaders = ['姓', '名', '單', '位', '對', '抗', '選', '手', '編', '序', '場', '靶'];
-
+                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '總分', '靶位', '強', '淘汰'];
+                        
                         let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-                        let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
-
+                        let foundHeader = Object.keys(json[0] || {}).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 2;
+                        
                         if (!foundHeader) {
                             for (let skip = 1; skip <= 15; skip++) {
                                 const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
-                                if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
+                                if (testJson.length > 0 && Object.keys(testJson[0]).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 2) {
                                     json = testJson;
                                     foundHeader = true;
                                     break;
