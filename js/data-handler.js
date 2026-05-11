@@ -24,12 +24,13 @@ export class DataHandler {
     async loadPlayers(file, isPrev = false) {
         const rawData = await this.parseCSV(file);
         
-        // Normalize keys (handle BOM and extra spaces)
+        // Normalize keys and values (handle BOM, spaces, and trimming)
         const data = rawData.map(row => {
             const newRow = {};
             Object.keys(row).forEach(key => {
                 const cleanKey = key.trim().replace(/^\uFEFF/, '');
-                newRow[cleanKey] = row[key];
+                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
+                newRow[cleanKey] = val;
             });
             return newRow;
         });
@@ -37,7 +38,6 @@ export class DataHandler {
         const mapped = data.map(p => {
             const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
             
-            // Find score keys case-insensitively
             const getVal = (row, keys) => {
                 const found = Object.keys(row).find(k => keys.includes(k.toLowerCase()));
                 return found ? row[found] : 0;
@@ -59,17 +59,28 @@ export class DataHandler {
     }
 
     async loadMatches(file, isPrev = false) {
-        const data = await this.parseCSV(file);
+        const rawData = await this.parseCSV(file);
+        
+        const data = rawData.map(row => {
+            const newRow = {};
+            Object.keys(row).forEach(key => {
+                const cleanKey = key.trim().replace(/^\uFEFF/, '');
+                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
+                newRow[cleanKey] = val;
+            });
+            return newRow;
+        });
+
         const mapped = data.map(m => ({
             matchId: m.matchId,
             type: m.type,
             group: m.group,
-            round: parseInt(m.round),
-            player1: m.player1,
-            player2: m.player2,
-            winner: m.winner,
-            score1: m.score1,
-            score2: m.score2
+            round: parseInt(m.round) || 0,
+            player1: m.player1 || 'TBD',
+            player2: m.player2 || 'TBD',
+            winner: m.winner || '',
+            score1: m.score1 || '0',
+            score2: m.score2 || '0'
         }));
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
