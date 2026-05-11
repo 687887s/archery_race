@@ -136,9 +136,9 @@ export class DataHandler {
             const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
             const isTeam = sheetName.includes('團體'); 
             
-            // Only skip known junk sheets
-            if (sheetName.includes('新公開女') || group === '') {
-                console.log(`Skipping excluded or empty sheet: ${sheetName}`);
+            // Only skip known junk sheets or administrative names
+            if (sheetName.includes('新公開女') || group === '' || group === '個人' || group === '團體') {
+                console.log(`Skipping excluded or administrative sheet: ${sheetName}`);
                 continue;
             }
 
@@ -221,7 +221,7 @@ export class DataHandler {
                     if (!name || name === '') {
                         const nameCandidates = allVals.filter(v => !v.includes('對抗') && !v.includes('賽') && !/^\d+$/.test(v));
                         name = nameCandidates[0] || '';
-                        if (!unit) unit = nameCandidates[1] || '個人';
+                        if (!unit) unit = nameCandidates[1] || '-';
                     }
 
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績', '成績'], 0)) || 0;
@@ -236,7 +236,7 @@ export class DataHandler {
                         const nameBlacklist = ['對抗', '賽', '名單', '單位', '裁判', '長', '日期', '備註', '組別', '成績', '排名'];
                         const nameCandidates = allVals.filter(v => !nameBlacklist.some(b => v.includes(b)) && !/^\d+$/.test(v));
                         name = nameCandidates[0] || '';
-                        if (!unit) unit = nameCandidates[1] || '個人';
+                        if (!unit) unit = nameCandidates[1] || '-';
                     }
 
                     return {
@@ -251,7 +251,7 @@ export class DataHandler {
                         xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
                         tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
                         group: group,
-                        team: unit || '個人'
+                        team: unit || '-'
                     };
                 }).filter(p => p.name && p.name.length >= 2 && (parseInt(p.total) > 0 || p.target !== ''));
                 results.individual.push(...mapped);
@@ -265,7 +265,7 @@ export class DataHandler {
         const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
 
         const mapped = data.map(p => {
-            const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '個人');
+            const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '-');
             const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '單局成績'], 0)) || 0;
             let total = parseInt(this.getVal(p, ['total', 'points', '總分', '積分'], 0)) || 0;
             if (total === 0) total = r1; // Fallback to r1 if total is not set
