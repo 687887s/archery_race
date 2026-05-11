@@ -10,9 +10,21 @@ export class DataHandler {
         return new Promise((resolve, reject) => {
             Papa.parse(file, {
                 header: true,
-                skipEmptyLines: true,
+                skipEmptyLines: 'greedy', // More aggressive skip
                 complete: (results) => {
-                    resolve(results.data);
+                    // Universal Normalization for both FE and Admin
+                    const cleanData = results.data
+                        .filter(row => Object.values(row).some(v => v && v.toString().trim() !== ''))
+                        .map(row => {
+                            const newRow = {};
+                            Object.keys(row).forEach(key => {
+                                const cleanKey = key.trim().replace(/^\uFEFF/, '');
+                                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
+                                newRow[cleanKey] = val;
+                            });
+                            return newRow;
+                        });
+                    resolve(cleanData);
                 },
                 error: (error) => {
                     reject(error);
@@ -22,19 +34,7 @@ export class DataHandler {
     }
 
     async loadPlayers(file, isPrev = false) {
-        const rawData = await this.parseCSV(file);
-        
-        // Normalize keys and values (handle BOM, spaces, and trimming)
-        const data = rawData.map(row => {
-            const newRow = {};
-            Object.keys(row).forEach(key => {
-                const cleanKey = key.trim().replace(/^\uFEFF/, '');
-                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
-                newRow[cleanKey] = val;
-            });
-            return newRow;
-        });
-
+        const data = await this.parseCSV(file);
         const mapped = data.map(p => {
             const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
             
@@ -59,18 +59,7 @@ export class DataHandler {
     }
 
     async loadMatches(file, isPrev = false) {
-        const rawData = await this.parseCSV(file);
-        
-        const data = rawData.map(row => {
-            const newRow = {};
-            Object.keys(row).forEach(key => {
-                const cleanKey = key.trim().replace(/^\uFEFF/, '');
-                const val = typeof row[key] === 'string' ? row[key].trim() : row[key];
-                newRow[cleanKey] = val;
-            });
-            return newRow;
-        });
-
+        const data = await this.parseCSV(file);
         const mapped = data.map(m => ({
             matchId: m.matchId,
             type: m.type,
