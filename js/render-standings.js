@@ -17,16 +17,46 @@ const unitColors = {
 
 export function renderStandings(containerId, players, prevPlayers = [], isTeam = false) {
     const tbody = document.getElementById(containerId);
+    const headName = document.getElementById('head-name');
+    const headUnit = document.getElementById('head-unit');
+    
     tbody.innerHTML = '';
+    
+    // Update headers based on mode
+    if (headName) headName.textContent = isTeam ? '分隊名稱' : '選手姓名';
+    if (headUnit) headUnit.textContent = isTeam ? '所屬單位' : '參賽單位';
 
-    players.forEach((player, index) => {
+    let displayData = [];
+    if (isTeam) {
+        // Aggregate by team
+        const teams = {};
+        players.forEach(p => {
+            if (!teams[p.team]) {
+                teams[p.team] = { 
+                    name: p.team, 
+                    unit: p.unit, 
+                    points: 0, wins: 0, losses: 0, draws: 0,
+                    isSeed: p.isSeed // If any member is seed, mark team? (optional)
+                };
+            }
+            teams[p.team].points += p.points;
+            teams[p.team].wins += p.wins;
+            teams[p.team].losses += p.losses;
+            teams[p.team].draws += p.draws;
+            if (p.isSeed) teams[p.team].isSeed = true;
+        });
+        displayData = Object.values(teams).sort((a, b) => b.points - a.points || b.wins - a.wins);
+    } else {
+        displayData = players;
+    }
+
+    displayData.forEach((player, index) => {
         const tr = document.createElement('tr');
-        const prevPlayer = prevPlayers.find(p => p.name === player.name) || player;
+        const prevPlayer = prevPlayers.find(p => (isTeam ? p.team : p.name) === (isTeam ? player.name : player.name)) || player;
 
-        const displayName = isTeam ? player.team : player.unit;
+        const displayName = isTeam ? player.name : player.name; // In team mode, 'name' is the team name from aggregation
         const color = unitColors[player.unit] || stringToColor(player.unit);
 
-        // Color coding for units in team mode
         let unitStyle = '';
         if (isTeam) {
             unitStyle = `style="border-left: 4px solid ${color}; padding-left: 10px;"`;
@@ -35,24 +65,24 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         tr.innerHTML = `
             <td>${index + 1}</td>
             <td ${unitStyle}>
-                ${player.name}
+                ${displayName}
                 ${player.isSeed ? '<span class="seed-badge">SEED</span>' : ''}
             </td>
             <td>
-                <span class="unit-tag" style="background: ${isTeam ? color + '22' : 'transparent'}; color: ${isTeam ? color : 'inherit'}; border-radius: 4px; padding: 2px 6px;">
-                    ${displayName}
+                <span class="unit-tag" style="background: ${color}22; color: ${color}; border-radius: 4px; padding: 2px 6px;">
+                    ${player.unit}
                 </span>
             </td>
             <td class="animate-number" data-start="${prevPlayer.points}" data-end="${player.points}" style="font-weight: bold; color: var(--accent-blue)">
-                ${prevPlayer.points}
+                ${player.points}
             </td>
-            <td class="animate-number" data-start="${prevPlayer.wins}" data-end="${player.wins}">${prevPlayer.wins}</td>
-            <td class="animate-number" data-start="${prevPlayer.losses}" data-end="${player.losses}">${prevPlayer.losses}</td>
-            <td class="animate-number" data-start="${prevPlayer.draws}" data-end="${player.draws}">${prevPlayer.draws}</td>
+            <td class="animate-number" data-start="${prevPlayer.wins}" data-end="${player.wins}">${player.wins}</td>
+            <td class="animate-number" data-start="${prevPlayer.losses}" data-end="${player.losses}">${player.losses}</td>
+            <td class="animate-number" data-start="${prevPlayer.draws}" data-end="${player.draws}">${player.draws}</td>
         `;
         tbody.appendChild(tr);
     });
-
+}
     // Start animation
     animateNumbers(tbody);
 }

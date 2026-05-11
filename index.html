@@ -11,17 +11,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.0.4">
+    <link rel="stylesheet" href="css/style.css?v=1.0.8">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body class="dark-theme">
     <div class="app-container">
         <!-- Menu Toggle (Mobile & Desktop) -->
         <button id="menu-toggle" class="menu-toggle">☰</button>
-
+        
         <!-- Sidebar Overlay -->
         <div id="sidebar-overlay" class="sidebar-overlay hidden"></div>
-
+        
         <!-- Sidebar -->
         <aside class="sidebar collapsed" id="main-sidebar">
             <div class="logo">
@@ -52,7 +52,7 @@
                 </div>
             </nav>
             <div class="sidebar-footer">
-                <p>Real-time Updates v1.0</p>
+                <p>Real-time Updates v1.0.8</p>
             </div>
         </aside>
 
@@ -72,43 +72,36 @@
             </header>
 
             <section class="content-area" id="content-standings">
-                <!-- Standings Table will be rendered here -->
                 <div class="card glass">
                     <div class="table-responsive">
                         <table id="standings-table">
                             <thead>
-                                <tr>
+                                <tr id="standings-head">
                                     <th>排名</th>
-                                    <th>姓名</th>
-                                    <th>單位</th>
+                                    <th id="head-name">姓名</th>
+                                    <th id="head-unit">單位</th>
                                     <th>積分</th>
                                     <th>勝</th>
                                     <th>負</th>
                                     <th>平</th>
                                 </tr>
                             </thead>
-                            <tbody id="standings-body">
-                                <!-- Dynamic Content -->
-                            </tbody>
+                            <tbody id="standings-body"></tbody>
                         </table>
                     </div>
                 </div>
             </section>
 
             <section class="content-area hidden" id="content-bracket">
-                <!-- Bracket Tree will be rendered here -->
                 <div class="bracket-wrapper">
-                    <div id="bracket-container" class="bracket">
-                        <!-- Dynamic SVG/HTML Bracket -->
-                    </div>
+                    <div id="bracket-container" class="bracket"></div>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="toast"></div>
 
-    <script type="module" src="js/app.js?v=1.0.2"></script>
+    <script type="module" src="js/app.js?v=1.0.8"></script>
 </body>
 </html>
