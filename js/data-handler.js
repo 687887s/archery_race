@@ -22,7 +22,18 @@ export class DataHandler {
     }
 
     async loadPlayers(file, isPrev = false) {
-        const data = await this.parseCSV(file);
+        const rawData = await this.parseCSV(file);
+        
+        // Normalize keys (handle BOM and extra spaces)
+        const data = rawData.map(row => {
+            const newRow = {};
+            Object.keys(row).forEach(key => {
+                const cleanKey = key.trim().replace(/^\uFEFF/, '');
+                newRow[cleanKey] = row[key];
+            });
+            return newRow;
+        });
+
         const mapped = data.map(p => {
             const unitVal = p.unit || (p.team ? p.team.split(' ')[0] : '個人');
             return {
