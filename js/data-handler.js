@@ -30,14 +30,14 @@ export class DataHandler {
                     if (readAll) {
                         const allData = {};
                         const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '總分', '靶位', '強', '淘汰'];
-                        
+
                         workbook.SheetNames.forEach(name => {
                             const worksheet = workbook.Sheets[name];
                             let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-                            
+
                             // Require at least 1 keyword to be considered a header row
                             let foundHeader = Object.keys(json[0] || {}).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 1;
-                            
+
                             if (!foundHeader) {
                                 for (let skip = 1; skip <= 15; skip++) {
                                     const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
@@ -55,10 +55,10 @@ export class DataHandler {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
                         const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '總分', '靶位', '強', '淘汰'];
-                        
+
                         let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
                         let foundHeader = Object.keys(json[0] || {}).filter(k => potentialHeaders.some(p => k.includes(p))).length >= 1;
-                        
+
                         if (!foundHeader) {
                             for (let skip = 1; skip <= 15; skip++) {
                                 const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
@@ -119,29 +119,38 @@ export class DataHandler {
 
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
             if (rawData.length === 0) continue;
-            
+
             // Skip sheets that don't match tournament keywords or are known junk/hidden sheets
             if (!tournamentKeywords.some(k => sheetName.includes(k)) || sheetName === '新公開女') {
                 console.log(`Skipping non-tournament or excluded sheet: ${sheetName}`);
                 continue;
             }
 
-            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
-            // Group mapping cleanup
-            if (group === '新公開女') continue; // Extra safety
+            let group = sheetName.replace('個人', '').replace('對抗', '').replace(/\s*\d+強/g, '').trim();
+            // classification priority
+            const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
+            const isTeam = sheetName.includes('團體') && !sheetName.includes('個人'); 
+            
+            // Re-check group name: if it becomes empty or just '團體'/'個人' after stripping, skip it
+            if (group === '' || group === '個人' || group === '團體' || group.includes('新公開女')) {
+                console.log(`Skipping invalid or administrative sheet: ${sheetName}`);
+                continue;
+            }
 
-            if (sheetName.includes('對抗') || sheetName.includes('強')) {
-                const isTeam = sheetName.includes('團體');
-                
+            if (isTeam && !group.includes('團體')) group += ' 團體';
+
+            if (isMatch) {
+                const actualIsTeam = sheetName.includes('團體');
+
                 const mapped = rawData.map((m, idx) => {
                     // BRUTE FORCE: Extract all strings from the row
                     const allKeys = Object.keys(m);
                     const values = allKeys.map(k => m[k] ? m[k].toString().trim() : '').filter(v => v.length >= 2);
-                    
+
                     // Filter out round titles and header-like text
                     const filterGarbage = (s) => s && !s.includes('對抗') && !s.includes('強') && !s.includes('淘汰') && !s.includes('組') && !s.includes('分') && !/^\d+$/.test(s);
                     const candidates = values.filter(filterGarbage);
-                    
+
                     let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
                     let p2 = 'TBD';
 
@@ -167,13 +176,13 @@ export class DataHandler {
                         isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
                     };
                 });
-                
+
                 // Only push if it actually looks like a match row (player1 is a real name)
-                const validMatches = mapped.filter(m => 
+                const validMatches = mapped.filter(m =>
                     m.player1 && m.player1 !== 'TBD' && m.player1.length >= 2 &&
                     !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('排名')
                 );
-                
+
                 if (isTeam) results.teamMatches.push(...validMatches);
                 else results.individualMatches.push(...validMatches);
             } else if (sheetName.includes('團體')) {
@@ -201,10 +210,10 @@ export class DataHandler {
                 // Process as Individual Players
                 const mapped = rawData.map((p, idx) => {
                     const allVals = Object.values(p).map(v => v ? v.toString().trim() : '').filter(v => v.length >= 2);
-                    
+
                     let name = this.getVal(p, ['name', '姓名', '選手'], '');
                     let unit = this.getVal(p, ['unit', '單位', '代表單位'], '');
-                    
+
                     // Brute force fallback for Individual names
                     if (!name || name === '') {
                         const nameCandidates = allVals.filter(v => !v.includes('對抗') && !v.includes('賽') && !/^\d+$/.test(v));
@@ -218,7 +227,7 @@ export class DataHandler {
 
                     // VALIDATION: In ranking sheets, a real player MUST have at least one score or a target
                     const hasData = r1 > 0 || r2 > 0 || total > 0;
-                    
+
                     // Brute force fallback for Individual names
                     if (!name || name === '') {
                         const nameBlacklist = ['對抗', '賽', '名單', '單位', '裁判', '長', '日期', '備註', '組別', '成績', '排名'];
