@@ -29,15 +29,23 @@ export class DataHandler {
                     
                     if (readAll) {
                         const allData = {};
+                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
+                        
                         workbook.SheetNames.forEach(name => {
                             const worksheet = workbook.Sheets[name];
-                            // Using header: 1 to help find the real header row manually if needed, 
-                            // but for now we'll try to find the row containing '姓名' or '單位'
                             let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
                             
-                            // If the first row isn't the header, try to re-parse with skip
-                            if (json.length > 0 && !Object.keys(json[0]).some(k => k.includes('姓名') || k.includes('單位') || k.includes('對抗'))) {
-                                json = XLSX.utils.sheet_to_json(worksheet, { range: 2, defval: "" }); // Skip title rows
+                            let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
+                            
+                            if (!foundHeader) {
+                                for (let skip = 1; skip <= 8; skip++) {
+                                    const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
+                                    if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
+                                        json = testJson;
+                                        foundHeader = true;
+                                        break;
+                                    }
+                                }
                             }
                             allData[name] = this.normalizeData(json);
                         });
@@ -45,9 +53,20 @@ export class DataHandler {
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
+                        const potentialHeaders = ['姓名', '單位', '對抗', '選手', '編號', '成績', '場次', '靶位'];
+                        
                         let json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-                        if (json.length > 0 && !Object.keys(json[0]).some(k => k.includes('姓名') || k.includes('單位'))) {
-                            json = XLSX.utils.sheet_to_json(worksheet, { range: 2, defval: "" });
+                        let foundHeader = Object.keys(json[0] || {}).some(k => potentialHeaders.some(p => k.includes(p)));
+                        
+                        if (!foundHeader) {
+                            for (let skip = 1; skip <= 8; skip++) {
+                                const testJson = XLSX.utils.sheet_to_json(worksheet, { range: skip, defval: "" });
+                                if (testJson.length > 0 && Object.keys(testJson[0]).some(k => potentialHeaders.some(p => k.includes(p)))) {
+                                    json = testJson;
+                                    foundHeader = true;
+                                    break;
+                                }
+                            }
                         }
                         resolve(this.normalizeData(json));
                     }
@@ -94,28 +113,30 @@ export class DataHandler {
         };
 
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
-            if (rawData.length === 0 || sheetName.includes('強')) continue;
+            if (rawData.length === 0) continue;
 
-            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').trim();
+            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
             if (group === '新公開女') group = '反曲70';
 
-            if (sheetName.includes('對抗')) {
+            if (sheetName.includes('對抗') || sheetName.includes('強')) {
                 const isTeam = sheetName.includes('團體');
-                const mapped = rawData.map(m => ({
-                    matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號'], 'TBD'),
+                const mapped = rawData.map((m, idx) => ({
+                    matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx+1}`),
                     type: isTeam ? 'Team' : 'Individual',
                     group: group,
-                    round: this.getVal(m, ['round', '輪次', '階段'], '1/8'),
-                    player1: this.getVal(m, ['player1', '選手1'], 'TBD'),
-                    player2: this.getVal(m, ['player2', '選手2'], 'TBD'),
+                    round: this.getVal(m, ['round', '輪次', '階段', '1/16', '1/8', '1/4', '1/2'], '1/8'),
+                    player1: this.getVal(m, ['player1', '選手1', '左側選手'], 'TBD'),
+                    player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
                     winner: this.getVal(m, ['winner', '勝者'], ''),
                     score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
                     score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
                     target: this.getVal(m, ['target', '靶位', '靶號'], ''),
                     isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
                 }));
-                if (isTeam) results.teamMatches.push(...mapped.filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD'));
-                else results.individualMatches.push(...mapped.filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD'));
+                // Only push if there's at least one player or it looks like a match
+                const validMatches = mapped.filter(m => (m.player1 !== 'TBD' || m.player2 !== 'TBD') && m.matchId !== 'TBD');
+                if (isTeam) results.teamMatches.push(...validMatches);
+                else results.individualMatches.push(...validMatches);
             } else if (sheetName.includes('團體')) {
                 // Process as Team Players
                 const mapped = rawData.map(p => {

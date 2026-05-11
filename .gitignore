@@ -1,6 +1,7 @@
 *.pdf
+*.xlsx
+*.txt
 .DS_Store
 node_modules/
 dist/
 .env
-.xlsx
