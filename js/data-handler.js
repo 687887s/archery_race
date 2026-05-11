@@ -120,21 +120,41 @@ export class DataHandler {
 
             if (sheetName.includes('對抗') || sheetName.includes('強')) {
                 const isTeam = sheetName.includes('團體');
-                const mapped = rawData.map((m, idx) => ({
-                    matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx+1}`),
-                    type: isTeam ? 'Team' : 'Individual',
-                    group: group,
-                    round: this.getVal(m, ['round', '輪次', '階段', '1/16', '1/8', '1/4', '1/2'], '1/8'),
-                    player1: this.getVal(m, ['player1', '選手1', '左側選手'], 'TBD'),
-                    player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
-                    winner: this.getVal(m, ['winner', '勝者'], ''),
-                    score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
-                    score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
-                    target: this.getVal(m, ['target', '靶位', '靶號'], ''),
-                    isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
-                }));
-                // Only push if there's at least one player or it looks like a match
-                const validMatches = mapped.filter(m => (m.player1 !== 'TBD' || m.player2 !== 'TBD') && m.matchId !== 'TBD');
+                const matchHeaders = ['對抗', '強', '場次', '選手', '姓名', '單位'];
+                
+                const mapped = rawData.map((m, idx) => {
+                    // Try to find ANY column that might contain player names if standard ones fail
+                    const allKeys = Object.keys(m);
+                    const playerCols = allKeys.filter(k => k.includes('選手') || k.includes('對抗') || k.includes('姓名'));
+                    
+                    const p1 = this.getVal(m, ['player1', '選手1', '左側選手'], '');
+                    const p2 = this.getVal(m, ['player2', '選手2', '右側選手'], '');
+                    
+                    // Fallback to searching the first two columns that look like players if p1/p2 are empty
+                    const finalP1 = p1 || (playerCols[0] ? m[playerCols[0]] : 'TBD');
+                    const finalP2 = p2 || (playerCols[1] ? m[playerCols[1]] : 'TBD');
+
+                    return {
+                        matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx+1}`),
+                        type: isTeam ? 'Team' : 'Individual',
+                        group: group,
+                        round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗'], '1/8'),
+                        player1: finalP1,
+                        player2: finalP2,
+                        winner: this.getVal(m, ['winner', '勝者'], ''),
+                        score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
+                        score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
+                        target: this.getVal(m, ['target', '靶位', '靶號'], ''),
+                        isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
+                    };
+                });
+                
+                // Only push if it actually looks like a match row (at least one player isn't empty/TBD)
+                const validMatches = mapped.filter(m => 
+                    m.player1 && m.player1 !== 'TBD' && m.player1 !== '' &&
+                    (m.player2 || m.player1.length > 1) // Basic heuristic to avoid empty rows
+                );
+                
                 if (isTeam) results.teamMatches.push(...validMatches);
                 else results.individualMatches.push(...validMatches);
             } else if (sheetName.includes('團體')) {
