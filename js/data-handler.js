@@ -114,16 +114,17 @@ export class DataHandler {
                     target: this.getVal(m, ['target', '靶位', '靶號'], ''),
                     isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
                 }));
-                if (isTeam) results.teamMatches.push(...mapped);
-                else results.individualMatches.push(...mapped);
+                if (isTeam) results.teamMatches.push(...mapped.filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD'));
+                else results.individualMatches.push(...mapped.filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD'));
             } else if (sheetName.includes('團體')) {
+                // Process as Team Players
                 const mapped = rawData.map(p => {
                     const unitVal = this.getVal(p, ['unit', '單位', '參賽單位'], '未知');
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績'], 0)) || 0;
                     return {
                         id: this.getVal(p, ['id', '編號'], ''),
                         unit: unitVal,
-                        name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
+                        name: this.getVal(p, ['name', '姓名', '選手'], ''),
                         target: this.getVal(p, ['target', '靶位'], ''),
                         r1: r1,
                         r2: parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0,
@@ -134,16 +135,17 @@ export class DataHandler {
                         group: group,
                         team: this.getVal(p, ['team', '隊伍'], unitVal)
                     };
-                });
+                }).filter(p => p.name && p.name.trim() !== '' && p.name !== '未知');
                 results.team.push(...mapped);
             } else {
+                // Process as Individual Players
                 const mapped = rawData.map(p => {
                     const unitVal = this.getVal(p, ['unit', '單位'], '未知');
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績'], 0)) || 0;
                     return {
                         id: this.getVal(p, ['id', '編號'], ''),
                         unit: unitVal,
-                        name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
+                        name: this.getVal(p, ['name', '姓名', '選手'], ''),
                         target: this.getVal(p, ['target', '靶位'], ''),
                         r1: r1,
                         r2: parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0,
@@ -154,7 +156,7 @@ export class DataHandler {
                         group: group,
                         team: unitVal
                     };
-                });
+                }).filter(p => p.name && p.name.trim() !== '' && p.name !== '未知');
                 results.individual.push(...mapped);
             }
         }
@@ -174,7 +176,7 @@ export class DataHandler {
             return {
                 id: this.getVal(p, ['id', '編號', '序號'], ''),
                 unit: unitVal,
-                name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
+                name: this.getVal(p, ['name', '姓名', '選手'], ''),
                 target: this.getVal(p, ['target', '靶位', '靶號'], ''),
                 r1: r1,
                 r2: parseInt(this.getVal(p, ['r2', 'round2', '第二輪'], 0)) || 0,
@@ -185,7 +187,7 @@ export class DataHandler {
                 group: this.getVal(p, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
                 team: this.getVal(p, ['team', '隊伍'], unitVal)
             };
-        });
+        }).filter(p => p.name && p.name.trim() !== '' && p.name !== '未知');
         if (isPrev) this.prevPlayers = mapped;
         else this.players = mapped;
         return mapped;
@@ -207,7 +209,7 @@ export class DataHandler {
             score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
             target: this.getVal(m, ['target', '靶位', '靶號'], ''),
             isSeed: this.getVal(m, ['isSeed', 'seed', '種子'], '0') === '1'
-        }));
+        })).filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD');
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
         return mapped;
