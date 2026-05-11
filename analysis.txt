@@ -1,0 +1,52 @@
+--- ANALYSIS ---
+Sheet: 傳統20
+Cols: 傳統弓20公尺公開組  個人排名賽, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8
+
+Sheet: 傳統20 16強
+Cols: Unnamed: 0, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9, Unnamed: 10, Unnamed: 11, Unnamed: 12, Unnamed: 13, Unnamed: 14, Unnamed: 15, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, Unnamed: 25, Unnamed: 26, Unnamed: 27, Unnamed: 28, Unnamed: 29, Unnamed: 30, Unnamed: 31, Unnamed: 32, Unnamed: 33
+
+Sheet: 傳統20團體
+Cols: Unnamed: 0, 傳統弓20公尺公開組  團體排名, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9
+
+Sheet: 傳統20團體對抗
+Cols: 1, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, 1/4對抗賽, Unnamed: 8, Unnamed: 9, Unnamed: 10, 1/2對抗賽, Unnamed: 12, Unnamed: 13, Unnamed: 14, 傳統弓20公尺公開組  團體對抗表, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, 1/2對抗賽.1, Unnamed: 26, Unnamed: 27, Unnamed: 28, 1/4對抗賽.1, Unnamed: 30, Unnamed: 31, Unnamed: 32
+
+Sheet: 傳統30
+Cols: 傳統弓30公尺公開組  個人排名賽, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8
+
+Sheet: 傳統30 16強
+Cols: Unnamed: 0, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9, Unnamed: 10, Unnamed: 11, Unnamed: 12, Unnamed: 13, Unnamed: 14, Unnamed: 15, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, Unnamed: 25, Unnamed: 26, Unnamed: 27, Unnamed: 28, Unnamed: 29, Unnamed: 30, Unnamed: 31, Unnamed: 32, Unnamed: 33
+
+Sheet: 傳統30團體
+Cols: Unnamed: 0, 傳統弓30公尺公開組  團體排名, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9
+
+Sheet: 傳統30團體對抗
+Cols: 1, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, 1/4對抗賽, Unnamed: 8, Unnamed: 9, Unnamed: 10, 1/2對抗賽, Unnamed: 12, Unnamed: 13, Unnamed: 14, 傳統弓30公尺公開組  團體對抗表, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, 1/2對抗賽.1, Unnamed: 26, Unnamed: 27, Unnamed: 28, 1/4對抗賽.1, Unnamed: 30, Unnamed: 31, Unnamed: 32
+
+Sheet: 反曲30
+Cols: 反曲弓30公尺公開組  個人排名賽, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8
+
+Sheet: 反曲30 16強
+Cols: Unnamed: 0, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9, Unnamed: 10, Unnamed: 11, Unnamed: 12, Unnamed: 13, Unnamed: 14, Unnamed: 15, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, Unnamed: 25, Unnamed: 26, Unnamed: 27, Unnamed: 28, Unnamed: 29, Unnamed: 30, Unnamed: 31, Unnamed: 32, Unnamed: 33
+
+Sheet: 反曲30團體
+Cols: Unnamed: 0, 反曲弓30公尺公開組  團體排名, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9
+
+Sheet: 反曲30團體對抗
+Cols: 1, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, 1/4對抗賽, Unnamed: 8, Unnamed: 9, Unnamed: 10, 1/2對抗賽, Unnamed: 12, Unnamed: 13, Unnamed: 14, 反曲弓30公尺公開組  團體對抗表, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, 1/2對抗賽.1, Unnamed: 26, Unnamed: 27, Unnamed: 28, 1/4對抗賽.1, Unnamed: 30, Unnamed: 31, Unnamed: 32
+
+Sheet: 反曲70
+Cols: 反曲弓70公尺公開組  個人排名賽, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8
+
+Sheet: 反曲70 16強
+Cols: Unnamed: 0, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9, Unnamed: 10, Unnamed: 11, Unnamed: 12, Unnamed: 13, Unnamed: 14, Unnamed: 15, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, Unnamed: 25, Unnamed: 26, Unnamed: 27, Unnamed: 28, Unnamed: 29, Unnamed: 30, Unnamed: 31, Unnamed: 32, Unnamed: 33
+
+Sheet: 反曲70團體
+Cols: Unnamed: 0, 反曲弓70公尺公開組  團體排名, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9
+
+Sheet: 反曲70團體對抗
+Cols: 1, Unnamed: 1, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, 1/4對抗賽, Unnamed: 8, Unnamed: 9, Unnamed: 10, 1/2對抗賽, Unnamed: 12, Unnamed: 13, Unnamed: 14, 反曲弓70公尺公開組  團體對抗表, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, 1/2對抗賽.1, Unnamed: 26, Unnamed: 27, Unnamed: 28, 1/4對抗賽.1, Unnamed: 30, Unnamed: 31, Unnamed: 32
+
+Sheet: 新公開女
+Cols: Unnamed: 0, 反曲弓公開女子組, Unnamed: 2, Unnamed: 3, Unnamed: 4, Unnamed: 5, Unnamed: 6, Unnamed: 7, Unnamed: 8, Unnamed: 9, Unnamed: 10, Unnamed: 11, Unnamed: 12, Unnamed: 13, Unnamed: 14, Unnamed: 15, Unnamed: 16, Unnamed: 17, Unnamed: 18, Unnamed: 19, Unnamed: 20, Unnamed: 21, Unnamed: 22, Unnamed: 23, Unnamed: 24, Unnamed: 25, Unnamed: 26, Unnamed: 27, Unnamed: 28, Unnamed: 29, Unnamed: 30, Unnamed: 31, Unnamed: 32, Unnamed: 33, Unnamed: 34, Unnamed: 35, Unnamed: 36, Unnamed: 37, Unnamed: 38, Unnamed: 39, Unnamed: 40, Unnamed: 41, Unnamed: 42, Unnamed: 43, Unnamed: 44, Unnamed: 45, Unnamed: 46, Unnamed: 47, Unnamed: 48, Unnamed: 49, Unnamed: 50, Unnamed: 51, Unnamed: 52, Unnamed: 53, Unnamed: 54, Unnamed: 55, Unnamed: 56, Unnamed: 57, Unnamed: 58, Unnamed: 59, Unnamed: 60, Unnamed: 61, Unnamed: 62, Unnamed: 63, Unnamed: 64, Unnamed: 65, Unnamed: 66, Unnamed: 67, Unnamed: 68, Unnamed: 69, Unnamed: 70, Unnamed: 71, Unnamed: 72, Unnamed: 73, Unnamed: 74, Unnamed: 75, Unnamed: 76, Unnamed: 77, Unnamed: 78, Unnamed: 79, Unnamed: 80, Unnamed: 81, Unnamed: 82, Unnamed: 83, Unnamed: 84, Unnamed: 85, Unnamed: 86, Unnamed: 87, Unnamed: 88, Unnamed: 89
+

@@ -77,8 +77,10 @@
                 <p style="color: var(--text-secondary)">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
+                <input type="file" id="full-excel-import" accept=".xlsx" style="display: none;">
+                <button class="upload-btn" onclick="document.getElementById('full-excel-import').click()">📁 全檔案匯入 (XLSX)</button>
                 <input type="file" id="csv-import" accept=".csv, .xlsx" style="display: none;">
-                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 批量匯入 CSV / Excel</button>
+                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 匯入單一分頁</button>
                 <button class="upload-btn" onclick="logout()">登出</button>
                 <a href="index.html" class="upload-btn" style="text-decoration:none">返回前端</a>
             </div>
@@ -156,8 +158,10 @@
         const REPO_NAME = 'archery_race';
         let GITHUB_TOKEN = '';
         
-        let fullPlayerData = [];
-        let fullMatchData = [];
+        let fullIndividualData = [];
+        let fullTeamData = [];
+        let fullIndividualMatches = [];
+        let fullTeamMatches = [];
         let currentAdminMode = 'Individual';
         let currentAdminGroup = 'Recurve-70m';
 
@@ -178,36 +182,58 @@
                 if (activeTab === 'players-editor') {
                     const importedPlayers = await handler.loadPlayers(file);
                     if (importedPlayers.length > 0) {
-                        // Check if the imported data has the current group
-                        const hasCurrentGroup = importedPlayers.some(p => p.group === currentAdminGroup);
-                        
-                        if (!hasCurrentGroup) {
-                            if (!confirm('匯入的資料中不包含目前選取的組別，是否仍要替換全部分組名單？')) return;
-                        }
-                        
-                        fullPlayerData = importedPlayers;
+                        if (currentAdminMode === 'Individual') fullIndividualData = importedPlayers;
+                        else fullTeamData = importedPlayers;
                         showToast(`成功匯入 ${importedPlayers.length} 筆選手資料`);
                     }
                 } else {
                     const importedMatches = await handler.loadMatches(file);
                     if (importedMatches.length > 0) {
-                        fullMatchData = importedMatches;
+                        if (currentAdminMode === 'Individual') fullIndividualMatches = importedMatches;
+                        else fullTeamMatches = importedMatches;
                         showToast(`成功匯入 ${importedMatches.length} 筆賽程資料`);
                     }
                 }
                 
                 renderAllEditors();
-                // Reset file input
                 e.target.value = '';
             } catch (err) {
                 console.error(err);
                 showToast('匯入失敗：' + err.message, true);
             }
         });
+
+        // Full Workbook Import Logic
+        document.getElementById('full-excel-import').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                showToast('正在解析全部分頁數據...');
+                const results = await handler.processFullWorkbook(file);
+                
+                if (results.individual.length > 0 || results.team.length > 0 || results.individualMatches.length > 0 || results.teamMatches.length > 0) {
+                    if (confirm(`解析成功：\n- 個人賽: ${results.individual.length} 筆\n- 團體賽: ${results.team.length} 筆\n- 個人對抗: ${results.individualMatches.length} 筆\n- 團體對抗: ${results.teamMatches.length} 筆\n\n是否確認覆蓋目前所有數據？`)) {
+                        fullIndividualData = results.individual;
+                        fullTeamData = results.team;
+                        fullIndividualMatches = results.individualMatches;
+                        fullTeamMatches = results.teamMatches;
+                        renderAllEditors();
+                        showToast('數據已載入編輯器，請檢查後儲存');
+                    }
+                } else {
+                    showToast('未在檔案中找到有效的數據分頁', true);
+                }
+                e.target.value = '';
+            } catch (err) {
+                console.error(err);
+                showToast('全檔案匯入失敗：' + err.message, true);
+            }
+        });
         
         document.getElementById('admin-mode-select').addEventListener('change', (e) => {
             currentAdminMode = e.target.value;
-            loadCurrentData();
+            renderAllEditors();
         });
         
         document.getElementById('admin-group-select').addEventListener('change', (e) => {
@@ -245,19 +271,25 @@
 
         async function loadCurrentData() {
             try {
-                showToast(`正在讀取 ${currentAdminMode} 數據...`);
-                const pFile = currentAdminMode === 'Individual' ? 'individual_players.csv' : 'team_players.csv';
-                const mFile = currentAdminMode === 'Individual' ? 'individual_matches.csv' : 'team_matches.csv';
-
-                const pResp = await fetch(`data/${pFile}?t=${Date.now()}`);
-                fullPlayerData = await handler.loadPlayers(await pResp.blob());
-
-                const mResp = await fetch(`data/${mFile}?t=${Date.now()}`);
-                fullMatchData = await handler.loadMatches(await mResp.blob());
+                showToast(`正在讀取全場數據...`);
                 
+                const pIndResp = await fetch(`data/individual_players.csv?t=${Date.now()}`);
+                fullIndividualData = await handler.loadPlayers(await pIndResp.blob());
+
+                const pTeamResp = await fetch(`data/team_players.csv?t=${Date.now()}`);
+                fullTeamData = await handler.loadPlayers(await pTeamResp.blob());
+
+                const mIndResp = await fetch(`data/individual_matches.csv?t=${Date.now()}`);
+                fullIndividualMatches = await handler.loadMatches(await mIndResp.blob());
+
+                const mTeamResp = await fetch(`data/team_matches.csv?t=${Date.now()}`);
+                fullTeamMatches = await handler.loadMatches(await mTeamResp.blob());
+
                 renderAllEditors();
+                showToast('數據載入成功');
             } catch (err) {
-                showToast('讀取原始數據失敗', true);
+                console.error(err);
+                showToast('部分數據載入失敗', true);
             }
         }
 
@@ -274,8 +306,11 @@
             };
             head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
 
-            renderEditor('edit-players-body', fullPlayerData, playerKeys);
-            renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']);
+            const currentPlayers = currentAdminMode === 'Individual' ? fullIndividualData : fullTeamData;
+            const currentMatches = currentAdminMode === 'Individual' ? fullIndividualMatches : fullTeamMatches;
+
+            renderEditor('edit-players-body', currentPlayers, playerKeys);
+            renderEditor('edit-matches-body', currentMatches, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']);
         }
 
         function renderEditor(tbodyId, data, keys) {
@@ -369,71 +404,58 @@
             });
         }
 
-        window.saveToGithub = async (type) => {
-            const btn = document.getElementById(`save-${type}`);
-            btn.disabled = true;
-            btn.textContent = '同步中...';
+        async function uploadToGithub(path, data) {
+            const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
+            const csv = Papa.unparse(data);
+            
+            const resp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                headers: { 'Authorization': authHeader }
+            });
+            if (!resp.ok) throw new Error(`無法獲取 ${path} 的 SHA`);
+            const fileData = await resp.json();
+            
+            const updateResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
+                method: 'PUT',
+                headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: `Update ${path} via Admin Portal`,
+                    content: btoa(unescape(encodeURIComponent(csv))),
+                    sha: fileData.sha
+                })
+            });
+            if (!updateResp.ok) throw new Error(`${path} 同步失敗`);
+        }
+
+        window.saveAll = async () => {
+            const btn = document.getElementById('save-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = '全場同步中...';
+            }
 
             try {
-                const authHeader = GITHUB_TOKEN.startsWith('github_pat_') ? `Bearer ${GITHUB_TOKEN}` : `token ${GITHUB_TOKEN}`;
-                const newData = type === 'players' ? fullPlayerData : fullMatchData;
+                const targets = [
+                    { path: 'data/individual_players.csv', data: fullIndividualData },
+                    { path: 'data/team_players.csv', data: fullTeamData },
+                    { path: 'data/individual_matches.csv', data: fullIndividualMatches },
+                    { path: 'data/team_matches.csv', data: fullTeamMatches }
+                ];
 
-                const newCsv = Papa.unparse(newData);
-                const prefix = currentAdminMode === 'Individual' ? 'individual_' : 'team_';
-                const path = `data/${prefix}${type}.csv`;
-                const prevPath = `data/${prefix}${type}_prev.csv`;
-                
-                const currentFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-                    headers: { 'Authorization': authHeader }
-                });
-                if (!currentFileResp.ok) throw new Error('無法讀取目前檔案');
-                const currentFileData = await currentFileResp.json();
-                const currentContentBase64 = currentFileData.content;
-                const currentSha = currentFileData.sha;
-
-                const prevFileResp = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${prevPath}`, {
-                    headers: { 'Authorization': authHeader }
-                });
-                let prevSha = null;
-                if (prevFileResp.ok) {
-                    const prevFileData = await prevFileResp.json();
-                    prevSha = prevFileData.sha;
+                for (const target of targets) {
+                    if (target.data.length > 0) await uploadToGithub(target.path, target.data);
                 }
-
-                await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${prevPath}`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: `Backup ${type} data`,
-                        content: currentContentBase64,
-                        sha: prevSha || undefined
-                    })
-                });
-
-                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        message: `Update ${type} data via Admin Portal`,
-                        content: btoa(unescape(encodeURIComponent(newCsv))),
-                        sha: currentSha
-                    })
-                });
-
-                if (response.ok) {
-                    showToast('同步成功！舊版本已暫存至 _prev 檔案。');
-                } else {
-                    const err = await response.json();
-                    throw new Error(err.message);
-                }
+                showToast('全場數據同步成功！');
             } catch (err) {
-                console.error(err);
                 showToast('同步失敗: ' + err.message, true);
             } finally {
-                btn.disabled = false;
-                btn.textContent = `同步全部分組${type === 'players' ? '積分' : '賽程'}至 GitHub`;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = '💾 儲存所有變更';
+                }
             }
         };
+
+        window.saveToGithub = async () => await window.saveAll();
 
         function showToast(message, isError = false) {
             const t = document.getElementById('toast');
