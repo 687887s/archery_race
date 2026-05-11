@@ -70,22 +70,23 @@ export class DataHandler {
         
         const mapped = data.map(p => {
             const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '個人');
-            const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '第一場', 'score1', '單局成績'], 0)) || 0;
-            const r2 = parseInt(this.getVal(p, ['r2', 'round2', '第二輪', '第二場', 'score2'], 0)) || 0;
-            let total = parseInt(this.getVal(p, ['total', 'points', '總分', '積分', 'score', 'pts'], 0)) || 0;
-
-            if (total === 0) total = r1 + r2;
+            const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '單局成績'], 0)) || 0;
+            let total = parseInt(this.getVal(p, ['total', 'points', '總分', '積分'], 0)) || 0;
+            if (total === 0) total = r1; // Fallback to r1 if total is not set
 
             return {
-                name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
+                id: this.getVal(p, ['id', '編號', '序號'], ''),
                 unit: unitVal,
-                team: this.getVal(p, ['team', '隊伍', '小隊'], unitVal),
-                group: this.getVal(p, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
+                name: this.getVal(p, ['name', '姓名', '選手'], '未知'),
+                target: this.getVal(p, ['target', '靶位', '靶號'], ''),
                 r1: r1,
-                r2: r2,
+                r2: parseInt(this.getVal(p, ['r2', 'round2', '第二輪'], 0)) || 0,
                 total: total,
+                rank: this.getVal(p, ['rank', '排名'], ''),
                 xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
-                tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0
+                tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
+                group: this.getVal(p, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
+                team: this.getVal(p, ['team', '隊伍'], unitVal)
             };
         });
         if (isPrev) this.prevPlayers = mapped;
@@ -107,6 +108,7 @@ export class DataHandler {
             winner: this.getVal(m, ['winner', '勝者'], ''),
             score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
             score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
+            target: this.getVal(m, ['target', '靶位', '靶號'], ''),
             isSeed: this.getVal(m, ['isSeed', 'seed', '種子'], '0') === '1'
         }));
         if (isPrev) this.prevMatches = mapped;

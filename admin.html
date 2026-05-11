@@ -263,14 +263,19 @@
 
         function renderAllEditors() {
             const playerKeys = currentAdminMode === 'Individual' 
-                ? ['name', 'unit', 'group', 'r1', 'r2', 'total']
-                : ['name', 'team', 'group', 'r1', 'r2', 'total'];
+                ? ['id', 'unit', 'name', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group']
+                : ['id', 'unit', 'name', 'team', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group'];
             
             const head = document.getElementById('players-table-head');
-            head.innerHTML = playerKeys.map(k => `<th>${k.toUpperCase() === 'TEAM' ? '隊伍' : k.toUpperCase()}</th>`).join('');
+            const labels = {
+                'id': '編號', 'unit': '單位', 'name': '姓名', 'target': '靶位', 
+                'r1': '單局成績', 'total': '總分', 'rank': '排名', 
+                'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍'
+            };
+            head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
 
             renderEditor('edit-players-body', fullPlayerData, playerKeys);
-            renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2']);
+            renderEditor('edit-matches-body', fullMatchData, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']);
         }
 
         function renderEditor(tbodyId, data, keys) {
@@ -284,7 +289,7 @@
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total');
+                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total' || key === 'rank');
                     
                     if (key === 'group' || key === 'type' || key === 'isSeed') {
                         const select = document.createElement('select');

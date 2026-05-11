@@ -54,29 +54,20 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         const tr = document.createElement('tr');
         const prevPlayer = prevDisplayData.find(p => p.name === player.name) || player;
 
-        const displayName = isTeam ? player.name : player.name;
-        const color = unitColors[player.unit] || stringToColor(player.unit);
-
-        let unitStyle = '';
-        if (isTeam) {
-            unitStyle = `style="border-left: 4px solid ${color}; padding-left: 10px;"`;
-        }
-
         tr.innerHTML = `
             <td>${index + 1}</td>
-            <td ${unitStyle}>
-                ${displayName}
+            <td>${player.id || '-'}</td>
+            <td>${player.unit}</td>
+            <td>${player.name}</td>
+            <td>${player.target || '-'}</td>
+            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}">
+                ${player.r1}
             </td>
-            <td>
-                <span class="unit-tag" style="background: ${color}22; color: ${color}; border-radius: 4px; padding: 2px 6px;">
-                    ${player.unit}
-                </span>
-            </td>
-            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}">${player.r1}</td>
-            <td class="animate-number" data-start="${prevPlayer.r2 || 0}" data-end="${player.r2}">${player.r2}</td>
             <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-blue)">
                 ${player.total}
             </td>
+            <td>${player.xCount || 0}</td>
+            <td>${player.tenXCount || 0}</td>
         `;
         tbody.appendChild(tr);
     });
