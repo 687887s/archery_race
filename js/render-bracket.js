@@ -2,10 +2,18 @@ export function renderBracket(containerId, matches) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
 
-    // Group matches by round
+    // Group matches by round using a mapping
     const rounds = {};
+    const roundMapping = {
+        'Final': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32
+    };
+
     matches.forEach(match => {
-        const r = parseInt(match.round);
+        let r = parseInt(match.round);
+        // If it's a string label like '1/8', map it to numeric count
+        if (isNaN(r) || match.round.includes('/')) {
+            r = roundMapping[match.round] || 8;
+        }
         if (!rounds[r]) rounds[r] = [];
         rounds[r].push(match);
     });
