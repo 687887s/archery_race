@@ -50,7 +50,7 @@ export class DataHandler {
                             }
                             allData[name] = this.normalizeData(json);
                         });
-                        resolve(allData);
+                        resolve({ allSheets: allData, workbook });
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
@@ -211,7 +211,7 @@ export class DataHandler {
     }
 
     async processFullWorkbook(file) {
-        const allSheets = await this.parseExcel(file, true);
+        const { allSheets, workbook } = await this.parseExcel(file, true);
         const knownNames = this.extractAllNames(allSheets);
         // FORCE CLEAR results before processing to ensure zero residual data
         const results = {
