@@ -50,7 +50,7 @@ export class DataHandler {
                             }
                             allData[name] = this.normalizeData(json);
                         });
-                        resolve({ allSheets: allData, workbook });
+                        resolve({ allSheets, workbook });
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
@@ -109,12 +109,12 @@ export class DataHandler {
     cleanValue(val) {
         if (!val) return '';
         const s = val.toString().trim();
-        if (s.length < 2) return s; 
+        if (s.length < 2) return s;
 
         const junkKeywords = ['名次', '單位', '對抗', '強', '排名', '賽', '獎', '裁判', '長', '代表', '組', '成績', '總分', '靶位', '序號', '編號'];
-        const isJunk = junkKeywords.some(k => s.includes(k)) || 
-                       (/^\(.*\)$/.test(s)) || 
-                       (s.includes('分') && s.length < 5);
+        const isJunk = junkKeywords.some(k => s.includes(k)) ||
+            (/^\(.*\)$/.test(s)) ||
+            (s.includes('分') && s.length < 5);
 
         return isJunk ? '' : s;
     }
@@ -130,16 +130,26 @@ export class DataHandler {
     scanGridBracket(ws, knownNames = new Set()) {
         const matches = [];
         const cells = Object.keys(ws).filter(k => !k.startsWith('!'));
-        
-        // Find all "M" tags as anchors
+
+        // Find anchors: Look for M-tags OR standalone numbers that look like seeds/match IDs
         const matchTags = [];
         cells.forEach(addr => {
             const val = ws[addr].v ? ws[addr].v.toString().trim() : '';
-            if (/^M\d+$/i.test(val)) {
+            
+            // Matches "M1" OR just a plain number "1"
+            const isMTag = /^M\s*[-]?\s*\d+$/i.test(val);
+            const isNumericAnchor = /^\d+$/.test(val) && parseInt(val) > 0 && parseInt(val) <= 128;
+
+            if (isMTag || isNumericAnchor) {
                 const coord = XLSX.utils.decode_cell(addr);
-                matchTags.push({ id: val.toUpperCase(), r: coord.r, c: coord.c });
+                const id = isMTag ? val.toUpperCase().replace(/\s|-/g, '') : `M-${val}`;
+                matchTags.push({ id, r: coord.r, c: coord.c });
             }
         });
+
+        if (matchTags.length > 0) {
+            console.log(`[Geometric Engine] 找到 ${matchTags.length} 個幾何錨點`);
+        }
 
         matchTags.forEach(tag => {
             const match = this.parseMatchGeometric(ws, tag.r, tag.c, knownNames);
@@ -158,14 +168,14 @@ export class DataHandler {
         // [P1 Name]  [P1 Score]
         //       [M-Tag]
         // [P2 Name]  [P2 Score]
-        
+
         const findNameAndScore = (rowOffset) => {
             let name = '', score = 0;
             // Scan nearby columns (c-1 to c+1) to find name and score
             for (let dc = -1; dc <= 1; dc++) {
                 const val = this.getValAt(ws, r + rowOffset, c + dc);
                 if (val === '') continue;
-                
+
                 if (knownNames.has(val) || (val.length >= 2 && this.cleanValue(val) !== '')) {
                     name = val;
                 } else if (!isNaN(parseInt(val)) && val.length <= 3) {
@@ -196,7 +206,7 @@ export class DataHandler {
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
             // Only extract from ranking sheets
             if (sheetName.includes('對抗') || sheetName.includes('強')) continue;
-            
+
             rawData.forEach(row => {
                 Object.values(row).forEach(val => {
                     const clean = this.cleanValue(val);

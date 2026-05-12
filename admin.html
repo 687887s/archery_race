@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,47 +10,161 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.3.8">
+    <link rel="stylesheet" href="css/style.css?v=1.3.11">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        .admin-wrapper { max-width: 1000px; margin: 2rem auto; padding: 2rem; }
+        .admin-wrapper {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
         .auth-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .auth-card {
-            background: var(--sidebar-bg); padding: 3rem; border-radius: 1rem;
-            width: 400px; border: 1px solid var(--glass-border); text-align: center;
+            background: var(--sidebar-bg);
+            padding: 3rem;
+            border-radius: 1rem;
+            width: 400px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
         }
-        .input-group { margin-bottom: 1.5rem; text-align: left; }
-        .input-group label { display: block; margin-bottom: 0.5rem; font-size: 0.8rem; color: var(--text-secondary); }
-        input[type="text"], input[type="password"] {
-            width: 100%; padding: 0.75rem; border-radius: 0.5rem;
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            color: white; outline: none;
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
         }
-        .data-editor { margin-top: 2rem; background: var(--glass-bg); border-radius: 1rem; padding: 1.5rem; border: 1px solid var(--glass-border); }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .table-responsive { max-height: 60vh; overflow-y: auto; border: 1px solid var(--glass-border); border-radius: 0.5rem; }
-        table { width: 100%; border-collapse: collapse; }
-        th { position: sticky; top: 0; background: var(--sidebar-bg); z-index: 10; }
-        th, td { padding: 0.75rem; border: 1px solid var(--glass-border); }
-        td input { background: transparent; border: none; color: white; width: 100%; }
-        .btn-save { background: var(--accent-emerald); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.3rem; cursor: pointer; font-weight: 600; }
-        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .admin-tabs { display: flex; gap: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
-        .admin-tab { padding: 1rem; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
-        .admin-tab.active { color: var(--accent-blue); border-bottom: 2px solid var(--accent-blue); }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: white;
+            outline: none;
+        }
+
+        .data-editor {
+            margin-top: 2rem;
+            background: var(--glass-bg);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .table-responsive {
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background: var(--sidebar-bg);
+            z-index: 10;
+        }
+
+        th,
+        td {
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        td input {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-save {
+            background: var(--accent-emerald);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .admin-tab {
+            padding: 1rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .admin-tab.active {
+            color: var(--accent-blue);
+            border-bottom: 2px solid var(--accent-blue);
+        }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
-        body { overflow-y: auto !important; } /* Allow scrolling in admin */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+
+        body {
+            overflow-y: auto !important;
+        }
+
+        /* Allow scrolling in admin */
     </style>
 </head>
+
 <body class="dark-theme">
     <!-- Auth Overlay -->
     <div id="auth-overlay" class="auth-overlay">
@@ -78,7 +193,8 @@
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
                 <input type="file" id="full-excel-import" accept=".xlsx" style="display: none;">
-                <button class="upload-btn" onclick="document.getElementById('full-excel-import').click()">📁 全檔案匯入 (XLSX)</button>
+                <button class="upload-btn" onclick="document.getElementById('full-excel-import').click()">📁 全檔案匯入
+                    (XLSX)</button>
                 <input type="file" id="csv-import" accept=".csv, .xlsx" style="display: none;">
                 <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 匯入單一分頁</button>
                 <button class="upload-btn" onclick="logout()">登出</button>
@@ -94,14 +210,16 @@
         <div class="group-selector" style="margin-bottom: 1.5rem; justify-content: flex-start; gap: 1.5rem;">
             <div>
                 <label style="color: var(--text-secondary); font-weight: 600;">管理模式：</label>
-                <select id="admin-mode-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
+                <select id="admin-mode-select"
+                    style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
                     <option value="Individual">個人賽 (Individual)</option>
                     <option value="Team">團體賽 (Team)</option>
                 </select>
             </div>
             <div>
                 <label style="color: var(--text-secondary); font-weight: 600;">選擇分組：</label>
-                <select id="admin-group-select" style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
+                <select id="admin-group-select"
+                    style="background: var(--sidebar-bg); color: white; border: 1px solid var(--glass-border); padding: 0.5rem; border-radius: 0.4rem;">
                     <option value="反曲70">競技反曲弓 70m 公開組</option>
                     <option value="反曲30">競技反曲弓 30m 公開組</option>
                     <option value="傳統30">傳統弓 30m 公開組</option>
@@ -138,7 +256,15 @@
                 <table id="edit-matches-table">
                     <thead>
                         <tr>
-                            <th>ID</th><th>類別</th><th>分組</th><th>回合</th><th>選手 1</th><th>選手 2</th><th>勝者</th><th>比分 1</th><th>比分 2</th>
+                            <th>ID</th>
+                            <th>類別</th>
+                            <th>分組</th>
+                            <th>回合</th>
+                            <th>選手 1</th>
+                            <th>選手 2</th>
+                            <th>勝者</th>
+                            <th>比分 1</th>
+                            <th>比分 2</th>
                         </tr>
                     </thead>
                     <tbody id="edit-matches-body"></tbody>
@@ -151,11 +277,11 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.3.8';
+        import { DataHandler } from './js/data-handler.js?v=1.3.11';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
-        
+
         let fullIndividualData = [];
         let fullTeamData = [];
         let fullIndividualMatches = [];
@@ -168,7 +294,7 @@
         document.getElementById('login-btn').addEventListener('click', checkAuth);
         document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
         document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
-        
+
         // CSV Import Logic
         document.getElementById('csv-import').addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -177,7 +303,7 @@
             try {
                 showToast('正在解析檔案...');
                 const activeTab = document.querySelector('.admin-tab.active').dataset.target;
-                
+
                 if (activeTab === 'players-editor') {
                     const importedPlayers = await handler.loadPlayers(file);
                     if (importedPlayers.length > 0) {
@@ -193,7 +319,7 @@
                         showToast(`成功匯入 ${importedMatches.length} 筆賽程資料`);
                     }
                 }
-                
+
                 renderAllEditors();
                 e.target.value = '';
             } catch (err) {
@@ -210,7 +336,7 @@
             try {
                 showToast('正在解析全部分頁數據...');
                 const results = await handler.processFullWorkbook(file);
-                
+
                 if (results.individual.length > 0 || results.team.length > 0 || results.individualMatches.length > 0 || results.teamMatches.length > 0) {
                     if (confirm(`解析成功：\n- 個人賽: ${results.individual.length} 筆\n- 團體賽: ${results.team.length} 筆\n- 個人對抗: ${results.individualMatches.length} 筆\n- 團體對抗: ${results.teamMatches.length} 筆\n\n是否確認覆蓋目前所有數據？`)) {
                         fullIndividualData = results.individual;
@@ -229,12 +355,12 @@
                 showToast('全檔案匯入失敗：' + err.message, true);
             }
         });
-        
+
         document.getElementById('admin-mode-select').addEventListener('change', (e) => {
             currentAdminMode = e.target.value;
             renderAllEditors();
         });
-        
+
         document.getElementById('admin-group-select').addEventListener('change', (e) => {
             currentAdminGroup = e.target.value;
             renderAllEditors();
@@ -256,7 +382,7 @@
                 const rawToken = document.getElementById('github-token').value.trim();
                 // Strictly filter to ASCII only to prevent ISO-8859-1 fetch errors
                 const token = rawToken.replace(/[^\x00-\x7F]/g, "");
-                
+
                 if (pass === '1234' && token.length > 20) {
                     GITHUB_TOKEN = token;
                     localStorage.setItem('github_token', token);
@@ -277,11 +403,11 @@
                 document.getElementById('github-token').value = GITHUB_TOKEN;
             }
         });
-        
+
         async function loadCurrentData() {
             try {
                 showToast(`正在讀取全場數據...`);
-                
+
                 const pIndResp = await fetch(`data/individual_players.csv?t=${Date.now()}`);
                 fullIndividualData = await handler.loadPlayers(await pIndResp.blob());
 
@@ -303,14 +429,14 @@
         }
 
         function renderAllEditors() {
-            const playerKeys = currentAdminMode === 'Individual' 
+            const playerKeys = currentAdminMode === 'Individual'
                 ? ['id', 'unit', 'name', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group']
                 : ['id', 'unit', 'name', 'team', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group'];
-            
+
             const head = document.getElementById('players-table-head');
             const labels = {
-                'id': '編號', 'unit': '單位', 'name': '姓名', 'target': '靶位', 
-                'r1': '單局成績', 'total': '總分', 'rank': '排名', 
+                'id': '編號', 'unit': '單位', 'name': '姓名', 'target': '靶位',
+                'r1': '單局成績', 'total': '總分', 'rank': '排名',
                 'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍'
             };
             head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
@@ -325,7 +451,7 @@
         function renderEditor(tbodyId, data, keys) {
             const tbody = document.getElementById(tbodyId);
             tbody.innerHTML = '';
-            
+
             const filteredData = data.filter(row => row.group === currentAdminGroup);
 
             filteredData.forEach((row) => {
@@ -334,7 +460,7 @@
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
                     const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total' || key === 'rank');
-                    
+
                     if (key === 'group' || key === 'type' || key === 'isSeed') {
                         const select = document.createElement('select');
                         // ... select setup code ...
@@ -391,25 +517,25 @@
                             input.style.opacity = '0.7';
                             input.style.cursor = 'not-allowed';
                         }
-                        
+
                         input.addEventListener('input', (e) => {
                             row[key] = e.target.value;
-                            
+
                             // Auto-calculate total if r1 or r2 changes
                             if (key === 'r1' || key === 'r2') {
                                 const val1 = parseInt(row.r1) || 0;
                                 const val2 = parseInt(row.r2) || 0;
                                 row.total = val1 + val2;
-                                
+
                                 const totalInput = tr.querySelector('input[data-key="total"]');
                                 if (totalInput) totalInput.value = row.total;
                             }
                         });
-                        
+
                         input.setAttribute('data-key', key);
                         td.appendChild(input);
                     }
-                    
+
                     tr.appendChild(td);
                 });
                 tbody.appendChild(tr);
@@ -424,7 +550,7 @@
             const repo = 'archery_race';
             const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
             const csv = Papa.unparse(data);
-            
+
             let sha = '';
             try {
                 const resp = await fetch(url, {
@@ -434,13 +560,13 @@
                     const fileData = await resp.json();
                     sha = fileData.sha;
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             const updateResp = await fetch(url, {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Authorization': `token ${token}`,
-                    'Content-Type': 'application/json' 
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: `Data Update ${new Date().toISOString()}`,
@@ -497,4 +623,5 @@
         }
     </script>
 </body>
+
 </html>
