@@ -249,7 +249,8 @@ export class DataHandler {
                 continue;
             }
 
-            let group = sheetName.replace('個人', '').replace('對抗', '').replace('團體', '').replace('排名', '').replace('賽', '').replace(/\s*\d+強/g, '').trim();
+            // IMPROVED: Keep "Traditional" and "Recurve" to avoid merging groups like "Trad-30" and "Rec-30"
+            let group = sheetName.replace('對抗', '').replace('排名', '').replace('賽', '').replace(/\s*\d+強/g, '').trim();
 
             // If the name becomes too short or empty after stripping, fall back to a safer version of the sheet name
             if (group.length < 2) {
@@ -264,7 +265,7 @@ export class DataHandler {
                 console.log(`Skipping excluded sheet: ${sheetName}`);
                 continue;
             }
-            
+
             // If group is still empty, use the sheet name as the group
             if (group === '') group = sheetName;
 
@@ -276,11 +277,11 @@ export class DataHandler {
 
                 if (geometricMatches.length > 0) {
                     console.log(`[Geometric Engine] 從 ${sheetName} 抓取到 ${geometricMatches.length} 場比賽`);
-                    
+
                     // Step 4: Infer rounds based on column position
                     const uniqueCols = [...new Set(geometricMatches.map(m => m.c))].sort((a, b) => a - b);
                     const colToRound = {};
-                    
+
                     // The rightmost columns are the later rounds
                     const roundLabels = ['1/32', '1/16', '1/8', '1/4', '1/2', 'Final'].reverse();
                     uniqueCols.reverse().forEach((col, idx) => {
@@ -293,7 +294,7 @@ export class DataHandler {
                         const roundLabel = colToRound[m.c];
                         roundCounts[roundLabel] = (roundCounts[roundLabel] || 0) + 1;
                         const displayId = `M-${roundLabel}-${roundCounts[roundLabel]}`;
-                        
+
                         return {
                             ...m,
                             matchId: displayId,
