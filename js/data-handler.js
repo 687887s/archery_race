@@ -101,7 +101,22 @@ export class DataHandler {
             const lowKey = k.toLowerCase().trim();
             return keys.some(target => lowKey.includes(target.toLowerCase()));
         });
-        return (foundKey !== undefined && obj[foundKey] !== null) ? obj[foundKey] : defaultVal;
+        const rawVal = (foundKey !== undefined && obj[foundKey] !== null) ? obj[foundKey] : defaultVal;
+        return this.cleanValue(rawVal);
+    }
+
+    // New: Data Cleansing Filter to remove non-player strings
+    cleanValue(val) {
+        if (!val) return '';
+        const s = val.toString().trim();
+        if (s.length < 2) return s; // Keep short IDs or seeds
+
+        const junkKeywords = ['名次', '單位', '對抗', '強', '排名', '賽', '獎', '裁判', '長', '代表', '組', '成績', '總分', '靶位', '序號', '編號'];
+        const isJunk = junkKeywords.some(k => s.includes(k)) || 
+                       (/^\(.*\)$/.test(s)) || // Remove (一), (二) labels
+                       (s.includes('分') && s.length < 5); // Remove "分" labels but keep "分隊" if needed
+
+        return isJunk ? '' : s;
     }
 
     async processFullWorkbook(file) {
