@@ -50,7 +50,7 @@ export class DataHandler {
                             }
                             allData[name] = this.normalizeData(json);
                         });
-                        resolve({ allSheets, workbook });
+                        resolve({ allSheets: allData, workbook });
                     } else {
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
@@ -135,7 +135,7 @@ export class DataHandler {
         const matchTags = [];
         cells.forEach(addr => {
             const val = ws[addr].v ? ws[addr].v.toString().trim() : '';
-            
+
             // Matches "M1" OR just a plain number "1"
             const isMTag = /^M\s*[-]?\s*\d+$/i.test(val);
             const isNumericAnchor = /^\d+$/.test(val) && parseInt(val) > 0 && parseInt(val) <= 128;
