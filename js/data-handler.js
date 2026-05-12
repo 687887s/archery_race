@@ -161,13 +161,12 @@ export class DataHandler {
                 const actualIsTeam = isTeam;
 
                 const mapped = rawData.map((m, idx) => {
-                    // BRUTE FORCE: Extract all strings from the row
+                    // BRUTE FORCE: Extract all strings from the row and clean them
                     const allKeys = Object.keys(m);
-                    const values = allKeys.map(k => m[k] ? m[k].toString().trim() : '').filter(v => v.length >= 2);
+                    const values = allKeys.map(k => this.cleanValue(m[k])).filter(v => v && v.length >= 2);
 
-                    // Filter out round titles and header-like text
-                    const filterGarbage = (s) => s && !s.includes('對抗') && !s.includes('強') && !s.includes('淘汰') && !s.includes('組') && !s.includes('分') && !/^\d+$/.test(s);
-                    const candidates = values.filter(filterGarbage);
+                    // Candidates are already cleaned by cleanValue
+                    const candidates = values;
 
                     let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
                     let p2 = 'TBD';
@@ -176,7 +175,6 @@ export class DataHandler {
                         p1 = candidates[0] || 'TBD';
                         p2 = candidates[1] || 'TBD';
                     } else {
-                        // If p1 found via header, p2 might be the next candidate
                         p2 = candidates.find(c => c !== p1) || 'TBD';
                     }
 
@@ -232,16 +230,15 @@ export class DataHandler {
             } else {
                 // Process as Individual Players
                 const mapped = rawData.map((p, idx) => {
-                    const allVals = Object.values(p).map(v => v ? v.toString().trim() : '').filter(v => v.length >= 2);
+                    const allVals = Object.values(p).map(v => this.cleanValue(v)).filter(v => v && v.length >= 2);
 
                     let name = this.getVal(p, ['name', '姓名', '選手'], '');
                     let unit = this.getVal(p, ['unit', '單位', '代表單位'], '');
 
                     // Brute force fallback for Individual names
                     if (!name || name === '') {
-                        const nameCandidates = allVals.filter(v => !v.includes('對抗') && !v.includes('賽') && !/^\d+$/.test(v));
-                        name = nameCandidates[0] || '';
-                        if (!unit) unit = nameCandidates[1] || '-';
+                        name = allVals[0] || '';
+                        if (!unit) unit = allVals[1] || '-';
                     }
 
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績', '成績'], 0)) || 0;
@@ -251,12 +248,10 @@ export class DataHandler {
                     // VALIDATION: In ranking sheets, a real player MUST have at least one score or a target
                     const hasData = r1 > 0 || r2 > 0 || total > 0;
 
-                    // Brute force fallback for Individual names
+                    // Final validation check after cleaning
                     if (!name || name === '') {
-                        const nameBlacklist = ['對抗', '賽', '名單', '單位', '裁判', '長', '日期', '備註', '組別', '成績', '排名'];
-                        const nameCandidates = allVals.filter(v => !nameBlacklist.some(b => v.includes(b)) && !/^\d+$/.test(v));
-                        name = nameCandidates[0] || '';
-                        if (!unit) unit = nameCandidates[1] || '-';
+                        name = allVals[0] || '';
+                        if (!unit) unit = allVals[1] || '-';
                     }
 
                     return {
