@@ -259,11 +259,14 @@ export class DataHandler {
             const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
             const isTeam = sheetName.includes('團體');
 
-            // Only skip known junk sheets or administrative names
-            if (sheetName.includes('新公開女') || group === '' || group === '個人' || group === '團體') {
-                console.log(`Skipping excluded or administrative sheet: ${sheetName}`);
+            // IMPROVED: Only skip if it's truly a known junk sheet
+            if (sheetName.includes('新公開女')) {
+                console.log(`Skipping excluded sheet: ${sheetName}`);
                 continue;
             }
+            
+            // If group is still empty, use the sheet name as the group
+            if (group === '') group = sheetName;
 
             if (isMatch) {
                 const worksheet = workbook.Sheets[sheetName];
@@ -273,13 +276,33 @@ export class DataHandler {
 
                 if (geometricMatches.length > 0) {
                     console.log(`[Geometric Engine] 從 ${sheetName} 抓取到 ${geometricMatches.length} 場比賽`);
-                    finalMatches = geometricMatches.map(m => ({
-                        ...m,
-                        type: isTeam ? 'Team' : 'Individual',
-                        group: group,
-                        round: m.round || '1/8', // Will be refined in Step 4
-                        isSeed: false
-                    }));
+                    
+                    // Step 4: Infer rounds based on column position
+                    const uniqueCols = [...new Set(geometricMatches.map(m => m.c))].sort((a, b) => a - b);
+                    const colToRound = {};
+                    
+                    // The rightmost columns are the later rounds
+                    const roundLabels = ['1/32', '1/16', '1/8', '1/4', '1/2', 'Final'].reverse();
+                    uniqueCols.reverse().forEach((col, idx) => {
+                        colToRound[col] = roundLabels[idx] || `${1 << (idx + 1)}強`;
+                    });
+
+                    // Step 4.2: Generate meaningful IDs (M-Round-Index)
+                    const roundCounts = {};
+                    finalMatches = geometricMatches.map(m => {
+                        const roundLabel = colToRound[m.c];
+                        roundCounts[roundLabel] = (roundCounts[roundLabel] || 0) + 1;
+                        const displayId = `M-${roundLabel}-${roundCounts[roundLabel]}`;
+                        
+                        return {
+                            ...m,
+                            matchId: displayId,
+                            type: isTeam ? 'Team' : 'Individual',
+                            group: group,
+                            round: roundLabel,
+                            isSeed: false
+                        };
+                    });
                 } else {
                     console.log(`[Fallback] ${sheetName} 幾何抓取失敗，改用穩定版列解析`);
                     finalMatches = rawData.map((m, idx) => {
