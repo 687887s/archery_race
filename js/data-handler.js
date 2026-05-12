@@ -147,8 +147,14 @@ export class DataHandler {
             }
         });
 
+        // Step 4.1: Geometric Sorting - Sort by Column (Round) first, then Row (Vertical)
+        matchTags.sort((a, b) => {
+            if (a.c !== b.c) return a.c - b.c; // Group by column
+            return a.r - b.r; // Then sort by row
+        });
+
         if (matchTags.length > 0) {
-            console.log(`[Geometric Engine] 找到 ${matchTags.length} 個幾何錨點`);
+            console.log(`[Geometric Engine] 找到並排序完成 ${matchTags.length} 個幾何錨點`);
         }
 
         matchTags.forEach(tag => {
