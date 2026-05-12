@@ -109,18 +109,110 @@ export class DataHandler {
     cleanValue(val) {
         if (!val) return '';
         const s = val.toString().trim();
-        if (s.length < 2) return s; // Keep short IDs or seeds
+        if (s.length < 2) return s; 
 
         const junkKeywords = ['名次', '單位', '對抗', '強', '排名', '賽', '獎', '裁判', '長', '代表', '組', '成績', '總分', '靶位', '序號', '編號'];
         const isJunk = junkKeywords.some(k => s.includes(k)) || 
-                       (/^\(.*\)$/.test(s)) || // Remove (一), (二) labels
-                       (s.includes('分') && s.length < 5); // Remove "分" labels but keep "分隊" if needed
+                       (/^\(.*\)$/.test(s)) || 
+                       (s.includes('分') && s.length < 5);
 
         return isJunk ? '' : s;
     }
 
+    // Helper: Safe value retrieval by row/col coordinates
+    getValAt(ws, r, c) {
+        if (r < 0 || c < 0) return '';
+        const addr = XLSX.utils.encode_cell({ r, c });
+        return ws[addr] ? ws[addr].v.toString().trim() : '';
+    }
+
+    // New: Geometric Grid Scanner
+    scanGridBracket(ws, knownNames = new Set()) {
+        const matches = [];
+        const cells = Object.keys(ws).filter(k => !k.startsWith('!'));
+        
+        // Find all "M" tags as anchors
+        const matchTags = [];
+        cells.forEach(addr => {
+            const val = ws[addr].v ? ws[addr].v.toString().trim() : '';
+            if (/^M\d+$/i.test(val)) {
+                const coord = XLSX.utils.decode_cell(addr);
+                matchTags.push({ id: val.toUpperCase(), r: coord.r, c: coord.c });
+            }
+        });
+
+        matchTags.forEach(tag => {
+            const match = this.parseMatchGeometric(ws, tag.r, tag.c, knownNames);
+            if (match) {
+                match.matchId = tag.id;
+                matches.push(match);
+            }
+        });
+
+        return matches;
+    }
+
+    parseMatchGeometric(ws, r, c, knownNames) {
+        // Geometric Logic: Player 1 is above, Player 2 is below
+        // Usually matches look like:
+        // [P1 Name]  [P1 Score]
+        //       [M-Tag]
+        // [P2 Name]  [P2 Score]
+        
+        const findNameAndScore = (rowOffset) => {
+            let name = '', score = 0;
+            // Scan nearby columns (c-1 to c+1) to find name and score
+            for (let dc = -1; dc <= 1; dc++) {
+                const val = this.getValAt(ws, r + rowOffset, c + dc);
+                if (val === '') continue;
+                
+                if (knownNames.has(val) || (val.length >= 2 && this.cleanValue(val) !== '')) {
+                    name = val;
+                } else if (!isNaN(parseInt(val)) && val.length <= 3) {
+                    score = parseInt(val);
+                }
+            }
+            return { name, score };
+        };
+
+        const top = findNameAndScore(-1);
+        const bottom = findNameAndScore(1);
+
+        if (!top.name && !bottom.name) return null;
+
+        return {
+            player1: top.name || 'TBD',
+            score1: top.score,
+            player2: bottom.name || 'TBD',
+            score2: bottom.score,
+            r: r,
+            c: c
+        };
+    }
+
+    // New: Pre-scan to gather all potential names for validation
+    extractAllNames(allSheets) {
+        const names = new Set();
+        for (const [sheetName, rawData] of Object.entries(allSheets)) {
+            // Only extract from ranking sheets
+            if (sheetName.includes('對抗') || sheetName.includes('強')) continue;
+            
+            rawData.forEach(row => {
+                Object.values(row).forEach(val => {
+                    const clean = this.cleanValue(val);
+                    if (clean && clean.length >= 2 && clean.length <= 4) {
+                        names.add(clean);
+                    }
+                });
+            });
+        }
+        console.log(`[Names DB] 收集完成: ${names.size} 位選手`);
+        return names;
+    }
+
     async processFullWorkbook(file) {
         const allSheets = await this.parseExcel(file, true);
+        const knownNames = this.extractAllNames(allSheets);
         // FORCE CLEAR results before processing to ensure zero residual data
         const results = {
             individual: [],
@@ -158,53 +250,62 @@ export class DataHandler {
             }
 
             if (isMatch) {
-                const actualIsTeam = isTeam;
+                const worksheet = workbook.Sheets[sheetName];
+                const geometricMatches = this.scanGridBracket(worksheet, knownNames);
 
-                const mapped = rawData.map((m, idx) => {
-                    // BRUTE FORCE: Extract all strings from the row and clean them
-                    const allKeys = Object.keys(m);
-                    const values = allKeys.map(k => this.cleanValue(m[k])).filter(v => v && v.length >= 2);
+                let finalMatches = [];
 
-                    // Candidates are already cleaned by cleanValue
-                    const candidates = values;
-
-                    let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
-                    let p2 = 'TBD';
-
-                    if (!p1 || p1 === '') {
-                        p1 = candidates[0] || 'TBD';
-                        p2 = candidates[1] || 'TBD';
-                    } else {
-                        p2 = candidates.find(c => c !== p1) || 'TBD';
-                    }
-
-                    return {
-                        matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx + 1}`),
+                if (geometricMatches.length > 0) {
+                    console.log(`[Geometric Engine] 從 ${sheetName} 抓取到 ${geometricMatches.length} 場比賽`);
+                    finalMatches = geometricMatches.map(m => ({
+                        ...m,
                         type: isTeam ? 'Team' : 'Individual',
                         group: group,
-                        round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗', '強'], '1/8'),
-                        player1: p1,
-                        player2: p2,
-                        winner: this.getVal(m, ['winner', '勝者'], ''),
-                        score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
-                        score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
-                        target: this.getVal(m, ['target', '靶位', '靶號'], ''),
-                        isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
-                    };
-                });
+                        round: m.round || '1/8', // Will be refined in Step 4
+                        isSeed: false
+                    }));
+                } else {
+                    console.log(`[Fallback] ${sheetName} 幾何抓取失敗，改用穩定版列解析`);
+                    finalMatches = rawData.map((m, idx) => {
+                        const allKeys = Object.keys(m);
+                        const values = allKeys.map(k => this.cleanValue(m[k])).filter(v => v && v.length >= 2);
+                        const candidates = values;
 
-                // Only push if it actually looks like a match row (player1 is a real name)
-                const validMatches = mapped.filter(m =>
-                    m.player1 && m.player1 !== 'TBD' && m.player1.length >= 2 &&
-                    !m.player1.includes('對抗') && !m.player1.includes('強') && !m.player1.includes('排名')
+                        let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
+                        let p2 = 'TBD';
+
+                        if (!p1 || p1 === '') {
+                            p1 = candidates[0] || 'TBD';
+                            p2 = candidates[1] || 'TBD';
+                        } else {
+                            p2 = candidates.find(c => c !== p1) || 'TBD';
+                        }
+
+                        return {
+                            matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx + 1}`),
+                            type: isTeam ? 'Team' : 'Individual',
+                            group: group,
+                            round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗', '強'], '1/8'),
+                            player1: p1,
+                            player2: p2,
+                            winner: this.getVal(m, ['winner', '勝者'], ''),
+                            score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
+                            score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
+                            target: this.getVal(m, ['target', '靶位', '靶號'], ''),
+                            isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
+                        };
+                    });
+                }
+
+                // Filter out labels that might have leaked through
+                const validMatches = finalMatches.filter(m =>
+                    m.player1 && m.player1 !== 'TBD' && m.player1.length >= 2
                 );
 
                 if (isTeam) {
-                    const teamMatchesWithType = validMatches.map(m => ({ ...m, type: 'Team' }));
-                    results.teamMatches.push(...teamMatchesWithType);
+                    results.teamMatches.push(...validMatches);
                 } else {
-                    const individualMatchesWithType = validMatches.map(m => ({ ...m, type: 'Individual' }));
-                    results.individualMatches.push(...individualMatchesWithType);
+                    results.individualMatches.push(...validMatches);
                 }
             } else if (sheetName.includes('團體')) {
                 // Process as Team Players
