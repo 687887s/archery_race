@@ -126,84 +126,18 @@ export class DataHandler {
         return ws[addr] ? ws[addr].v.toString().trim() : '';
     }
 
-    // New: Geometric Grid Scanner
-    scanGridBracket(ws, knownNames = new Set()) {
+    // 步驟 2：單向解析器 (Individual) - Placeholder
+    parseIndividualBracket(ws, group) {
         const matches = [];
-        const cells = Object.keys(ws).filter(k => !k.startsWith('!'));
-
-        // Find anchors: Look for M-tags OR standalone numbers that look like seeds/match IDs
-        const matchTags = [];
-        cells.forEach(addr => {
-            const val = ws[addr].v ? ws[addr].v.toString().trim() : '';
-
-            // Matches "M1" OR just a plain number "1"
-            const isMTag = /^M\s*[-]?\s*\d+$/i.test(val);
-            const isNumericAnchor = /^\d+$/.test(val) && parseInt(val) > 0 && parseInt(val) <= 128;
-
-            if (isMTag || isNumericAnchor) {
-                const coord = XLSX.utils.decode_cell(addr);
-                const id = isMTag ? val.toUpperCase().replace(/\s|-/g, '') : `M-${val}`;
-                matchTags.push({ id, r: coord.r, c: coord.c });
-            }
-        });
-
-        // Step 4.1: Geometric Sorting - Sort by Column (Round) first, then Row (Vertical)
-        matchTags.sort((a, b) => {
-            if (a.c !== b.c) return a.c - b.c; // Group by column
-            return a.r - b.r; // Then sort by row
-        });
-
-        if (matchTags.length > 0) {
-            console.log(`[Geometric Engine] 找到並排序完成 ${matchTags.length} 個幾何錨點`);
-        }
-
-        matchTags.forEach(tag => {
-            const match = this.parseMatchGeometric(ws, tag.r, tag.c, knownNames);
-            if (match) {
-                match.matchId = tag.id;
-                matches.push(match);
-            }
-        });
-
+        // To be implemented in Step 2
         return matches;
     }
 
-    parseMatchGeometric(ws, r, c, knownNames) {
-        // Geometric Logic: Player 1 is above, Player 2 is below
-        // Usually matches look like:
-        // [P1 Name]  [P1 Score]
-        //       [M-Tag]
-        // [P2 Name]  [P2 Score]
-
-        const findNameAndScore = (rowOffset) => {
-            let name = '', score = 0;
-            // Scan nearby columns (c-1 to c+1) to find name and score
-            for (let dc = -1; dc <= 1; dc++) {
-                const val = this.getValAt(ws, r + rowOffset, c + dc);
-                if (val === '') continue;
-
-                if (knownNames.has(val) || (val.length >= 2 && this.cleanValue(val) !== '')) {
-                    name = val;
-                } else if (!isNaN(parseInt(val)) && val.length <= 3) {
-                    score = parseInt(val);
-                }
-            }
-            return { name, score };
-        };
-
-        const top = findNameAndScore(-1);
-        const bottom = findNameAndScore(1);
-
-        if (!top.name && !bottom.name) return null;
-
-        return {
-            player1: top.name || 'TBD',
-            score1: top.score,
-            player2: bottom.name || 'TBD',
-            score2: bottom.score,
-            r: r,
-            c: c
-        };
+    // 步驟 2：蝴蝶式解析器 (Team) - Placeholder
+    parseTeamBracket(ws, group) {
+        const matches = [];
+        // To be implemented in Step 2
+        return matches;
     }
 
     // New: Pre-scan to gather all potential names for validation
@@ -238,7 +172,7 @@ export class DataHandler {
         };
 
         // Strict Tournament Sheet Filtering
-        const tournamentKeywords = ['反曲', '傳統', '公開', '對抗', '強', '排名', '團體'];
+        const tournamentKeywords = ['反曲', '傳統', '公開', '對抗', '強', '排名', '團體', '淘汰'];
 
         for (const [sheetName, rawData] of Object.entries(allSheets)) {
             if (rawData.length === 0) continue;
@@ -257,8 +191,23 @@ export class DataHandler {
                 group = sheetName.replace('分頁', '').replace('Sheet', '').trim();
             }
 
-            const isMatch = sheetName.includes('對抗') || sheetName.includes('強');
-            const isTeam = sheetName.includes('團體');
+            const isMatch = sheetName.includes('對抗') || sheetName.includes('強') || sheetName.includes('淘汰');
+            let isTeam = sheetName.includes('團體');
+
+            const worksheet = workbook.Sheets[sheetName];
+
+            // 步驟 1：分頁屬性判定 (內容嗅探)
+            if (isMatch && !isTeam) {
+                for (let r = 0; r < 5; r++) {
+                    for (let c = 0; c < 15; c++) {
+                        if (this.getValAt(worksheet, r, c).includes('團體')) {
+                            isTeam = true;
+                            break;
+                        }
+                    }
+                    if (isTeam) break;
+                }
+            }
 
             // IMPROVED: Only skip if it's truly a known junk sheet
             if (sheetName.includes('新公開女')) {
@@ -270,71 +219,14 @@ export class DataHandler {
             if (group === '') group = sheetName;
 
             if (isMatch) {
-                const worksheet = workbook.Sheets[sheetName];
-                const geometricMatches = this.scanGridBracket(worksheet, knownNames);
-
                 let finalMatches = [];
 
-                if (geometricMatches.length > 0) {
-                    console.log(`[Geometric Engine] 從 ${sheetName} 抓取到 ${geometricMatches.length} 場比賽`);
-
-                    // Step 4: Infer rounds based on column position
-                    const uniqueCols = [...new Set(geometricMatches.map(m => m.c))].sort((a, b) => a - b);
-                    const colToRound = {};
-
-                    // The rightmost columns are the later rounds
-                    const roundLabels = ['1/32', '1/16', '1/8', '1/4', '1/2', 'Final'].reverse();
-                    uniqueCols.reverse().forEach((col, idx) => {
-                        colToRound[col] = roundLabels[idx] || `${1 << (idx + 1)}強`;
-                    });
-
-                    // Step 4.2: Generate meaningful IDs (M-Round-Index)
-                    const roundCounts = {};
-                    finalMatches = geometricMatches.map(m => {
-                        const roundLabel = colToRound[m.c];
-                        roundCounts[roundLabel] = (roundCounts[roundLabel] || 0) + 1;
-                        const displayId = `M-${roundLabel}-${roundCounts[roundLabel]}`;
-
-                        return {
-                            ...m,
-                            matchId: displayId,
-                            type: isTeam ? 'Team' : 'Individual',
-                            group: group,
-                            round: roundLabel,
-                            isSeed: false
-                        };
-                    });
+                if (isTeam) {
+                    console.log(`[Parser] 啟動蝴蝶式解析器處理: ${sheetName}`);
+                    finalMatches = this.parseTeamBracket(worksheet, group);
                 } else {
-                    console.log(`[Fallback] ${sheetName} 幾何抓取失敗，改用穩定版列解析`);
-                    finalMatches = rawData.map((m, idx) => {
-                        const allKeys = Object.keys(m);
-                        const values = allKeys.map(k => this.cleanValue(m[k])).filter(v => v && v.length >= 2);
-                        const candidates = values;
-
-                        let p1 = this.getVal(m, ['姓', '名', '選', '手', '單', '位'], '');
-                        let p2 = 'TBD';
-
-                        if (!p1 || p1 === '') {
-                            p1 = candidates[0] || 'TBD';
-                            p2 = candidates[1] || 'TBD';
-                        } else {
-                            p2 = candidates.find(c => c !== p1) || 'TBD';
-                        }
-
-                        return {
-                            matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號', '序號'], `M${idx + 1}`),
-                            type: isTeam ? 'Team' : 'Individual',
-                            group: group,
-                            round: this.getVal(m, ['round', '輪次', '階段', '分組', '對抗', '強'], '1/8'),
-                            player1: p1,
-                            player2: p2,
-                            winner: this.getVal(m, ['winner', '勝者'], ''),
-                            score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
-                            score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
-                            target: this.getVal(m, ['target', '靶位', '靶號'], ''),
-                            isSeed: this.getVal(m, ['isSeed', 'seed'], '0') === '1'
-                        };
-                    });
+                    console.log(`[Parser] 啟動單向解析器處理: ${sheetName}`);
+                    finalMatches = this.parseIndividualBracket(worksheet, group);
                 }
 
                 // Filter out labels that might have leaked through
