@@ -163,7 +163,11 @@ export class DataHandler {
             const tMid = this.getValAt(ws, rBase + 2, 18); // Row 12...
             const tAbove = this.getValAt(ws, rBase + 1, 18); // Row 11...
             const tBelow = this.getValAt(ws, rBase + 3, 18); // Row 13...
-            const target = tMid || ((tAbove && tBelow && tAbove !== tBelow) ? `${tAbove}/${tBelow}` : (tAbove || tBelow || ''));
+            
+            // Reordered: prioritize dual targets and filter "None"
+            const ck = (v) => (v && v !== 'None') ? v : '';
+            const m = ck(tMid), a = ck(tAbove), b = ck(tBelow);
+            const target = (a && b && a !== b) ? `${a}/${b}` : (m || a || b || '');
             const s1 = parseInt(this.getValAt(ws, rBase, 18)) || 0; // Col S (Index 18)
             const s2 = parseInt(this.getValAt(ws, rBase + 4, 18)) || 0;
 
