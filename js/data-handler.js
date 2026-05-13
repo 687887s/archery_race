@@ -126,19 +126,21 @@ export class DataHandler {
         return ws[addr] ? ws[addr].v.toString().trim() : '';
     }
 
-    // 步驟 2：單向解析器 (Individual) - Absolute Coordinates
+    // 步驟 2：單向階梯式解析器 (Individual) - Absolute Coordinates
     parseIndividualBracket(ws, group) {
         const matches = [];
 
-        // 1/8 Round (8 matches) - OK (Y軸間隔4, X欄12/13)
+        // 1/8 Round (8 matches) - 階梯式向下排列
+        // 每場對戰佔用 4 列 (P1 Row, Target Row, P2 Row, 空白Row)
+        // 起始於 Row 9 (Index 8)
         for (let i = 0; i < 8; i++) {
-            const rStart = 10 + (i * 4); // Row 11, 15, 19, 23, 27, 31, 35, 39
-
-            const p1Unit = this.getValAt(ws, rStart - 1, 12); // Row 10, Col M (Index 12)
-            const p1Name = this.getValAt(ws, rStart - 1, 13); // Row 10, Col N (Index 13)
-            const p2Unit = this.getValAt(ws, rStart + 1, 12); // Row 12
-            const p2Name = this.getValAt(ws, rStart + 1, 13);
-            const target = this.getValAt(ws, rStart, 11); // Col L (Index 11)
+            const rStart = 8 + (i * 4); // Index 8, 12, 16, 20... (對應 Row 9, 13, 17, 21...)
+            
+            const p1Unit = this.getValAt(ws, rStart, 12); // Col M (Index 12)
+            const p1Name = this.getValAt(ws, rStart, 13); // Col N (Index 13)
+            const p2Unit = this.getValAt(ws, rStart + 2, 12); // Row 11, 15, 19... (Index 10, 14, 18...)
+            const p2Name = this.getValAt(ws, rStart + 2, 13);
+            const target = this.getValAt(ws, rStart + 1, 14); // Row 10, 14, 18... (Index 9, 13, 17...) Col O (Index 14)
 
             matches.push({
                 matchId: `M-1/8-${i + 1}`,
