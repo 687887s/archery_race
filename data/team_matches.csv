@@ -1,1 +1,9 @@
-matchId,type,group,round,player1,player2,winner,score1,score2
+matchId,type,group,round,player1,player2,names1,names2,score1,score2,winner,target,isSeed
+MT-1/2-L1,Team,傳統20團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-R1,Team,傳統20團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-L1,Team,傳統30團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-R1,Team,傳統30團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-L1,Team,反曲30團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-R1,Team,反曲30團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-L1,Team,反曲70團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
+MT-1/2-R1,Team,反曲70團體,1/2,TBD,單位,姓名,姓名,0,0,,姓名,false
