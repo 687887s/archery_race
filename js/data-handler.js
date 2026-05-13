@@ -157,10 +157,10 @@ export class DataHandler {
         for (let i = 0; i < 4; i++) {
             const rStart = 9 + (i * 8); // Match 1 P1 is at Index 9 (Row 10)
             
-            const p1Unit = this.getValAt(ws, rStart, 18); // S
-            const p1Name = this.getValAt(ws, rStart, 19); // T
-            const p2Unit = this.getValAt(ws, rStart + 4, 18);
-            const p2Name = this.getValAt(ws, rStart + 4, 19);
+            const p1Unit = this.getValAt(ws, rStart, 16); // Q
+            const p1Name = this.getValAt(ws, rStart, 17); // R
+            const p2Unit = this.getValAt(ws, rStart + 4, 16);
+            const p2Name = this.getValAt(ws, rStart + 4, 17);
             
             const target = this.getValAt(ws, rStart, 15); // P
 
@@ -180,12 +180,12 @@ export class DataHandler {
         for (let i = 0; i < 2; i++) {
             const rStart = 11 + (i * 16); // Match 1 P1 is at Index 11 (Row 12)
             
-            const p1Unit = this.getValAt(ws, rStart, 23); // X
-            const p1Name = this.getValAt(ws, rStart, 24); // Y
-            const p2Unit = this.getValAt(ws, rStart + 8, 23); // X
-            const p2Name = this.getValAt(ws, rStart + 8, 24); // Y
+            const p1Unit = this.getValAt(ws, rStart, 20); // U
+            const p1Name = this.getValAt(ws, rStart, 21); // V
+            const p2Unit = this.getValAt(ws, rStart + 8, 20); // U
+            const p2Name = this.getValAt(ws, rStart + 8, 21); // V
             
-            const target = this.getValAt(ws, rStart, 21); // V
+            const target = this.getValAt(ws, rStart, 19); // T
 
             if (p1Name || p2Name || p1Unit || p2Unit) {
                 matches.push({
@@ -200,11 +200,11 @@ export class DataHandler {
         }
 
         // Gold Match (1 match)
-        const gP1Unit = this.getValAt(ws, 14, 28); // AC (Row 15)
-        const gP1Name = this.getValAt(ws, 14, 29); // AD
-        const gP2Unit = this.getValAt(ws, 16, 28); // AC (Row 17)
-        const gP2Name = this.getValAt(ws, 16, 29); // AD
-        const gTarget = this.getValAt(ws, 15, 26); // AA (Row 16)
+        const gP1Unit = this.getValAt(ws, 15, 24); // Y (Row 16)
+        const gP1Name = this.getValAt(ws, 15, 25); // Z
+        const gP2Unit = this.getValAt(ws, 17, 24); // Y (Row 18)
+        const gP2Name = this.getValAt(ws, 17, 25); // Z
+        const gTarget = this.getValAt(ws, 14, 22); // W (Row 15)
         if (gP1Name || gP2Name || gP1Unit || gP2Unit) {
             matches.push({
                 matchId: `M-Final-1`,
@@ -217,11 +217,11 @@ export class DataHandler {
         }
 
         // Bronze Match (1 match)
-        const bP1Unit = this.getValAt(ws, 30, 28); // AC (Row 31)
-        const bP1Name = this.getValAt(ws, 30, 29); // AD
-        const bP2Unit = this.getValAt(ws, 32, 28); // AC (Row 33)
-        const bP2Name = this.getValAt(ws, 32, 29); // AD
-        const bTarget = this.getValAt(ws, 31, 26); // AA (Row 32)
+        const bP1Unit = this.getValAt(ws, 31, 24); // Y (Row 32)
+        const bP1Name = this.getValAt(ws, 31, 25); // Z
+        const bP2Unit = this.getValAt(ws, 33, 24); // Y (Row 34)
+        const bP2Name = this.getValAt(ws, 33, 25); // Z
+        const bTarget = this.getValAt(ws, 30, 22); // W (Row 31)
         if (bP1Name || bP2Name || bP1Unit || bP2Unit) {
             matches.push({
                 matchId: `M-Final-2`,
@@ -321,10 +321,10 @@ export class DataHandler {
         }
 
         // Gold Match (1 match)
-        const gUnit1 = this.getValAt(ws, 8, 14); // O (Row 9)
-        const gName1 = this.getValAt(ws, 8, 15); // P
-        const gUnit2 = this.getValAt(ws, 8, 22); // W
-        const gName2 = this.getValAt(ws, 8, 21); // V
+        const gUnit1 = this.getValAt(ws, 9, 15); // P (Row 10)
+        const gName1 = this.getValAt(ws, 9, 16); // Q
+        const gUnit2 = this.getValAt(ws, 9, 23); // X
+        const gName2 = this.getValAt(ws, 9, 22); // W
         const gTarget = this.getValAt(ws, 10, 18); // S (Row 11)
         if (gUnit1 || gUnit2 || gName1 || gName2) {
             matches.push({
@@ -338,10 +338,10 @@ export class DataHandler {
         }
 
         // Bronze Match (1 match)
-        const bUnit1 = this.getValAt(ws, 12, 14); // O (Row 13)
-        const bName1 = this.getValAt(ws, 12, 15); // P
-        const bUnit2 = this.getValAt(ws, 12, 22); // W
-        const bName2 = this.getValAt(ws, 12, 21); // V
+        const bUnit1 = this.getValAt(ws, 13, 15); // P (Row 14)
+        const bName1 = this.getValAt(ws, 13, 16); // Q
+        const bUnit2 = this.getValAt(ws, 13, 23); // X
+        const bName2 = this.getValAt(ws, 13, 22); // W
         const bTarget = this.getValAt(ws, 14, 18); // S (Row 15)
         if (bUnit1 || bUnit2 || bName1 || bName2) {
             matches.push({
