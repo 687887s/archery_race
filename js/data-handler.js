@@ -152,15 +152,15 @@ export class DataHandler {
             });
         }
 
-        // 1/4 Round (4 matches) - OK (Y軸間隔8, X欄16/17)
+        // 1/4 Round (4 matches) - 起始於 Row 10 (Index 9)
+        // 每場跨越 8 列 (P1 R10, P2 R14, Target R12)
         for (let i = 0; i < 4; i++) {
-            const rStart = 12 + (i * 8); // Row 13, 21, 29, 37
-
-            const p1Unit = this.getValAt(ws, rStart - 1, 16); // Row 12, Col Q (Index 16)
-            const p1Name = this.getValAt(ws, rStart - 1, 17); // Row 12, Col R (Index 17)
-            const p2Unit = this.getValAt(ws, rStart + 3, 16); // Row 16
-            const p2Name = this.getValAt(ws, rStart + 3, 17);
-            const target = this.getValAt(ws, rStart + 1, 15); // Col P (Index 15)
+            const rBase = 9 + (i * 8); // Row 10, 18, 26, 34
+            const p1Unit = this.getValAt(ws, rBase, 16); // Col Q (Index 16)
+            const p1Name = this.getValAt(ws, rBase, 17); // Col R (Index 17)
+            const p2Unit = this.getValAt(ws, rBase + 4, 16); // Row 14, 22...
+            const p2Name = this.getValAt(ws, rBase + 4, 17);
+            const target = this.getValAt(ws, rBase + 2, 18); // Row 12, 20... Col S (Index 18)
 
             matches.push({
                 matchId: `M-1/4-${i + 1}`,
@@ -172,15 +172,15 @@ export class DataHandler {
             });
         }
 
-        // 1/2 Round (2 matches) - OK (Y軸間隔16, X欄20/21)
+        // 1/2 Round (2 matches)
+        // P1 R14, P2 R22, Target R18
         for (let i = 0; i < 2; i++) {
-            const rStart = 16 + (i * 16); // Row 17, 33
-
-            const p1Unit = this.getValAt(ws, rStart - 1, 20); // Row 16, Col U (Index 20)
-            const p1Name = this.getValAt(ws, rStart - 1, 21); // Row 16, Col V (Index 21)
-            const p2Unit = this.getValAt(ws, rStart + 7, 20); // Row 24
-            const p2Name = this.getValAt(ws, rStart + 7, 21);
-            const target = this.getValAt(ws, rStart + 3, 19); // Col T (Index 19)
+            const rBase = 13 + (i * 16); // Row 14, 30
+            const p1Unit = this.getValAt(ws, rBase, 20); // Col U (Index 20)
+            const p1Name = this.getValAt(ws, rBase, 21); // Col V (Index 21)
+            const p2Unit = this.getValAt(ws, rBase + 8, 20); // Row 22, 38
+            const p2Name = this.getValAt(ws, rBase + 8, 21);
+            const target = this.getValAt(ws, rBase + 4, 22); // Row 18, 34... Col W (Index 22)
 
             matches.push({
                 matchId: `M-1/2-${i + 1}`,
@@ -192,34 +192,30 @@ export class DataHandler {
             });
         }
 
-        // Gold Match (Final)
-        const gP1Unit = this.getValAt(ws, 14, 24); // Row 15, Col Y
-        const gP1Name = this.getValAt(ws, 14, 25); // Row 15, Col Z
-        const gP2Unit = this.getValAt(ws, 30, 24); // Row 31, Col Y
-        const gP2Name = this.getValAt(ws, 30, 25); // Row 31, Col Z
-        const gTarget = this.getValAt(ws, 15, 22); // Row 16, Col W
+        // Final & Bronze (1 match each) - 匯聚於 Row 18 (Index 17)
+        // P1 R18, P2 R26 (Bronze通常在下方)
+        const g_rBase = 17; // Row 18
+        const gP1Unit = this.getValAt(ws, g_rBase, 24); // Col Y (Index 24)
+        const gP1Name = this.getValAt(ws, g_rBase, 25); // Col Z (Index 25)
+        const gP2Unit = this.getValAt(ws, g_rBase + 4, 24); // Row 22 (推測)
+        const gP2Name = this.getValAt(ws, g_rBase + 4, 25);
+        
         matches.push({
             matchId: `M-Final-1`,
             type: 'Individual', group, round: 'Final',
             player1: gP1Name || gP1Unit || 'TBD',
             player2: gP2Name || gP2Unit || 'TBD',
-            unit1: gP1Unit, unit2: gP2Unit,
-            score1: 0, score2: 0, winner: '', target: gTarget || '', isSeed: false
+            score1: 0, score2: 0, winner: '', target: '', isSeed: false
         });
 
-        // Bronze Match
-        const bP1Unit = this.getValAt(ws, 36, 24); // Row 37, Col Y
-        const bP1Name = this.getValAt(ws, 36, 25); // Row 37, Col Z
-        const bP2Unit = this.getValAt(ws, 40, 24); // Row 41, Col Y
-        const bP2Name = this.getValAt(ws, 41, 25); // Row 42, Col Z (偏移修正)
-        const bTarget = this.getValAt(ws, 37, 22); // Row 38, Col W
+        const bP1Name = this.getValAt(ws, 25, 25); // Row 26 (推測銅牌)
+        const bP2Name = this.getValAt(ws, 29, 25); // Row 30
         matches.push({
             matchId: `M-Final-2`,
             type: 'Individual', group, round: 'Bronze',
-            player1: bP1Name || bP1Unit || 'TBD',
-            player2: bP2Name || bP2Unit || 'TBD',
-            unit1: bP1Unit, unit2: bP2Unit,
-            score1: 0, score2: 0, winner: '', target: bTarget || '', isSeed: false
+            player1: bP1Name || 'TBD',
+            player2: bP2Name || 'TBD',
+            score1: 0, score2: 0, winner: '', target: '', isSeed: false
         });
 
         return matches;
