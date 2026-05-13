@@ -300,8 +300,8 @@ export class DataHandler {
 
         // Gold Match (1 match) - 匯聚於 Row 10 (Index 9)
         const g_t1 = getTeamInfo(9, 15, 16); // Row 10, Col P, Q
-        const g_t2 = getTeamInfo(17, 15, 16); // Row 18, Col P, Q
-        const gTarget = this.getValAt(ws, 13, 18); // Row 14, Col S
+        const g_t2 = getTeamInfo(9, 23, 22); // Row 10, Col X, W (修正 P2 座標)
+        const gTarget = this.getValAt(ws, 10, 18); // Row 11, Col S
         matches.push({
             matchId: `MT-Final-1`,
             type: 'Team', group, round: 'Final',
@@ -313,8 +313,8 @@ export class DataHandler {
 
         // Bronze Match (1 match) - 位於 Row 14 (Index 13)
         const b_t1 = getTeamInfo(13, 15, 16); // Row 14, Col P, Q
-        const b_t2 = getTeamInfo(21, 15, 16); // Row 22, Col P, Q
-        const bTarget = this.getValAt(ws, 17, 18); // Row 18, Col S
+        const b_t2 = getTeamInfo(13, 23, 22); // Row 14, Col X, W (修正 P2 座標)
+        const bTarget = this.getValAt(ws, 14, 18); // Row 15, Col S
         matches.push({
             matchId: `MT-Final-2`,
             type: 'Team', group, round: 'Bronze',
