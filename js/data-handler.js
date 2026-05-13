@@ -160,7 +160,10 @@ export class DataHandler {
             const p1Unit = this.getValAt(ws, rBase, 16); // Col Q
             const p2Name = this.getValAt(ws, rBase + 4, 17);
             const p2Unit = this.getValAt(ws, rBase + 4, 16);
-            const target = this.getValAt(ws, rBase + 2, 18); // Row 12, 20... Col S
+            const tMid = this.getValAt(ws, rBase + 2, 18); // Row 12...
+            const tAbove = this.getValAt(ws, rBase + 1, 18); // Row 11...
+            const tBelow = this.getValAt(ws, rBase + 3, 18); // Row 13...
+            const target = tMid || ((tAbove && tBelow && tAbove !== tBelow) ? `${tAbove}/${tBelow}` : (tAbove || tBelow || ''));
             const s1 = parseInt(this.getValAt(ws, rBase, 18)) || 0; // Col S (Index 18)
             const s2 = parseInt(this.getValAt(ws, rBase + 4, 18)) || 0;
 
