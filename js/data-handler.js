@@ -179,7 +179,10 @@ export class DataHandler {
             const rBase = 11 + (i * 16); // Index 11, 27 (Row 12, 28)
             const p1Name = this.getValAt(ws, rBase, 21); // Col V
             const p2Name = this.getValAt(ws, rBase + 8, 21);
-            const target = this.getValAt(ws, rBase + 3, 22); // Row 15, 31... Col W
+            const t1 = this.getValAt(ws, rBase + 3, 22); // Row 15, 31...
+            const t2 = this.getValAt(ws, rBase + 5, 22); // Row 17, 33...
+            const target = (t1 && t2 && t1 !== t2) ? `${t1}/${t2}` : (t1 || t2 || '');
+            
             const s1 = parseInt(this.getValAt(ws, rBase, 22)) || 0; // Col W (Index 22)
             const s2 = parseInt(this.getValAt(ws, rBase + 8, 22)) || 0;
 
@@ -187,7 +190,7 @@ export class DataHandler {
                 matchId: `M-1/2-${i + 1}`,
                 type: 'Individual', group, round: '1/2',
                 player1: p1Name || 'TBD', player2: p2Name || 'TBD',
-                score1: s1, score2: s2, winner: '', target: target || '', isSeed: false
+                score1: s1, score2: s2, winner: '', target: target, isSeed: false
             });
         }
 
@@ -195,7 +198,9 @@ export class DataHandler {
         // Gold: P1 R16, P2 R32, Target R23, Col AA
         const gP1Name = this.getValAt(ws, 15, 25); // Row 16, Col Z
         const gP2Name = this.getValAt(ws, 31, 25); // Row 32, Col Z
-        const gTarget = this.getValAt(ws, 22, 26); // Row 23, Col AA
+        const gT1 = this.getValAt(ws, 22, 26); // Row 23, Col AA
+        const gT2 = this.getValAt(ws, 24, 26); // Row 25, Col AA
+        const gTarget = (gT1 && gT2 && gT1 !== gT2) ? `${gT1}/${gT2}` : (gT1 || gT2 || '');
         const gS1 = parseInt(this.getValAt(ws, 15, 26)) || 0; // Col AA
         const gS2 = parseInt(this.getValAt(ws, 31, 26)) || 0;
 
@@ -203,13 +208,15 @@ export class DataHandler {
             matchId: `M-Final-1`,
             type: 'Individual', group, round: 'Final',
             player1: gP1Name || 'TBD', player2: gP2Name || 'TBD',
-            score1: gS1, score2: gS2, winner: '', target: gTarget || '', isSeed: false
+            score1: gS1, score2: gS2, winner: '', target: gTarget, isSeed: false
         });
 
         // Bronze: P1 R38, P2 R42, Target R39, Col AA
         const bP1Name = this.getValAt(ws, 37, 25); // Row 38, Col Z
         const bP2Name = this.getValAt(ws, 41, 25); // Row 42, Col Z
-        const bTarget = this.getValAt(ws, 38, 26); // Row 39, Col AA
+        const bT1 = this.getValAt(ws, 38, 26); // Row 39, Col AA
+        const bT2 = this.getValAt(ws, 40, 26); // Row 41, Col AA
+        const bTarget = (bT1 && bT2 && bT1 !== bT2) ? `${bT1}/${bT2}` : (bT1 || bT2 || '');
         const bS1 = parseInt(this.getValAt(ws, 37, 26)) || 0; // Col AA
         const bS2 = parseInt(this.getValAt(ws, 41, 26)) || 0;
 
@@ -217,7 +224,7 @@ export class DataHandler {
             matchId: `M-Final-2`,
             type: 'Individual', group, round: 'Bronze',
             player1: bP1Name || 'TBD', player2: bP2Name || 'TBD',
-            score1: bS1, score2: bS2, winner: '', target: bTarget || '', isSeed: false
+            score1: bS1, score2: bS2, winner: '', target: bTarget, isSeed: false
         });
 
         return matches;
