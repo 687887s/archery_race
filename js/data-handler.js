@@ -187,10 +187,10 @@ export class DataHandler {
         for (let i = 0; i < 2; i++) {
             const rStart = 3 + (i * 8); // Index 3 (Row 4), then Index 11 (Row 12)
             
-            const p1Unit = this.getValAt(ws, rStart, 8); // I
-            const p1Name = this.getValAt(ws, rStart, 9); // J
-            const p2Unit = this.getValAt(ws, rStart + 4, 8);
-            const p2Name = this.getValAt(ws, rStart + 4, 9);
+            const p1Unit = this.getValAt(ws, rStart, 7); // H
+            const p1Name = this.getValAt(ws, rStart, 8); // I
+            const p2Unit = this.getValAt(ws, rStart + 4, 7); // H
+            const p2Name = this.getValAt(ws, rStart + 4, 8); // I
             
             const target = this.getValAt(ws, rStart + 2, 10); // K
 
