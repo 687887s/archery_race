@@ -126,17 +126,109 @@ export class DataHandler {
         return ws[addr] ? ws[addr].v.toString().trim() : '';
     }
 
-    // 步驟 2：單向解析器 (Individual) - Placeholder
+    // 步驟 2：單向解析器 (Individual) - Absolute Coordinates
     parseIndividualBracket(ws, group) {
         const matches = [];
-        // To be implemented in Step 2
+
+        // 1/8 Round
+        for (let i = 0; i < 8; i++) {
+            const rStart = 8 + (i * 4); // Match 1 P1 is at Index 8 (Row 9)
+            
+            const p1Unit = this.getValAt(ws, rStart, 12); // M
+            const p1Name = this.getValAt(ws, rStart, 13); // N
+            const p2Unit = this.getValAt(ws, rStart + 2, 12);
+            const p2Name = this.getValAt(ws, rStart + 2, 13);
+            
+            const target = this.getValAt(ws, rStart + 1, 14); // O
+
+            if (p1Name || p2Name || p1Unit || p2Unit) {
+                matches.push({
+                    matchId: `M-1/8-${i + 1}`,
+                    type: 'Individual', group, round: '1/8',
+                    player1: p1Name || p1Unit || 'TBD',
+                    player2: p2Name || p2Unit || 'TBD',
+                    unit1: p1Unit, unit2: p2Unit,
+                    score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                });
+            }
+        }
+
+        // 1/4 Round
+        for (let i = 0; i < 4; i++) {
+            const rStart = 9 + (i * 8); // Match 1 P1 is at Index 9 (Row 10)
+            
+            const p1Unit = this.getValAt(ws, rStart, 18); // S
+            const p1Name = this.getValAt(ws, rStart, 19); // T
+            const p2Unit = this.getValAt(ws, rStart + 4, 18);
+            const p2Name = this.getValAt(ws, rStart + 4, 19);
+            
+            const target = this.getValAt(ws, rStart + 2, 20); // U
+
+            if (p1Name || p2Name || p1Unit || p2Unit) {
+                matches.push({
+                    matchId: `M-1/4-${i + 1}`,
+                    type: 'Individual', group, round: '1/4',
+                    player1: p1Name || p1Unit || 'TBD',
+                    player2: p2Name || p2Unit || 'TBD',
+                    unit1: p1Unit, unit2: p2Unit,
+                    score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                });
+            }
+        }
+
         return matches;
     }
 
-    // 步驟 2：蝴蝶式解析器 (Team) - Placeholder
+    // 步驟 2：蝴蝶式解析器 (Team) - Absolute Coordinates
     parseTeamBracket(ws, group) {
         const matches = [];
-        // To be implemented in Step 2
+
+        // 1/4 Round Left Wing
+        for (let i = 0; i < 2; i++) {
+            const rStart = 3 + (i * 8); // Index 3 (Row 4), then Index 11 (Row 12)
+            
+            const p1Unit = this.getValAt(ws, rStart, 8); // I
+            const p1Name = this.getValAt(ws, rStart, 9); // J
+            const p2Unit = this.getValAt(ws, rStart + 4, 8);
+            const p2Name = this.getValAt(ws, rStart + 4, 9);
+            
+            const target = this.getValAt(ws, rStart + 2, 10); // K
+
+            if (p1Unit || p2Unit || p1Name || p2Name) {
+                matches.push({
+                    matchId: `MT-1/4-L${i + 1}`,
+                    type: 'Team', group, round: '1/4',
+                    player1: p1Unit || 'TBD', // Teams use unit name as primary identifier
+                    player2: p2Unit || 'TBD',
+                    names1: p1Name, names2: p2Name,
+                    score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                });
+            }
+        }
+
+        // 1/4 Round Right Wing
+        for (let i = 0; i < 2; i++) {
+            const rStart = 3 + (i * 8); // Index 3 (Row 4), then Index 11 (Row 12)
+            
+            const p1Unit = this.getValAt(ws, rStart, 31); // AF
+            const p1Name = this.getValAt(ws, rStart, 30); // AE
+            const p2Unit = this.getValAt(ws, rStart + 4, 31);
+            const p2Name = this.getValAt(ws, rStart + 4, 30);
+            
+            const target = this.getValAt(ws, rStart + 2, 28); // AC
+
+            if (p1Unit || p2Unit || p1Name || p2Name) {
+                matches.push({
+                    matchId: `MT-1/4-R${i + 1}`,
+                    type: 'Team', group, round: '1/4',
+                    player1: p1Unit || 'TBD',
+                    player2: p2Unit || 'TBD',
+                    names1: p1Name, names2: p2Name,
+                    score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                });
+            }
+        }
+
         return matches;
     }
 
