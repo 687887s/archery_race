@@ -172,15 +172,15 @@ export class DataHandler {
             });
         }
 
-        // 1/2 Round (2 matches)
-        // P1 R14, P2 R22, Target R18
+        // 1/2 Round (2 matches) - 起始於 Row 12 (Index 11)
+        // 每場跨越 16 列 (P1 R12, P2 R20, Target R15/R17)
         for (let i = 0; i < 2; i++) {
-            const rBase = 13 + (i * 16); // Row 14, 30
+            const rBase = 11 + (i * 16); // Row 12, 28
             const p1Unit = this.getValAt(ws, rBase, 20); // Col U (Index 20)
             const p1Name = this.getValAt(ws, rBase, 21); // Col V (Index 21)
-            const p2Unit = this.getValAt(ws, rBase + 8, 20); // Row 22, 38
+            const p2Unit = this.getValAt(ws, rBase + 8, 20); // Row 20, 36...
             const p2Name = this.getValAt(ws, rBase + 8, 21);
-            const target = this.getValAt(ws, rBase + 4, 22); // Row 18, 34... Col W (Index 22)
+            const target = this.getValAt(ws, rBase + 3, 22); // Row 15, 31... Col W (Index 22)
 
             matches.push({
                 matchId: `M-1/2-${i + 1}`,
