@@ -192,30 +192,37 @@ export class DataHandler {
             });
         }
 
-        // Final & Bronze (1 match each) - 匯聚於 Row 18 (Index 17)
-        // P1 R18, P2 R26 (Bronze通常在下方)
-        const g_rBase = 17; // Row 18
-        const gP1Unit = this.getValAt(ws, g_rBase, 24); // Col Y (Index 24)
-        const gP1Name = this.getValAt(ws, g_rBase, 25); // Col Z (Index 25)
-        const gP2Unit = this.getValAt(ws, g_rBase + 4, 24); // Row 22 (推測)
-        const gP2Name = this.getValAt(ws, g_rBase + 4, 25);
+        // Final & Bronze (1 match each)
+        // Gold: P1 R16, P2 R32, Target R23, Col AA
+        const gP1Unit = this.getValAt(ws, 15, 24); // Row 16, Col Y (24)
+        const gP1Name = this.getValAt(ws, 15, 25); // Row 16, Col Z (25)
+        const gP2Unit = this.getValAt(ws, 31, 24); // Row 32, Col Y (24)
+        const gP2Name = this.getValAt(ws, 31, 25); // Row 32, Col Z (25)
+        const gTarget = this.getValAt(ws, 22, 26); // Row 23, Col AA (26)
         
         matches.push({
             matchId: `M-Final-1`,
             type: 'Individual', group, round: 'Final',
             player1: gP1Name || gP1Unit || 'TBD',
             player2: gP2Name || gP2Unit || 'TBD',
-            score1: 0, score2: 0, winner: '', target: '', isSeed: false
+            unit1: gP1Unit, unit2: gP2Unit,
+            score1: 0, score2: 0, winner: '', target: gTarget || '', isSeed: false
         });
 
-        const bP1Name = this.getValAt(ws, 25, 25); // Row 26 (推測銅牌)
-        const bP2Name = this.getValAt(ws, 29, 25); // Row 30
+        // Bronze: P1 R38, P2 R42, Target R39, Col AA
+        const bP1Unit = this.getValAt(ws, 37, 24); // Row 38, Col Y (24)
+        const bP1Name = this.getValAt(ws, 37, 25); // Row 38, Col Z (25)
+        const bP2Unit = this.getValAt(ws, 41, 24); // Row 42, Col Y (24)
+        const bP2Name = this.getValAt(ws, 41, 25); // Row 42, Col Z (25)
+        const bTarget = this.getValAt(ws, 38, 26); // Row 39, Col AA (26)
+        
         matches.push({
             matchId: `M-Final-2`,
             type: 'Individual', group, round: 'Bronze',
-            player1: bP1Name || 'TBD',
-            player2: bP2Name || 'TBD',
-            score1: 0, score2: 0, winner: '', target: '', isSeed: false
+            player1: bP1Name || bP1Unit || 'TBD',
+            player2: bP2Name || bP2Unit || 'TBD',
+            unit1: bP1Unit, unit2: bP2Unit,
+            score1: 0, score2: 0, winner: '', target: bTarget || '', isSeed: false
         });
 
         return matches;
