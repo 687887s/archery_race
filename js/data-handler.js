@@ -143,13 +143,15 @@ export class DataHandler {
             const s1 = parseInt(this.getValAt(ws, rStart, 14)) || 0; // Col O (Index 14)
             const s2 = parseInt(this.getValAt(ws, rStart + 2, 14)) || 0;
 
+            const winner = (s1 > s2) ? (p1Name || p1Unit || 'TBD') : ((s2 > s1) ? (p2Name || p2Unit || 'TBD') : ((s1 > 0 || s2 > 0) ? '平手' : ''));
+
             matches.push({
                 matchId: `M-1/8-${i + 1}`,
                 type: 'Individual', group, round: '1/8',
                 player1: p1Name || p1Unit || 'TBD',
                 player2: p2Name || p2Unit || 'TBD',
                 unit1: p1Unit, unit2: p2Unit,
-                score1: s1, score2: s2, winner: '', target: target || '', isSeed: false
+                score1: s1, score2: s2, winner: winner, target: target || '', isSeed: false
             });
         }
 
@@ -171,13 +173,15 @@ export class DataHandler {
             const s1 = parseInt(this.getValAt(ws, rBase, 18)) || 0; // Col S (Index 18)
             const s2 = parseInt(this.getValAt(ws, rBase + 4, 18)) || 0;
 
+            const winner = (s1 > s2) ? (p1Name || p1Unit || 'TBD') : ((s2 > s1) ? (p2Name || p2Unit || 'TBD') : ((s1 > 0 || s2 > 0) ? '平手' : ''));
+
             matches.push({
                 matchId: `M-1/4-${i + 1}`,
                 type: 'Individual', group, round: '1/4',
                 player1: p1Name || p1Unit || 'TBD',
                 player2: p2Name || p2Unit || 'TBD',
                 unit1: p1Unit, unit2: p2Unit,
-                score1: s1, score2: s2, winner: '', target: target || '', isSeed: false
+                score1: s1, score2: s2, winner: winner, target: target || '', isSeed: false
             });
         }
 
@@ -195,13 +199,15 @@ export class DataHandler {
             const s1 = parseInt(this.getValAt(ws, rBase, 22)) || 0; // Col W (Index 22)
             const s2 = parseInt(this.getValAt(ws, rBase + 8, 22)) || 0;
 
+            const winner = (s1 > s2) ? (p1Name || p1Unit || 'TBD') : ((s2 > s1) ? (p2Name || p2Unit || 'TBD') : ((s1 > 0 || s2 > 0) ? '平手' : ''));
+
             matches.push({
                 matchId: `M-1/2-${i + 1}`,
                 type: 'Individual', group, round: '1/2',
                 player1: p1Name || p1Unit || 'TBD',
                 player2: p2Name || p2Unit || 'TBD',
                 unit1: p1Unit, unit2: p2Unit,
-                score1: s1, score2: s2, winner: '', target: target, isSeed: false
+                score1: s1, score2: s2, winner: winner, target: target, isSeed: false
             });
         }
 
@@ -217,13 +223,15 @@ export class DataHandler {
         const gS1 = parseInt(this.getValAt(ws, 15, 26)) || 0; // Col AA
         const gS2 = parseInt(this.getValAt(ws, 31, 26)) || 0;
 
+        const gWinner = (gS1 > gS2) ? (gP1Name || gP1Unit || 'TBD') : ((gS2 > gS1) ? (gP2Name || gP2Unit || 'TBD') : ((gS1 > 0 || gS2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `M-Final-1`,
             type: 'Individual', group, round: 'Final',
             player1: gP1Name || gP1Unit || 'TBD',
             player2: gP2Name || gP2Unit || 'TBD',
             unit1: gP1Unit, unit2: gP2Unit,
-            score1: gS1, score2: gS2, winner: '', target: gTarget, isSeed: false
+            score1: gS1, score2: gS2, winner: gWinner, target: gTarget, isSeed: false
         });
 
         // Bronze: P1 R38, P2 R42, Target R39, Col AA
@@ -237,13 +245,15 @@ export class DataHandler {
         const bS1 = parseInt(this.getValAt(ws, 37, 26)) || 0; // Col AA
         const bS2 = parseInt(this.getValAt(ws, 41, 26)) || 0;
 
+        const bWinner = (bS1 > bS2) ? (bP1Name || bP1Unit || 'TBD') : ((bS2 > bS1) ? (bP2Name || bP2Unit || 'TBD') : ((bS1 > 0 || bS2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `M-Final-2`,
             type: 'Individual', group, round: 'Bronze',
             player1: bP1Name || bP1Unit || 'TBD',
             player2: bP2Name || bP2Unit || 'TBD',
             unit1: bP1Unit, unit2: bP2Unit,
-            score1: bS1, score2: bS2, winner: '', target: bTarget, isSeed: false
+            score1: bS1, score2: bS2, winner: bWinner, target: bTarget, isSeed: false
         });
 
         return matches;
