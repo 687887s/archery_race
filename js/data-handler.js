@@ -130,16 +130,15 @@ export class DataHandler {
     parseIndividualBracket(ws, group) {
         const matches = [];
 
-        // 1/8 Round (8 matches)
+        // 1/8 Round (8 matches) - OK (Y軸間隔4, X欄12/13)
         for (let i = 0; i < 8; i++) {
-            const rStart = 8 + (i * 4); // Match 1 P1 is at Index 8 (Row 9)
+            const rStart = 10 + (i * 4); // Row 11, 15, 19, 23, 27, 31, 35, 39
             
-            const p1Unit = this.getValAt(ws, rStart, 12); // M
-            const p1Name = this.getValAt(ws, rStart, 13); // N
-            const p2Unit = this.getValAt(ws, rStart + 2, 12);
-            const p2Name = this.getValAt(ws, rStart + 2, 13);
-            
-            const target = this.getValAt(ws, rStart, 11); // L
+            const p1Unit = this.getValAt(ws, rStart - 1, 12); // Row 10, Col M (Index 12)
+            const p1Name = this.getValAt(ws, rStart - 1, 13); // Row 10, Col N (Index 13)
+            const p2Unit = this.getValAt(ws, rStart + 1, 12); // Row 12
+            const p2Name = this.getValAt(ws, rStart + 1, 13);
+            const target = this.getValAt(ws, rStart, 11); // Col L (Index 11)
 
             matches.push({
                 matchId: `M-1/8-${i + 1}`,
@@ -151,16 +150,15 @@ export class DataHandler {
             });
         }
 
-        // 1/4 Round (4 matches)
+        // 1/4 Round (4 matches) - OK (Y軸間隔8, X欄16/17)
         for (let i = 0; i < 4; i++) {
-            const rStart = 9 + (i * 8); // Match 1 P1 is at Index 9 (Row 10)
+            const rStart = 12 + (i * 8); // Row 13, 21, 29, 37
             
-            const p1Unit = this.getValAt(ws, rStart, 16); // Q
-            const p1Name = this.getValAt(ws, rStart, 17); // R
-            const p2Unit = this.getValAt(ws, rStart + 4, 16);
-            const p2Name = this.getValAt(ws, rStart + 4, 17);
-            
-            const target = this.getValAt(ws, rStart, 15); // P
+            const p1Unit = this.getValAt(ws, rStart - 1, 16); // Row 12, Col Q (Index 16)
+            const p1Name = this.getValAt(ws, rStart - 1, 17); // Row 12, Col R (Index 17)
+            const p2Unit = this.getValAt(ws, rStart + 3, 16); // Row 16
+            const p2Name = this.getValAt(ws, rStart + 3, 17);
+            const target = this.getValAt(ws, rStart + 1, 15); // Col P (Index 15)
 
             matches.push({
                 matchId: `M-1/4-${i + 1}`,
@@ -172,16 +170,15 @@ export class DataHandler {
             });
         }
 
-        // 1/2 Round (2 matches)
+        // 1/2 Round (2 matches) - OK (Y軸間隔16, X欄20/21)
         for (let i = 0; i < 2; i++) {
-            const rStart = 11 + (i * 16); // Match 1 P1 is at Index 11 (Row 12)
+            const rStart = 16 + (i * 16); // Row 17, 33
             
-            const p1Unit = this.getValAt(ws, rStart, 20); // U
-            const p1Name = this.getValAt(ws, rStart, 21); // V
-            const p2Unit = this.getValAt(ws, rStart + 8, 20); // U
-            const p2Name = this.getValAt(ws, rStart + 8, 21); // V
-            
-            const target = this.getValAt(ws, rStart, 19); // T
+            const p1Unit = this.getValAt(ws, rStart - 1, 20); // Row 16, Col U (Index 20)
+            const p1Name = this.getValAt(ws, rStart - 1, 21); // Row 16, Col V (Index 21)
+            const p2Unit = this.getValAt(ws, rStart + 7, 20); // Row 24
+            const p2Name = this.getValAt(ws, rStart + 7, 21);
+            const target = this.getValAt(ws, rStart + 3, 19); // Col T (Index 19)
 
             matches.push({
                 matchId: `M-1/2-${i + 1}`,
@@ -193,12 +190,12 @@ export class DataHandler {
             });
         }
 
-        // Gold Match (1 match)
-        const gP1Unit = this.getValAt(ws, 15, 24); // Y (Row 16)
-        const gP1Name = this.getValAt(ws, 15, 25); // Z
-        const gP2Unit = this.getValAt(ws, 17, 24); // Y (Row 18)
-        const gP2Name = this.getValAt(ws, 17, 25); // Z
-        const gTarget = this.getValAt(ws, 14, 22); // W (Row 15)
+        // Gold Match (Final)
+        const gP1Unit = this.getValAt(ws, 14, 24); // Row 15, Col Y
+        const gP1Name = this.getValAt(ws, 14, 25); // Row 15, Col Z
+        const gP2Unit = this.getValAt(ws, 30, 24); // Row 31, Col Y
+        const gP2Name = this.getValAt(ws, 30, 25); // Row 31, Col Z
+        const gTarget = this.getValAt(ws, 15, 22); // Row 16, Col W
         matches.push({
             matchId: `M-Final-1`,
             type: 'Individual', group, round: 'Final',
@@ -208,12 +205,12 @@ export class DataHandler {
             score1: 0, score2: 0, winner: '', target: gTarget || '', isSeed: false
         });
 
-        // Bronze Match (1 match)
-        const bP1Unit = this.getValAt(ws, 31, 24); // Y (Row 32)
-        const bP1Name = this.getValAt(ws, 31, 25); // Z
-        const bP2Unit = this.getValAt(ws, 33, 24); // Y (Row 34)
-        const bP2Name = this.getValAt(ws, 33, 25); // Z
-        const bTarget = this.getValAt(ws, 30, 22); // W (Row 31)
+        // Bronze Match
+        const bP1Unit = this.getValAt(ws, 36, 24); // Row 37, Col Y
+        const bP1Name = this.getValAt(ws, 36, 25); // Row 37, Col Z
+        const bP2Unit = this.getValAt(ws, 40, 24); // Row 41, Col Y
+        const bP2Name = this.getValAt(ws, 41, 25); // Row 42, Col Z (偏移修正)
+        const bTarget = this.getValAt(ws, 37, 22); // Row 38, Col W
         matches.push({
             matchId: `M-Final-2`,
             type: 'Individual', group, round: 'Bronze',
@@ -230,37 +227,35 @@ export class DataHandler {
     parseTeamBracket(ws, group) {
         const matches = [];
 
-        // 1/4 Round Left Wing
+        // 1/4 Round Left Wing (2 matches) - Col H/I (7, 8)
         for (let i = 0; i < 2; i++) {
-            const rStart = 3 + (i * 8); // Index 3 (Row 4), then Index 11 (Row 12)
+            const rStart = 4 + (i * 8); // Row 5, 13
             
-            const p1Unit = this.getValAt(ws, rStart, 7); // H
-            const p1Name = this.getValAt(ws, rStart, 8); // I
-            const p2Unit = this.getValAt(ws, rStart + 4, 7); // H
-            const p2Name = this.getValAt(ws, rStart + 4, 8); // I
-            
-            const target = this.getValAt(ws, rStart + 2, 10); // K
+            const p1Unit = this.getValAt(ws, rStart - 1, 7); // Row 4, Col H
+            const p1Name = this.getValAt(ws, rStart - 1, 8); // Row 4, Col I
+            const p2Unit = this.getValAt(ws, rStart + 3, 7); // Row 8
+            const p2Name = this.getValAt(ws, rStart + 3, 8);
+            const target = this.getValAt(ws, rStart + 1, 10); // Col K
 
             matches.push({
                 matchId: `MT-1/4-L${i + 1}`,
                 type: 'Team', group, round: '1/4',
-                player1: p1Unit || 'TBD', // Teams use unit name as primary identifier
+                player1: p1Unit || 'TBD',
                 player2: p2Unit || 'TBD',
                 names1: p1Name, names2: p2Name,
                 score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
             });
         }
 
-        // 1/4 Round Right Wing
+        // 1/4 Round Right Wing (2 matches) - Col AE/AF (30, 31)
         for (let i = 0; i < 2; i++) {
-            const rStart = 3 + (i * 8); // Index 3 (Row 4), then Index 11 (Row 12)
+            const rStart = 4 + (i * 8); // Row 5, 13
             
-            const p1Unit = this.getValAt(ws, rStart, 31); // AF
-            const p1Name = this.getValAt(ws, rStart, 30); // AE
-            const p2Unit = this.getValAt(ws, rStart + 4, 31);
-            const p2Name = this.getValAt(ws, rStart + 4, 30);
-            
-            const target = this.getValAt(ws, rStart + 2, 28); // AC
+            const p1Unit = this.getValAt(ws, rStart - 1, 31); // Row 4, Col AF
+            const p1Name = this.getValAt(ws, rStart - 1, 30); // Row 4, Col AE
+            const p2Unit = this.getValAt(ws, rStart + 3, 31); // Row 8
+            const p2Name = this.getValAt(ws, rStart + 3, 30);
+            const target = this.getValAt(ws, rStart + 1, 28); // Col AC
 
             matches.push({
                 matchId: `MT-1/4-R${i + 1}`,
@@ -272,12 +267,12 @@ export class DataHandler {
             });
         }
 
-        // 1/2 Round Left Wing (1 match)
-        const l12Unit1 = this.getValAt(ws, 7, 11); // L (Row 8)
-        const l12Name1 = this.getValAt(ws, 7, 12); // M
-        const l12Unit2 = this.getValAt(ws, 13, 11); // L (Row 14) -> FIXED FROM 15 TO 13
-        const l12Name2 = this.getValAt(ws, 13, 12); // M -> FIXED FROM 15 TO 13
-        const l12Target = this.getValAt(ws, 11, 16); // Q (Row 12)
+        // 1/2 Round Left Wing (1 match) - Col L/M (11, 12)
+        const l12Unit1 = this.getValAt(ws, 7, 11); // Row 8, Col L
+        const l12Name1 = this.getValAt(ws, 7, 12); // Row 8, Col M
+        const l12Unit2 = this.getValAt(ws, 11, 11); // Row 12, Col L (修正偏移)
+        const l12Name2 = this.getValAt(ws, 11, 12); // Row 12, Col M
+        const l12Target = this.getValAt(ws, 9, 14); // Row 10, Col O
         matches.push({
             matchId: `MT-1/2-L1`,
             type: 'Team', group, round: '1/2',
@@ -287,12 +282,12 @@ export class DataHandler {
             score1: 0, score2: 0, winner: '', target: l12Target || '', isSeed: false
         });
 
-        // 1/2 Round Right Wing (1 match)
-        const r12Unit1 = this.getValAt(ws, 7, 27); // AB
-        const r12Name1 = this.getValAt(ws, 7, 26); // AA
-        const r12Unit2 = this.getValAt(ws, 13, 27); // AB -> FIXED FROM 15 TO 13
-        const r12Name2 = this.getValAt(ws, 13, 26); // AA -> FIXED FROM 15 TO 13
-        const r12Target = this.getValAt(ws, 11, 22); // W
+        // 1/2 Round Right Wing (1 match) - Col AA/AB (26, 27)
+        const r12Unit1 = this.getValAt(ws, 7, 27); // Row 8, Col AB
+        const r12Name1 = this.getValAt(ws, 7, 26); // Row 8, Col AA
+        const r12Unit2 = this.getValAt(ws, 11, 27); // Row 12, Col AB
+        const r12Name2 = this.getValAt(ws, 11, 26); // Row 12, Col AA
+        const r12Target = this.getValAt(ws, 9, 24); // Row 10, Col Y
         matches.push({
             matchId: `MT-1/2-R1`,
             type: 'Team', group, round: '1/2',
@@ -302,12 +297,12 @@ export class DataHandler {
             score1: 0, score2: 0, winner: '', target: r12Target || '', isSeed: false
         });
 
-        // Gold Match (1 match)
-        const gUnit1 = this.getValAt(ws, 9, 15); // P (Row 10)
-        const gName1 = this.getValAt(ws, 9, 16); // Q
-        const gUnit2 = this.getValAt(ws, 9, 23); // X
-        const gName2 = this.getValAt(ws, 9, 22); // W
-        const gTarget = this.getValAt(ws, 10, 18); // S (Row 11)
+        // Gold Match (1 match) - Col P/Q (15, 16)
+        const gUnit1 = this.getValAt(ws, 9, 15); // Row 10, Col P
+        const gName1 = this.getValAt(ws, 9, 16); // Row 10, Col Q
+        const gUnit2 = this.getValAt(ws, 9, 23); // Row 10, Col X
+        const gName2 = this.getValAt(ws, 9, 22); // Row 10, Col W
+        const gTarget = this.getValAt(ws, 10, 18); // Row 11, Col S
         matches.push({
             matchId: `MT-Final-1`,
             type: 'Team', group, round: 'Final',
@@ -318,11 +313,11 @@ export class DataHandler {
         });
 
         // Bronze Match (1 match)
-        const bUnit1 = this.getValAt(ws, 13, 15); // P (Row 14)
-        const bName1 = this.getValAt(ws, 13, 16); // Q
-        const bUnit2 = this.getValAt(ws, 13, 23); // X
-        const bName2 = this.getValAt(ws, 13, 22); // W
-        const bTarget = this.getValAt(ws, 14, 18); // S (Row 15)
+        const bUnit1 = this.getValAt(ws, 13, 15); // Row 14, Col P
+        const bName1 = this.getValAt(ws, 13, 16); // Row 14, Col Q
+        const bUnit2 = this.getValAt(ws, 13, 23); // Row 14, Col X
+        const bName2 = this.getValAt(ws, 13, 22); // Row 14, Col W
+        const bTarget = this.getValAt(ws, 15, 18); // Row 16, Col S (修正偏移)
         matches.push({
             matchId: `MT-Final-2`,
             type: 'Team', group, round: 'Bronze',
@@ -424,16 +419,8 @@ export class DataHandler {
                     finalMatches = this.parseIndividualBracket(worksheet, group);
                 }
 
-                // Filter out labels that might have leaked through but keep TBD matches
-                const validMatches = finalMatches.filter(m => {
-                    if (!m.player1) return false;
-                    if (m.player1 === 'TBD') return true;
-                    
-                    const labels = ['姓名', '單位', '參賽單位', '靶位', '總分', '排名', '名次', '單局成績'];
-                    if (labels.some(l => m.player1.includes(l))) return false;
-                    
-                    return m.player1.length >= 1;
-                });
+                // Keep all extracted matches
+                const validMatches = finalMatches.filter(m => m.player1);
 
                 if (isTeam) {
                     results.teamMatches.push(...validMatches);
