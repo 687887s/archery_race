@@ -133,7 +133,7 @@ export class DataHandler {
         // 1/8 Round (8 matches) - OK (Y軸間隔4, X欄12/13)
         for (let i = 0; i < 8; i++) {
             const rStart = 10 + (i * 4); // Row 11, 15, 19, 23, 27, 31, 35, 39
-            
+
             const p1Unit = this.getValAt(ws, rStart - 1, 12); // Row 10, Col M (Index 12)
             const p1Name = this.getValAt(ws, rStart - 1, 13); // Row 10, Col N (Index 13)
             const p2Unit = this.getValAt(ws, rStart + 1, 12); // Row 12
@@ -153,7 +153,7 @@ export class DataHandler {
         // 1/4 Round (4 matches) - OK (Y軸間隔8, X欄16/17)
         for (let i = 0; i < 4; i++) {
             const rStart = 12 + (i * 8); // Row 13, 21, 29, 37
-            
+
             const p1Unit = this.getValAt(ws, rStart - 1, 16); // Row 12, Col Q (Index 16)
             const p1Name = this.getValAt(ws, rStart - 1, 17); // Row 12, Col R (Index 17)
             const p2Unit = this.getValAt(ws, rStart + 3, 16); // Row 16
@@ -173,7 +173,7 @@ export class DataHandler {
         // 1/2 Round (2 matches) - OK (Y軸間隔16, X欄20/21)
         for (let i = 0; i < 2; i++) {
             const rStart = 16 + (i * 16); // Row 17, 33
-            
+
             const p1Unit = this.getValAt(ws, rStart - 1, 20); // Row 16, Col U (Index 20)
             const p1Name = this.getValAt(ws, rStart - 1, 21); // Row 16, Col V (Index 21)
             const p2Unit = this.getValAt(ws, rStart + 7, 20); // Row 24
@@ -233,8 +233,8 @@ export class DataHandler {
             const name1 = this.getValAt(ws, r, nCol);
             const name2 = this.getValAt(ws, r + 1, nCol);
             const name3 = this.getValAt(ws, r + 2, nCol);
-            // 過濾掉 '姓名' 等測試標籤
-            const names = [name1, name2, name3].filter(n => n && n !== 'TBD' && n !== '姓名' && n !== '姓　名').join('/');
+            // 暫時不過濾，以便確認座標正確性
+            const names = [name1, name2, name3].filter(n => n && n !== 'TBD').join('/');
             return { unit: unit || 'TBD', names: names || 'TBD' };
         };
 
