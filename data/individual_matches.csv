@@ -13,8 +13,8 @@ M-1/4-3,Individual,傳統20,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/4-4,Individual,傳統20,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/2-1,Individual,傳統20,1/2,姓名,姓名,單位,單位,0,0,,1,false
 M-1/2-2,Individual,傳統20,1/2,姓名,姓名,單位,單位,0,0,,3,false
-M-Final-1,Individual,傳統20,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,傳統20,Bronze,TBD,TBD,,,0,0,,,false
+M-Final-1,Individual,傳統20,Final,姓名,姓名,單位,單位,0,0,,1,false
+M-Final-2,Individual,傳統20,Bronze,姓名,姓名,單位,單位,0,0,,3,false
 M-1/8-1,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,9,false
 M-1/8-2,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,10,false
 M-1/8-3,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,11,false
@@ -29,8 +29,8 @@ M-1/4-3,Individual,傳統30,1/4,姓名,姓名,單位,單位,0,0,,11,false
 M-1/4-4,Individual,傳統30,1/4,姓名,姓名,單位,單位,0,0,,12,false
 M-1/2-1,Individual,傳統30,1/2,姓名,姓名,單位,單位,0,0,,9,false
 M-1/2-2,Individual,傳統30,1/2,姓名,姓名,單位,單位,0,0,,11,false
-M-Final-1,Individual,傳統30,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,傳統30,Bronze,TBD,TBD,,,0,0,,,false
+M-Final-1,Individual,傳統30,Final,姓名,姓名,單位,單位,0,0,,9,false
+M-Final-2,Individual,傳統30,Bronze,姓名,姓名,單位,單位,0,0,,11,false
 M-1/8-1,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,13,false
 M-1/8-2,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,14,false
 M-1/8-3,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,15,false
@@ -45,8 +45,8 @@ M-1/4-3,Individual,反曲30,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/4-4,Individual,反曲30,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/2-1,Individual,反曲30,1/2,姓名,姓名,單位,單位,0,0,,13,false
 M-1/2-2,Individual,反曲30,1/2,姓名,姓名,單位,單位,0,0,,15,false
-M-Final-1,Individual,反曲30,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,反曲30,Bronze,TBD,TBD,,,0,0,,,false
+M-Final-1,Individual,反曲30,Final,姓名,姓名,單位,單位,0,0,,13,false
+M-Final-2,Individual,反曲30,Bronze,姓名,姓名,單位,單位,0,0,,15,false
 M-1/8-1,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,21,false
 M-1/8-2,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,22,false
 M-1/8-3,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,23,false
@@ -61,5 +61,5 @@ M-1/4-3,Individual,反曲70,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/4-4,Individual,反曲70,1/4,姓名,姓名,單位,單位,0,0,,,false
 M-1/2-1,Individual,反曲70,1/2,姓名,姓名,單位,單位,0,0,,21,false
 M-1/2-2,Individual,反曲70,1/2,姓名,姓名,單位,單位,0,0,,23,false
-M-Final-1,Individual,反曲70,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,反曲70,Bronze,TBD,TBD,,,0,0,,,false
+M-Final-1,Individual,反曲70,Final,姓名,姓名,單位,單位,0,0,,21,false
+M-Final-2,Individual,反曲70,Bronze,姓名,姓名,單位,單位,0,0,,23,false
