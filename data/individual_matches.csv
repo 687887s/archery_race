@@ -1,12 +1,12 @@
 matchId,type,group,round,player1,player2,unit1,unit2,score1,score2,winner,target,isSeed
-M-1/8-1,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,1,false
-M-1/8-2,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,2,false
-M-1/8-3,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,3,false
-M-1/8-4,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,4,false
-M-1/8-5,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,5,false
-M-1/8-6,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,6,false
-M-1/8-7,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,7,false
-M-1/8-8,Individual,傳統20,1/8,姓　名,姓　名,單　位,單　位,0,0,,8,false
+M-1/8-1,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,1,false
+M-1/8-2,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,2,false
+M-1/8-3,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,3,false
+M-1/8-4,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,4,false
+M-1/8-5,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,5,false
+M-1/8-6,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,6,false
+M-1/8-7,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,7,false
+M-1/8-8,Individual,傳統20,1/8,姓名,姓名,單位,單位,0,0,,8,false
 M-1/4-1,Individual,傳統20,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-2,Individual,傳統20,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-3,Individual,傳統20,1/4,TBD,TBD,,,0,0,,,false
@@ -14,15 +14,15 @@ M-1/4-4,Individual,傳統20,1/4,TBD,TBD,,,0,0,,,false
 M-1/2-1,Individual,傳統20,1/2,TBD,TBD,,,0,0,,,false
 M-1/2-2,Individual,傳統20,1/2,TBD,TBD,,,0,0,,,false
 M-Final-1,Individual,傳統20,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,傳統20,Bronze,TBD,姓　名,,,0,0,,,false
-M-1/8-1,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,9,false
-M-1/8-2,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,10,false
-M-1/8-3,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,11,false
-M-1/8-4,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,12,false
-M-1/8-5,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,9,false
-M-1/8-6,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,10,false
-M-1/8-7,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,11,false
-M-1/8-8,Individual,傳統30,1/8,姓　名,姓　名,單　位,單　位,0,0,,12,false
+M-Final-2,Individual,傳統20,Bronze,TBD,姓名,,,0,0,,,false
+M-1/8-1,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,9,false
+M-1/8-2,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,10,false
+M-1/8-3,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,11,false
+M-1/8-4,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,12,false
+M-1/8-5,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,9,false
+M-1/8-6,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,10,false
+M-1/8-7,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,11,false
+M-1/8-8,Individual,傳統30,1/8,姓名,姓名,單位,單位,0,0,,12,false
 M-1/4-1,Individual,傳統30,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-2,Individual,傳統30,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-3,Individual,傳統30,1/4,TBD,TBD,,,0,0,,,false
@@ -30,15 +30,15 @@ M-1/4-4,Individual,傳統30,1/4,TBD,TBD,,,0,0,,,false
 M-1/2-1,Individual,傳統30,1/2,TBD,TBD,,,0,0,,,false
 M-1/2-2,Individual,傳統30,1/2,TBD,TBD,,,0,0,,,false
 M-Final-1,Individual,傳統30,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,傳統30,Bronze,TBD,姓　名,,,0,0,,,false
-M-1/8-1,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,13,false
-M-1/8-2,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,14,false
-M-1/8-3,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,15,false
-M-1/8-4,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,16,false
-M-1/8-5,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,17,false
-M-1/8-6,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,18,false
-M-1/8-7,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,19,false
-M-1/8-8,Individual,反曲30,1/8,姓　名,姓　名,單　位,單　位,0,0,,20,false
+M-Final-2,Individual,傳統30,Bronze,TBD,姓名,,,0,0,,,false
+M-1/8-1,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,13,false
+M-1/8-2,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,14,false
+M-1/8-3,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,15,false
+M-1/8-4,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,16,false
+M-1/8-5,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,17,false
+M-1/8-6,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,18,false
+M-1/8-7,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,19,false
+M-1/8-8,Individual,反曲30,1/8,姓名,姓名,單位,單位,0,0,,20,false
 M-1/4-1,Individual,反曲30,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-2,Individual,反曲30,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-3,Individual,反曲30,1/4,TBD,TBD,,,0,0,,,false
@@ -46,15 +46,15 @@ M-1/4-4,Individual,反曲30,1/4,TBD,TBD,,,0,0,,,false
 M-1/2-1,Individual,反曲30,1/2,TBD,TBD,,,0,0,,,false
 M-1/2-2,Individual,反曲30,1/2,TBD,TBD,,,0,0,,,false
 M-Final-1,Individual,反曲30,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,反曲30,Bronze,TBD,姓　名,,,0,0,,,false
-M-1/8-1,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,21,false
-M-1/8-2,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,22,false
-M-1/8-3,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,23,false
-M-1/8-4,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,24,false
-M-1/8-5,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,25,false
-M-1/8-6,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,26,false
-M-1/8-7,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,27,false
-M-1/8-8,Individual,反曲70,1/8,姓　名,姓　名,單　位,單　位,0,0,,28,false
+M-Final-2,Individual,反曲30,Bronze,TBD,姓名,,,0,0,,,false
+M-1/8-1,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,21,false
+M-1/8-2,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,22,false
+M-1/8-3,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,23,false
+M-1/8-4,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,24,false
+M-1/8-5,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,25,false
+M-1/8-6,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,26,false
+M-1/8-7,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,27,false
+M-1/8-8,Individual,反曲70,1/8,姓名,姓名,單位,單位,0,0,,28,false
 M-1/4-1,Individual,反曲70,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-2,Individual,反曲70,1/4,TBD,TBD,,,0,0,,,false
 M-1/4-3,Individual,反曲70,1/4,TBD,TBD,,,0,0,,,false
@@ -62,4 +62,4 @@ M-1/4-4,Individual,反曲70,1/4,TBD,TBD,,,0,0,,,false
 M-1/2-1,Individual,反曲70,1/2,TBD,TBD,,,0,0,,,false
 M-1/2-2,Individual,反曲70,1/2,TBD,TBD,,,0,0,,,false
 M-Final-1,Individual,反曲70,Final,TBD,TBD,,,0,0,,,false
-M-Final-2,Individual,反曲70,Bronze,TBD,姓　名,,,0,0,,,false
+M-Final-2,Individual,反曲70,Bronze,TBD,姓名,,,0,0,,,false
