@@ -130,7 +130,7 @@ export class DataHandler {
     parseIndividualBracket(ws, group) {
         const matches = [];
 
-        // 1/8 Round
+        // 1/8 Round (8 matches)
         for (let i = 0; i < 8; i++) {
             const rStart = 8 + (i * 4); // Match 1 P1 is at Index 8 (Row 9)
             
@@ -139,7 +139,7 @@ export class DataHandler {
             const p2Unit = this.getValAt(ws, rStart + 2, 12);
             const p2Name = this.getValAt(ws, rStart + 2, 13);
             
-            const target = this.getValAt(ws, rStart + 1, 14); // O
+            const target = this.getValAt(ws, rStart, 11); // L
 
             if (p1Name || p2Name || p1Unit || p2Unit) {
                 matches.push({
@@ -153,7 +153,7 @@ export class DataHandler {
             }
         }
 
-        // 1/4 Round
+        // 1/4 Round (4 matches)
         for (let i = 0; i < 4; i++) {
             const rStart = 9 + (i * 8); // Match 1 P1 is at Index 9 (Row 10)
             
@@ -162,7 +162,7 @@ export class DataHandler {
             const p2Unit = this.getValAt(ws, rStart + 4, 18);
             const p2Name = this.getValAt(ws, rStart + 4, 19);
             
-            const target = this.getValAt(ws, rStart + 2, 20); // U
+            const target = this.getValAt(ws, rStart, 15); // P
 
             if (p1Name || p2Name || p1Unit || p2Unit) {
                 matches.push({
@@ -174,6 +174,63 @@ export class DataHandler {
                     score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
                 });
             }
+        }
+
+        // 1/2 Round (2 matches)
+        for (let i = 0; i < 2; i++) {
+            const rStart = 11 + (i * 16); // Match 1 P1 is at Index 11 (Row 12)
+            
+            const p1Unit = this.getValAt(ws, rStart, 23); // X
+            const p1Name = this.getValAt(ws, rStart, 24); // Y
+            const p2Unit = this.getValAt(ws, rStart + 8, 23); // X
+            const p2Name = this.getValAt(ws, rStart + 8, 24); // Y
+            
+            const target = this.getValAt(ws, rStart, 21); // V
+
+            if (p1Name || p2Name || p1Unit || p2Unit) {
+                matches.push({
+                    matchId: `M-1/2-${i + 1}`,
+                    type: 'Individual', group, round: '1/2',
+                    player1: p1Name || p1Unit || 'TBD',
+                    player2: p2Name || p2Unit || 'TBD',
+                    unit1: p1Unit, unit2: p2Unit,
+                    score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                });
+            }
+        }
+
+        // Gold Match (1 match)
+        const gP1Unit = this.getValAt(ws, 14, 28); // AC (Row 15)
+        const gP1Name = this.getValAt(ws, 14, 29); // AD
+        const gP2Unit = this.getValAt(ws, 16, 28); // AC (Row 17)
+        const gP2Name = this.getValAt(ws, 16, 29); // AD
+        const gTarget = this.getValAt(ws, 15, 26); // AA (Row 16)
+        if (gP1Name || gP2Name || gP1Unit || gP2Unit) {
+            matches.push({
+                matchId: `M-Final-1`,
+                type: 'Individual', group, round: 'Final',
+                player1: gP1Name || gP1Unit || 'TBD',
+                player2: gP2Name || gP2Unit || 'TBD',
+                unit1: gP1Unit, unit2: gP2Unit,
+                score1: 0, score2: 0, winner: '', target: gTarget || '', isSeed: false
+            });
+        }
+
+        // Bronze Match (1 match)
+        const bP1Unit = this.getValAt(ws, 30, 28); // AC (Row 31)
+        const bP1Name = this.getValAt(ws, 30, 29); // AD
+        const bP2Unit = this.getValAt(ws, 32, 28); // AC (Row 33)
+        const bP2Name = this.getValAt(ws, 32, 29); // AD
+        const bTarget = this.getValAt(ws, 31, 26); // AA (Row 32)
+        if (bP1Name || bP2Name || bP1Unit || bP2Unit) {
+            matches.push({
+                matchId: `M-Final-2`,
+                type: 'Individual', group, round: 'Bronze',
+                player1: bP1Name || bP1Unit || 'TBD',
+                player2: bP2Name || bP2Unit || 'TBD',
+                unit1: bP1Unit, unit2: bP2Unit,
+                score1: 0, score2: 0, winner: '', target: bTarget || '', isSeed: false
+            });
         }
 
         return matches;
@@ -227,6 +284,74 @@ export class DataHandler {
                     score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
                 });
             }
+        }
+
+        // 1/2 Round Left Wing (1 match)
+        const l12Unit1 = this.getValAt(ws, 7, 11); // L (Row 8)
+        const l12Name1 = this.getValAt(ws, 7, 12); // M
+        const l12Unit2 = this.getValAt(ws, 15, 11); // L (Row 16)
+        const l12Name2 = this.getValAt(ws, 15, 12); // M
+        const l12Target = this.getValAt(ws, 11, 16); // Q (Row 12)
+        if (l12Unit1 || l12Unit2 || l12Name1 || l12Name2) {
+            matches.push({
+                matchId: `MT-1/2-L1`,
+                type: 'Team', group, round: '1/2',
+                player1: l12Unit1 || 'TBD',
+                player2: l12Unit2 || 'TBD',
+                names1: l12Name1, names2: l12Name2,
+                score1: 0, score2: 0, winner: '', target: l12Target || '', isSeed: false
+            });
+        }
+
+        // 1/2 Round Right Wing (1 match)
+        const r12Unit1 = this.getValAt(ws, 7, 27); // AB
+        const r12Name1 = this.getValAt(ws, 7, 26); // AA
+        const r12Unit2 = this.getValAt(ws, 15, 27); // AB
+        const r12Name2 = this.getValAt(ws, 15, 26); // AA
+        const r12Target = this.getValAt(ws, 11, 22); // W
+        if (r12Unit1 || r12Unit2 || r12Name1 || r12Name2) {
+            matches.push({
+                matchId: `MT-1/2-R1`,
+                type: 'Team', group, round: '1/2',
+                player1: r12Unit1 || 'TBD',
+                player2: r12Unit2 || 'TBD',
+                names1: r12Name1, names2: r12Name2,
+                score1: 0, score2: 0, winner: '', target: r12Target || '', isSeed: false
+            });
+        }
+
+        // Gold Match (1 match)
+        const gUnit1 = this.getValAt(ws, 8, 14); // O (Row 9)
+        const gName1 = this.getValAt(ws, 8, 15); // P
+        const gUnit2 = this.getValAt(ws, 8, 22); // W
+        const gName2 = this.getValAt(ws, 8, 21); // V
+        const gTarget = this.getValAt(ws, 10, 18); // S (Row 11)
+        if (gUnit1 || gUnit2 || gName1 || gName2) {
+            matches.push({
+                matchId: `MT-Final-1`,
+                type: 'Team', group, round: 'Final',
+                player1: gUnit1 || 'TBD',
+                player2: gUnit2 || 'TBD',
+                names1: gName1, names2: gName2,
+                score1: 0, score2: 0, winner: '', target: gTarget || '', isSeed: false
+            });
+        }
+
+        // Bronze Match (1 match)
+        const bUnit1 = this.getValAt(ws, 12, 14); // O (Row 13)
+        const bName1 = this.getValAt(ws, 12, 15); // P
+        const bUnit2 = this.getValAt(ws, 12, 22); // W
+        const bName2 = this.getValAt(ws, 12, 21); // V
+        const bTarget = this.getValAt(ws, 14, 18); // S (Row 15)
+        if (bUnit1 || bUnit2 || bName1 || bName2) {
+            matches.push({
+                matchId: `MT-Final-2`,
+                type: 'Team', group, round: 'Bronze',
+                player1: bUnit1 || 'TBD',
+                player2: bUnit2 || 'TBD',
+                names1: bName1, names2: bName2,
+                score1: 0, score2: 0, winner: '', target: bTarget || '', isSeed: false
+            });
         }
 
         return matches;
