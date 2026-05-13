@@ -5,7 +5,7 @@ export function renderBracket(containerId, matches) {
     // Group matches by round using a mapping
     const rounds = {};
     const roundMapping = {
-        'Final': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32
+        'Final': 1, 'Bronze': 1, '1/2': 2, '1/4': 4, '1/8': 8, '1/16': 16, '1/32': 32
     };
 
     matches.forEach(match => {

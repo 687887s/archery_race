@@ -424,10 +424,16 @@ export class DataHandler {
                     finalMatches = this.parseIndividualBracket(worksheet, group);
                 }
 
-                // Filter out labels that might have leaked through
-                const validMatches = finalMatches.filter(m =>
-                    m.player1 && m.player1 !== 'TBD' && m.player1.length >= 2
-                );
+                // Filter out labels that might have leaked through but keep TBD matches
+                const validMatches = finalMatches.filter(m => {
+                    if (!m.player1) return false;
+                    if (m.player1 === 'TBD') return true;
+                    
+                    const labels = ['姓名', '單位', '參賽單位', '靶位', '總分', '排名', '名次', '單局成績'];
+                    if (labels.some(l => m.player1.includes(l))) return false;
+                    
+                    return m.player1.length >= 1;
+                });
 
                 if (isTeam) {
                     results.teamMatches.push(...validMatches);
