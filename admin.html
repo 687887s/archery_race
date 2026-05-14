@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-11 17:08 -->
+    <!-- Last Build: 2026-05-15 01:25 (v1.5.4-31) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.4.5">
+    <link rel="stylesheet" href="css/style.css?v=1.5.4-31">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -37,9 +37,17 @@
             background: var(--sidebar-bg);
             padding: 3rem;
             border-radius: 1rem;
-            width: 400px;
-            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
             text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* 強制將 Admin 介面文字設為黑色 */
+        #admin-ui, #admin-ui *, 
+        .admin-table input, 
+        .admin-table select {
+            color: #000000 !important;
         }
 
         .input-group {
@@ -61,7 +69,7 @@
             border-radius: 0.5rem;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            color: white;
+            color: black;
             outline: none;
         }
 
@@ -188,8 +196,8 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-30</span></h1>
-                <p style="color: var(--text-secondary)">CGU x CGUST 賽事數據即時管理系統</p>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-31</span></h1>
+                <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
                 <input type="file" id="full-excel-import" accept=".xlsx" style="display: none;">
