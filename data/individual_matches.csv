@@ -13,7 +13,7 @@ M-1/4-3,Individual,傳統20,1/4,姓名3,姓名,單位3,單位,1,0,姓名3,5/6,fa
 M-1/4-4,Individual,傳統20,1/4,姓名7,姓名,單位7,單位,1,0,姓名7,7/8,false
 M-1/2-1,Individual,傳統20,1/2,姓名1,姓名5,單位1,單位5,1,0,姓名1,1/2,false
 M-1/2-2,Individual,傳統20,1/2,姓名3,姓名7,單位3,單位7,1,0,姓名3,3/4,false
-M-Final-1,Individual,傳統20,Final,姓名1,姓名3,單位1,單位3,1,0,姓名1,,false
+M-Final-1,Individual,傳統20,Final,姓名1,姓名3,單位1,單位3,1,0,姓名1,1/2,false
 M-Final-2,Individual,傳統20,Bronze,姓名5,姓名7,單位5,單位7,1,0,姓名5,3/4,false
 M-1/8-1,Individual,傳統30,1/8,姓名,姓名,單位,單位,1,0,姓名,9,false
 M-1/8-2,Individual,傳統30,1/8,姓名,姓名,單位,單位,1,0,姓名,10,false
@@ -29,7 +29,7 @@ M-1/4-3,Individual,傳統30,1/4,姓名,姓名,單位,單位,1,0,姓名,11,false
 M-1/4-4,Individual,傳統30,1/4,姓名,姓名,單位,單位,1,0,姓名,12,false
 M-1/2-1,Individual,傳統30,1/2,姓名,姓名,單位,單位,1,0,姓名,9/10,false
 M-1/2-2,Individual,傳統30,1/2,姓名,姓名,單位,單位,1,0,姓名,11/12,false
-M-Final-1,Individual,傳統30,Final,姓名,姓名,單位,單位,1,0,姓名,,false
+M-Final-1,Individual,傳統30,Final,姓名,姓名,單位,單位,1,0,姓名,9/10,false
 M-Final-2,Individual,傳統30,Bronze,姓名,姓名,單位,單位,1,0,姓名,11/12,false
 M-1/8-1,Individual,反曲30,1/8,姓名,姓名,單位,單位,1,0,姓名,13,false
 M-1/8-2,Individual,反曲30,1/8,姓名,姓名,單位,單位,1,0,姓名,14,false
@@ -45,7 +45,7 @@ M-1/4-3,Individual,反曲30,1/4,姓名,姓名,單位,單位,1,0,姓名,17/18,fal
 M-1/4-4,Individual,反曲30,1/4,姓名,姓名,單位,單位,1,0,姓名,19/20,false
 M-1/2-1,Individual,反曲30,1/2,姓名,姓名,單位,單位,1,0,姓名,13/14,false
 M-1/2-2,Individual,反曲30,1/2,姓名,姓名,單位,單位,1,0,姓名,15/16,false
-M-Final-1,Individual,反曲30,Final,姓名,姓名,單位,單位,1,0,姓名,,false
+M-Final-1,Individual,反曲30,Final,姓名,姓名,單位,單位,1,0,姓名,13/14,false
 M-Final-2,Individual,反曲30,Bronze,姓名,姓名,單位,單位,1,0,姓名,15/16,false
 M-1/8-1,Individual,反曲70,1/8,姓名,姓名,單位,單位,1,0,姓名,21,false
 M-1/8-2,Individual,反曲70,1/8,姓名,姓名,單位,單位,1,0,姓名,22,false
@@ -61,5 +61,5 @@ M-1/4-3,Individual,反曲70,1/4,姓名,姓名,單位,單位,1,0,姓名,25/26,fal
 M-1/4-4,Individual,反曲70,1/4,姓名,姓名,單位,單位,1,0,姓名,27/28,false
 M-1/2-1,Individual,反曲70,1/2,姓名,姓名,單位,單位,1,0,姓名,21/22,false
 M-1/2-2,Individual,反曲70,1/2,姓名,姓名,單位,單位,1,0,姓名,23/24,false
-M-Final-1,Individual,反曲70,Final,姓名,姓名,單位,單位,1,0,姓名,,false
+M-Final-1,Individual,反曲70,Final,姓名,姓名,單位,單位,1,0,姓名,21/22,false
 M-Final-2,Individual,反曲70,Bronze,姓名,姓名,單位,單位,1,0,姓名,23/24,false
