@@ -277,33 +277,32 @@ table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
-    table-layout: auto;
+    table-layout: fixed; /* 強制固定佈局，由百分比決定寬度 */
 }
 
 th, td {
     padding: 1rem;
     border-bottom: 1px solid var(--glass-border);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; /* 強制不換行，配合 ellipsis 處理長字 */
 }
 
-/* 固定寬度欄位：確保數字類資訊位置穩定 */
-th:nth-child(1), td:nth-child(1) { width: 60px; text-align: center; } /* 排名 */
-th:nth-child(2), td:nth-child(2) { width: 70px; }                     /* 編號 */
-th:nth-child(5), td:nth-child(5) { width: 80px; text-align: center; } /* 靶位 */
-th:nth-child(6), td:nth-child(6) { width: 90px; text-align: center; }  /* 單局成績 */
-th:nth-child(7), td:nth-child(7) { width: 80px; text-align: center; }  /* 總分 */
-th:nth-child(8), td:nth-child(8) { width: 50px; text-align: center; }  /* X */
-th:nth-child(9), td:nth-child(9) { width: 60px; text-align: center; }  /* 10+X */
-
-/* 彈性寬度欄位：容納不同長度的單位與姓名 */
-th:nth-child(3), td:nth-child(3) { min-width: 160px; }                /* 單位 */
-th:nth-child(4), td:nth-child(4) { min-width: 100px; width: 15%; }    /* 姓名 */
+/* 絕對百分比比例分配 */
+th:nth-child(1), td:nth-child(1) { width: 6%; text-align: center; }  /* 排名 */
+th:nth-child(2), td:nth-child(2) { width: 8%; }                     /* 編號 */
+th:nth-child(3), td:nth-child(3) { width: 30%; }                    /* 單位 */
+th:nth-child(4), td:nth-child(4) { width: 14%; }                    /* 姓名 */
+th:nth-child(5), td:nth-child(5) { width: 8%; text-align: center; }  /* 靶位 */
+th:nth-child(6), td:nth-child(6) { width: 12%; text-align: center; } /* 成績 */
+th:nth-child(7), td:nth-child(7) { width: 10%; text-align: center; } /* 總分 */
+th:nth-child(8), td:nth-child(8) { width: 6%; text-align: center; }  /* X */
+th:nth-child(9), td:nth-child(9) { width: 6%; text-align: center; }  /* 10+X */
 
 td {
     padding: 1.15rem 1rem;
     color: var(--text-primary);
     font-size: 0.9rem;
-    white-space: normal;
-    word-break: break-all;
 }
 
 tr:last-child td {
