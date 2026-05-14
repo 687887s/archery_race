@@ -165,7 +165,7 @@ export class DataHandler {
             const tMid = this.getValAt(ws, rBase + 2, 18); // Row 12...
             const tAbove = this.getValAt(ws, rBase + 1, 18); // Row 11...
             const tBelow = this.getValAt(ws, rBase + 3, 18); // Row 13...
-            
+
             // Reordered: prioritize dual targets and filter "None"
             const ck = (v) => (v && v !== 'None') ? v : '';
             const m = ck(tMid), a = ck(tAbove), b = ck(tBelow);
@@ -195,7 +195,7 @@ export class DataHandler {
             const t1 = this.getValAt(ws, rBase + 3, 22); // Row 15, 31...
             const t2 = this.getValAt(ws, rBase + 5, 22); // Row 17, 33...
             const target = (t1 && t2 && t1 !== t2) ? `${t1}/${t2}` : (t1 || t2 || '');
-            
+
             const s1 = parseInt(this.getValAt(ws, rBase, 22)) || 0; // Col W (Index 22)
             const s2 = parseInt(this.getValAt(ws, rBase + 8, 22)) || 0;
 
@@ -279,11 +279,11 @@ export class DataHandler {
             const rStart = 3 + (i * 8); // Row 4, 12
             const t1 = getTeamInfo(rStart, 7, 8); // H, I
             const t2 = getTeamInfo(rStart + 4, 7, 8); // Row 8, 16
-            
+
             const s1 = parseInt(this.getValAt(ws, rStart, 9)) || 0; // Col J (9)
             const s2 = parseInt(this.getValAt(ws, rStart + 4, 9)) || 0;
             const winner = (s1 > s2) ? t1.unit : ((s2 > s1) ? t2.unit : ((s1 > 0 || s2 > 0) ? '平手' : ''));
-            
+
             const ta = ck(this.getValAt(ws, rStart + 2, 10)); // Row 6, Col K
             const tb = ck(this.getValAt(ws, rStart + 5, 10)); // Row 9, Col K (Wait, check scan)
             // Fallback for Team 1/4: Row 6/8
@@ -305,11 +305,11 @@ export class DataHandler {
             const rStart = 3 + (i * 8);
             const t1 = getTeamInfo(rStart, 31, 30); // AF, AE
             const t2 = getTeamInfo(rStart + 4, 31, 30);
-            
+
             const s1 = parseInt(this.getValAt(ws, rStart, 29)) || 0; // Col AD
             const s2 = parseInt(this.getValAt(ws, rStart + 4, 29)) || 0;
             const winner = (s1 > s2) ? t1.unit : ((s2 > s1) ? t2.unit : ((s1 > 0 || s2 > 0) ? '平手' : ''));
-            
+
             const tAbove = ck(this.getValAt(ws, rStart + 2, 28)); // Col AC
             const tBelow = ck(this.getValAt(ws, rStart + 4, 28));
             const target = (tAbove && tBelow && tAbove !== tBelow) ? `${tAbove}/${tBelow}` : (tAbove || tBelow || '');
@@ -363,7 +363,7 @@ export class DataHandler {
         const g_t1 = getTeamInfo(9, 15, 16); // Row 10, Col P, Q
         const g_t2 = getTeamInfo(9, 23, 22); // Row 10, Col X, W
         const g_s1 = parseInt(this.getValAt(ws, 9, 17)) || 0; // Col R
-        const g_s2 = parseInt(this.getValAt(ws, 13, 17)) || 0;
+        const g_s2 = parseInt(this.getValAt(ws, 9, 21)) || 0;
         const g_winner = (g_s1 > g_s2) ? g_t1.unit : ((g_s2 > g_s1) ? g_t2.unit : ((g_s1 > 0 || g_s2 > 0) ? '平手' : ''));
         const g_ta = ck(this.getValAt(ws, 10, 18)); // Row 11, Col S
         const g_tb = ck(this.getValAt(ws, 10, 20)); // Row 11, Col U
@@ -381,7 +381,7 @@ export class DataHandler {
         const b_t1 = getTeamInfo(13, 15, 16); // Row 14, Col P, Q
         const b_t2 = getTeamInfo(13, 23, 22);
         const b_s1 = parseInt(this.getValAt(ws, 13, 17)) || 0; // Col R
-        const b_s2 = parseInt(this.getValAt(ws, 15, 17)) || 0; // Row 16, Col R
+        const b_s2 = parseInt(this.getValAt(ws, 13, 21)) || 0; // Row 16, Col R
         const b_winner = (b_s1 > b_s2) ? b_t1.unit : ((b_s2 > b_s1) ? b_t2.unit : ((b_s1 > 0 || b_s2 > 0) ? '平手' : ''));
         const b_ta = ck(this.getValAt(ws, 14, 18)); // Row 15, Col S
         const b_tb = ck(this.getValAt(ws, 14, 20)); // Row 15, Col U
