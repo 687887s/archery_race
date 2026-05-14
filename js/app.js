@@ -7,7 +7,7 @@ const handler = new DataHandler();
 // App State
 let currentType = 'Individual';
 let currentView = 'standings';
-let currentGroup = 'Recurve-70m';
+let currentGroup = '反曲70';
 
 // UI Elements
 const contentStandings = document.getElementById('content-standings');
