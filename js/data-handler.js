@@ -496,26 +496,71 @@ export class DataHandler {
                     results.individualMatches.push(...validMatches);
                 }
             } else if (sheetName.includes('團體')) {
-                // Process as Team Players
-                const mapped = rawData.map(p => {
-                    const unitVal = this.getVal(p, ['unit', '單位', '參賽單位'], '未知');
-                    const r1 = parseInt(this.getVal(p, ['r1', '單局成績'], 0)) || 0;
-                    return {
-                        id: this.getVal(p, ['id', '編號', '序號', 'No', 'no'], ''),
-                        unit: unitVal,
-                        name: this.getVal(p, ['name', '姓名', '選手'], ''),
-                        target: this.getVal(p, ['target', '靶位'], ''),
-                        r1: r1,
-                        r2: parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0,
-                        total: parseInt(this.getVal(p, ['total', '總分'], r1)) || r1,
-                        rank: this.getVal(p, ['rank', '排名'], ''),
-                        xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
-                        tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
-                        group: group,
-                        team: this.getVal(p, ['team', '隊伍'], unitVal)
-                    };
-                }).filter(p => p.name && p.name.length >= 2 && (parseInt(p.total) > 0 || p.target !== ''));
-                results.team.push(...mapped);
+                // Process as Team Players (Synchronized with 3-row block logic)
+                const teamRawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+                let tHeaderIdx = -1;
+                let tColMap = {};
+                const tFieldKeys = {
+                    unit: ['單位', '所屬單位'],
+                    name: ['姓名', '選手'],
+                    target: ['靶位', '靶號'],
+                    score: ['單局 成績', '成績'],
+                    total: ['總分', '團體總分', '積分'],
+                    rank: ['排名', '團體排名'],
+                    xCount: ['X總數', 'X'],
+                    tenXCount: ['10+X']
+                };
+
+                for (let i = 0; i < Math.min(teamRawRows.length, 15); i++) {
+                    const row = teamRawRows[i];
+                    if (row && row.some(cell => cell && cell.toString().replace(/\s/g, '').includes('姓名'))) {
+                        tHeaderIdx = i;
+                        Object.keys(tFieldKeys).forEach(field => {
+                            const idx = row.findIndex(cell => {
+                                if (!cell) return false;
+                                const cleanCell = cell.toString().replace(/[\r\n\s\t]/g, '');
+                                return tFieldKeys[field].some(tk => cleanCell.includes(tk));
+                            });
+                            if (idx !== -1) tColMap[field] = idx;
+                        });
+                        break;
+                    }
+                }
+
+                if (tHeaderIdx !== -1) {
+                    for (let i = tHeaderIdx + 1; i < teamRawRows.length; i++) {
+                        const row = teamRawRows[i];
+                        const unitVal = tColMap.unit !== undefined ? (row[tColMap.unit] || "").toString().trim() : "";
+                        if (unitVal !== "" && unitVal !== "None") {
+                            for (let offset = 0; offset < 3; offset++) {
+                                const targetIdx = i + offset;
+                                if (targetIdx >= teamRawRows.length) break;
+                                const mRow = teamRawRows[targetIdx];
+                                const mName = tColMap.name !== undefined ? (mRow[tColMap.name] || "").toString().trim() : "";
+                                if (mName === "" || mName === "None") continue;
+
+                                const s = tColMap.score !== undefined ? parseInt(mRow[tColMap.score] || 0) || 0 : 0;
+                                const t = tColMap.total !== undefined ? parseInt(mRow[tColMap.total] || 0) || s : s;
+
+                                results.team.push({
+                                    id: tColMap.id !== undefined ? (mRow[tColMap.id] || "").toString().trim() : "",
+                                    unit: unitVal,
+                                    name: mName,
+                                    target: tColMap.target !== undefined ? (mRow[tColMap.target] || "").toString().trim() : "",
+                                    r1: s,
+                                    r2: 0,
+                                    total: t,
+                                    rank: tColMap.rank !== undefined ? (mRow[tColMap.rank] || "").toString().trim() : "",
+                                    xCount: tColMap.xCount !== undefined ? parseInt(mRow[tColMap.xCount] || 0) : 0,
+                                    tenXCount: tColMap.tenXCount !== undefined ? parseInt(mRow[tColMap.tenXCount] || 0) : 0,
+                                    group: group,
+                                    team: unitVal
+                                });
+                            }
+                            i += 2;
+                        }
+                    }
+                }
             } else {
                 // Process as Individual Players
                 const mapped = rawData.map((p, idx) => {
