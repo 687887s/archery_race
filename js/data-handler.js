@@ -545,11 +545,10 @@ export class DataHandler {
 
                                 results.team.push({
                                     id: tColMap.id !== undefined ? (mRow[tColMap.id] || "").toString().trim() : "",
-                                    unit: unitVal,
+                                    unit: offset === 0 ? unitVal : "",
                                     name: mName,
                                     target: tColMap.target !== undefined ? (mRow[tColMap.target] || "").toString().trim() : "",
-                                    r1: s,
-                                    r2: 0,
+                                    score: s,
                                     total: t,
                                     rank: tColMap.rank !== undefined ? (mRow[tColMap.rank] || "").toString().trim() : "",
                                     xCount: tColMap.xCount !== undefined ? parseInt(mRow[tColMap.xCount] || 0) : 0,
@@ -720,11 +719,10 @@ export class DataHandler {
                     const t = colMap.total !== undefined ? parseInt(mRow[colMap.total] || 0) || s : s;
 
                     players.push({
-                        unit: unitVal,
+                        unit: offset === 0 ? unitVal : "",
                         name: mName,
                         target: colMap.target !== undefined ? (mRow[colMap.target] || "").toString().trim() : "",
-                        r1: s,
-                        r2: 0,
+                        score: s,
                         total: t,
                         rank: colMap.rank !== undefined ? (mRow[colMap.rank] || "").toString().trim() : "",
                         xCount: colMap.xCount !== undefined ? parseInt(mRow[colMap.xCount] || 0) : 0,
