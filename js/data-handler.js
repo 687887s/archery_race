@@ -1,3 +1,4 @@
+/** v1.5.4-38 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -507,7 +508,7 @@ export class DataHandler {
                         if (!name) continue;
 
                         const score = parseInt(this.getValAt(worksheet, currentRow, 4)) || 0; // Col E
-                        
+
                         results.team.push({
                             id: "",
                             unit: this.getValAt(worksheet, currentRow, 1), // Direct read Col B

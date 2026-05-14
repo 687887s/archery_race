@@ -10,7 +10,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.4-37">
+    <link rel="stylesheet" href="css/style.css?v=1.5.4-38">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -196,7 +196,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-37</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-38</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -404,13 +404,13 @@
 
         function renderAllEditors() {
             const playerKeys = currentAdminMode === 'Individual'
-                ? ['id', 'unit', 'name', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group']
-                : ['id', 'unit', 'name', 'team', 'target', 'r1', 'total', 'rank', 'xCount', 'tenXCount', 'group'];
+                ? ['id', 'unit', 'name', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount', 'group']
+                : ['id', 'unit', 'name', 'team', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount', 'group'];
 
             const head = document.getElementById('players-table-head');
             const labels = {
                 'id': '編號', 'unit': '單位', 'name': '姓名', 'target': '靶位',
-                'r1': '單局成績', 'total': '總分', 'rank': '排名',
+                'score': '單局成績', 'total': '總分', 'rank': '排名',
                 'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍'
             };
             head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
@@ -495,11 +495,10 @@
                         input.addEventListener('input', (e) => {
                             row[key] = e.target.value;
 
-                            // Auto-calculate total if r1 or r2 changes
-                            if (key === 'r1' || key === 'r2') {
-                                const val1 = parseInt(row.r1) || 0;
-                                const val2 = parseInt(row.r2) || 0;
-                                row.total = val1 + val2;
+                            // Auto-calculate total if score changes
+                            if (key === 'score') {
+                                const val = parseInt(row.score) || 0;
+                                row.total = val;
 
                                 const totalInput = tr.querySelector('input[data-key="total"]');
                                 if (totalInput) totalInput.value = row.total;
@@ -570,9 +569,8 @@
                 ];
 
                 for (const target of targets) {
-                    if (target.data && target.data.length > 0) {
-                        await uploadToGithub(target.path, target.data);
-                    }
+                    await uploadToGithub(target.path, target.data || []);
+                    await new Promise(r => setTimeout(r, 500));
                 }
                 showToast('✅ 全場數據同步成功！');
             } catch (err) {

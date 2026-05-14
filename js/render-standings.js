@@ -1,4 +1,4 @@
-/** v1.5.4-37 **/
+/** v1.5.4-38 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -50,13 +50,11 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                 teams[teamName] = { 
                     name: teamName, 
                     unit: unitName, 
-                    id: '-', 
-                    r1: 0, r2: 0, total: 0, 
+                    r1: 0, score: 0, total: 0, 
                     xCount: 0, tenXCount: 0 
                 };
             }
-            teams[teamName].r1 += p.r1;
-            teams[teamName].r2 += p.r2;
+            teams[teamName].score += (p.score || 0);
             teams[teamName].total += p.total;
             teams[teamName].xCount += (p.xCount || 0);
             teams[teamName].tenXCount += (p.tenXCount || 0);
@@ -87,8 +85,8 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             <td>${player.unit}</td>
             <td>${player.name}</td>
             <td style="text-align: center;">${isTeam ? '-' : (player.target || '-')}</td>
-            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}" style="text-align: center;">
-                ${player.r1}
+            <td class="animate-number" data-start="${prevPlayer.score || 0}" data-end="${player.score}" style="text-align: center;">
+                ${player.score}
             </td>
             <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-color); text-align: center;">
                 ${player.total}
