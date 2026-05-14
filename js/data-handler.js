@@ -133,7 +133,7 @@ export class DataHandler {
 
         // 1/8 Round (8 matches) - P1 R9, P2 R11, Target L, Score O
         for (let i = 0; i < 8; i++) {
-            const rStart = 8 + (i * 4); // Index 8, 12... (Row 9, 13...)
+            const rStart = 8 + (i * 4); // v2.1.0 // Index 8, 12... (Row 9, 13...)
             const p1Name = this.getValAt(ws, rStart, 13); // Col N
             const p1Unit = this.getValAt(ws, rStart, 12); // Col M
             const p2Name = this.getValAt(ws, rStart + 2, 13);
@@ -572,8 +572,7 @@ export class DataHandler {
     }
 
     async loadPlayers(file, isPrev = false) {
-        const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
-        const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
+        const data = await this.parseCSV(file);
 
         const mapped = data.map(p => {
             const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '-');
@@ -602,8 +601,7 @@ export class DataHandler {
     }
 
     async loadMatches(file, isPrev = false) {
-        const isExcel = file.name && file.name.toLowerCase().endsWith('.xlsx');
-        const data = isExcel ? await this.parseExcel(file) : await this.parseCSV(file);
+        const data = await this.parseCSV(file);
 
         const mapped = data.map(m => ({
             matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號'], 'TBD'),
