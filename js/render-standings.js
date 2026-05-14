@@ -36,13 +36,26 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             if (!p.team || p.team === '' || p.team === '個人' || p.team === '-') return;
             
             if (!teams[p.team]) {
-                teams[p.team] = { name: p.team, unit: p.unit, r1: 0, r2: 0, total: 0 };
+                teams[p.team] = { 
+                    name: p.team, 
+                    unit: p.unit, 
+                    id: '-', 
+                    r1: 0, r2: 0, total: 0, 
+                    xCount: 0, tenXCount: 0 
+                };
             }
             teams[p.team].r1 += p.r1;
             teams[p.team].r2 += p.r2;
             teams[p.team].total += p.total;
+            teams[p.team].xCount += (p.xCount || 0);
+            teams[p.team].tenXCount += (p.tenXCount || 0);
         });
-        return Object.values(teams).sort((a, b) => b.total - a.total || b.r2 - a.r2);
+        return Object.values(teams).sort((a, b) => 
+            b.total - a.total || 
+            b.r2 - a.r2 || 
+            b.xCount - a.xCount || 
+            b.tenXCount - a.tenXCount
+        );
     };
 
     if (isTeam) {
@@ -62,15 +75,15 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             <td>${player.id || '-'}</td>
             <td>${player.unit}</td>
             <td>${player.name}</td>
-            <td>${player.target || '-'}</td>
-            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}">
+            <td style="text-align: center;">${isTeam ? '-' : (player.target || '-')}</td>
+            <td class="animate-number" data-start="${prevPlayer.r1 || 0}" data-end="${player.r1}" style="text-align: center;">
                 ${player.r1}
             </td>
-            <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-blue)">
+            <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-color); text-align: center;">
                 ${player.total}
             </td>
-            <td>${player.xCount || 0}</td>
-            <td>${player.tenXCount || 0}</td>
+            <td style="text-align: center;">${player.xCount || 0}</td>
+            <td style="text-align: center;">${player.tenXCount || 0}</td>
         `;
         tbody.appendChild(tr);
     });
