@@ -1,4 +1,3 @@
-/** v1.5.4-33 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -497,68 +496,31 @@ export class DataHandler {
                     results.individualMatches.push(...validMatches);
                 }
             } else if (sheetName.includes('團體')) {
-                // Process as Team Players (Synchronized with 3-row block logic)
-                const teamRawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-                let tHeaderIdx = -1;
-                let tColMap = {};
-                const tFieldKeys = {
-                    unit: ['單位', '所屬單位'],
-                    name: ['姓名', '選手'],
-                    target: ['靶位', '靶號'],
-                    score: ['單局 成績', '成績'],
-                    total: ['總分', '團體總分', '積分'],
-                    rank: ['排名', '團體排名'],
-                    xCount: ['X總數', 'X'],
-                    tenXCount: ['10+X']
-                };
+                // Process as Team Players (Locked Coordinates: Row 4, Col B/C/E)
+                for (let r = 3; r < 200; r += 3) {
+                    const unitVal = this.getValAt(worksheet, r, 1); // Col B
+                    if (!unitVal && !this.getValAt(worksheet, r, 2)) break; // Stop if no team or name
 
-                for (let i = 0; i < Math.min(teamRawRows.length, 15); i++) {
-                    const row = teamRawRows[i];
-                    if (row && row.some(cell => cell && cell.toString().replace(/\s/g, '').includes('姓名'))) {
-                        tHeaderIdx = i;
-                        Object.keys(tFieldKeys).forEach(field => {
-                            const idx = row.findIndex(cell => {
-                                if (!cell) return false;
-                                const cleanCell = cell.toString().replace(/[\r\n\s\t]/g, '');
-                                return tFieldKeys[field].some(tk => cleanCell.includes(tk));
-                            });
-                            if (idx !== -1) tColMap[field] = idx;
+                    for (let offset = 0; offset < 3; offset++) {
+                        const currentRow = r + offset;
+                        const name = this.getValAt(worksheet, currentRow, 2); // Col C
+                        if (!name) continue;
+
+                        const score = parseInt(this.getValAt(worksheet, currentRow, 4)) || 0; // Col E
+                        
+                        results.team.push({
+                            id: "",
+                            unit: this.getValAt(worksheet, currentRow, 1), // Direct read Col B
+                            name: name,
+                            target: this.getValAt(worksheet, currentRow, 3), // Col D
+                            score: score,
+                            total: score,
+                            rank: this.getValAt(worksheet, currentRow, 8), // Col I
+                            xCount: parseInt(this.getValAt(worksheet, currentRow, 6)) || 0, // Col G
+                            tenXCount: parseInt(this.getValAt(worksheet, currentRow, 7)) || 0, // Col H
+                            group: group,
+                            team: unitVal || "未知"
                         });
-                        break;
-                    }
-                }
-
-                if (tHeaderIdx !== -1) {
-                    for (let i = tHeaderIdx + 1; i < teamRawRows.length; i++) {
-                        const row = teamRawRows[i];
-                        const unitVal = tColMap.unit !== undefined ? (row[tColMap.unit] || "").toString().trim() : "";
-                        if (unitVal !== "" && unitVal !== "None") {
-                            for (let offset = 0; offset < 3; offset++) {
-                                const targetIdx = i + offset;
-                                if (targetIdx >= teamRawRows.length) break;
-                                const mRow = teamRawRows[targetIdx];
-                                const mName = tColMap.name !== undefined ? (mRow[tColMap.name] || "").toString().trim() : "";
-                                if (mName === "" || mName === "None") continue;
-
-                                const s = tColMap.score !== undefined ? parseInt(mRow[tColMap.score] || 0) || 0 : 0;
-                                const t = tColMap.total !== undefined ? parseInt(mRow[tColMap.total] || 0) || s : s;
-
-                                results.team.push({
-                                    id: tColMap.id !== undefined ? (mRow[tColMap.id] || "").toString().trim() : "",
-                                    unit: offset === 0 ? unitVal : "",
-                                    name: mName,
-                                    target: tColMap.target !== undefined ? (mRow[tColMap.target] || "").toString().trim() : "",
-                                    score: s,
-                                    total: t,
-                                    rank: tColMap.rank !== undefined ? (mRow[tColMap.rank] || "").toString().trim() : "",
-                                    xCount: tColMap.xCount !== undefined ? parseInt(mRow[tColMap.xCount] || 0) : 0,
-                                    tenXCount: tColMap.tenXCount !== undefined ? parseInt(mRow[tColMap.tenXCount] || 0) : 0,
-                                    group: group,
-                                    team: unitVal
-                                });
-                            }
-                            i += 2;
-                        }
                     }
                 }
             } else {
@@ -578,6 +540,15 @@ export class DataHandler {
                     const r1 = parseInt(this.getVal(p, ['r1', '單局成績', '成績'], 0)) || 0;
                     const r2 = parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0;
                     const total = parseInt(this.getVal(p, ['total', '總分'], r1 + r2)) || (r1 + r2);
+
+                    // VALIDATION: In ranking sheets, a real player MUST have at least one score or a target
+                    const hasData = r1 > 0 || r2 > 0 || total > 0;
+
+                    // Final validation check after cleaning
+                    if (!name || name === '') {
+                        name = allVals[0] || '';
+                        if (!unit) unit = allVals[1] || '-';
+                    }
 
                     return {
                         id: this.getVal(p, ['id', '編號', '序號', 'No', 'no'], ''),
@@ -650,94 +621,6 @@ export class DataHandler {
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
         return mapped;
-    }
-
-    async loadTeamPlayers(file, isPrev = false) {
-        let rawRows = [];
-        let groupName = 'Unknown';
-
-        if (file.name && file.name.toLowerCase().endsWith('.xlsx')) {
-            const arrayBuffer = await file.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            groupName = sheetName;
-            const worksheet = workbook.Sheets[sheetName];
-            rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-        } else {
-            const text = await file.text();
-            const results = Papa.parse(text, { header: false, skipEmptyLines: true });
-            rawRows = results.data;
-            groupName = window.currentAdminGroup || 'Unknown';
-        }
-
-        let headerIdx = -1;
-        let colMap = {};
-        const fieldKeys = {
-            unit: ['單位', '所屬單位'],
-            name: ['姓名', '選手'],
-            target: ['靶位', '靶號'],
-            score: ['單局成績', '成績'],
-            total: ['總分', '團體總分', '積分'],
-            rank: ['排名', '團體排名'],
-            xCount: ['X總數', 'X'],
-            tenXCount: ['10+X']
-        };
-
-        for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
-            const row = rawRows[i];
-            if (row && row.some(cell => cell && cell.toString().replace(/\s/g, '').includes('姓名'))) {
-                headerIdx = i;
-                Object.keys(fieldKeys).forEach(field => {
-                    const idx = row.findIndex(cell => {
-                        if (!cell) return false;
-                        const cleanCell = cell.toString().replace(/[\r\n\s\t]/g, '');
-                        return fieldKeys[field].some(tk => cleanCell.includes(tk));
-                    });
-                    if (idx !== -1) colMap[field] = idx;
-                });
-                break;
-            }
-        }
-
-        if (headerIdx === -1) return [];
-
-        const players = [];
-        for (let i = headerIdx + 1; i < rawRows.length; i++) {
-            const row = rawRows[i];
-            const unitVal = colMap.unit !== undefined ? (row[colMap.unit] || "").toString().trim() : "";
-            const nameVal = colMap.name !== undefined ? (row[colMap.name] || "").toString().trim() : "";
-
-            if (unitVal !== "" && unitVal !== "None") {
-                for (let offset = 0; offset < 3; offset++) {
-                    const targetIdx = i + offset;
-                    if (targetIdx >= rawRows.length) break;
-                    const mRow = rawRows[targetIdx];
-                    const mName = colMap.name !== undefined ? (mRow[colMap.name] || "").toString().trim() : "";
-                    if (mName === "" || mName === "None") continue;
-
-                    const s = colMap.score !== undefined ? parseInt(mRow[colMap.score] || 0) || 0 : 0;
-                    const t = colMap.total !== undefined ? parseInt(mRow[colMap.total] || 0) || s : s;
-
-                    players.push({
-                        unit: offset === 0 ? unitVal : "",
-                        name: mName,
-                        target: colMap.target !== undefined ? (mRow[colMap.target] || "").toString().trim() : "",
-                        score: s,
-                        total: t,
-                        rank: colMap.rank !== undefined ? (mRow[colMap.rank] || "").toString().trim() : "",
-                        xCount: colMap.xCount !== undefined ? parseInt(mRow[colMap.xCount] || 0) : 0,
-                        tenXCount: colMap.tenXCount !== undefined ? parseInt(mRow[colMap.tenXCount] || 0) : 0,
-                        group: groupName,
-                        team: unitVal
-                    });
-                }
-                i += 2;
-            }
-        }
-
-        if (isPrev) this.prevPlayers = players;
-        else this.players = players;
-        return players;
     }
 
     getFilteredPlayers(group, isPrev = false) {
