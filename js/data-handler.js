@@ -279,7 +279,10 @@ export class DataHandler {
             const rStart = 3 + (i * 8); // Row 4, 12
             const t1 = getTeamInfo(rStart, 7, 8); // H, I
             const t2 = getTeamInfo(rStart + 4, 7, 8); // Row 8, 16
-            const target = this.getValAt(ws, rStart + 3, 10); // Row 7, Col K
+            const target = this.getValAt(ws, rStart + 3, 9); // Row 7, Col J
+            const s1 = parseInt(this.getValAt(ws, rStart, 9)) || 0; // Col J (Index 9)
+            const s2 = parseInt(this.getValAt(ws, rStart + 4, 9)) || 0;
+            const winner = (s1 > s2) ? t1.unit : ((s2 > s1) ? t2.unit : ((s1 > 0 || s2 > 0) ? '平手' : ''));
 
             matches.push({
                 matchId: `MT-1/4-L${i + 1}`,
@@ -287,7 +290,7 @@ export class DataHandler {
                 player1: t1.unit,
                 player2: t2.unit,
                 names1: t1.names, names2: t2.names,
-                score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                score1: s1, score2: s2, winner: winner, target: target || '', isSeed: false
             });
         }
 
@@ -296,7 +299,10 @@ export class DataHandler {
             const rStart = 3 + (i * 8); // Row 4, 12
             const t1 = getTeamInfo(rStart, 31, 30); // AF, AE
             const t2 = getTeamInfo(rStart + 4, 31, 30); // Row 8, 16
-            const target = this.getValAt(ws, rStart + 3, 28); // Col AC
+            const target = this.getValAt(ws, rStart + 3, 29); // Col AD
+            const s1 = parseInt(this.getValAt(ws, rStart, 29)) || 0; // Col AD
+            const s2 = parseInt(this.getValAt(ws, rStart + 4, 29)) || 0;
+            const winner = (s1 > s2) ? t1.unit : ((s2 > s1) ? t2.unit : ((s1 > 0 || s2 > 0) ? '平手' : ''));
 
             matches.push({
                 matchId: `MT-1/4-R${i + 1}`,
@@ -304,62 +310,76 @@ export class DataHandler {
                 player1: t1.unit,
                 player2: t2.unit,
                 names1: t1.names, names2: t2.names,
-                score1: 0, score2: 0, winner: '', target: target || '', isSeed: false
+                score1: s1, score2: s2, winner: winner, target: target || '', isSeed: false
             });
         }
 
         // 1/2 Round Left Wing (1 match) - P1: Row 6, P2: Row 14 (Index 5, 13)
         const l12_t1 = getTeamInfo(5, 11, 12); // Row 6, Col L, M
         const l12_t2 = getTeamInfo(13, 11, 12); // Row 14, Col L, M
-        const l12Target = this.getValAt(ws, 9, 14); // Row 10, Col O
+        const l12Target = this.getValAt(ws, 5, 13); // Row 6, Col N (修正座標)
+        const l12_s1 = parseInt(this.getValAt(ws, 5, 13)) || 0; // Col N
+        const l12_s2 = parseInt(this.getValAt(ws, 13, 13)) || 0; // Row 14, Col N
+        const l12_winner = (l12_s1 > l12_s2) ? l12_t1.unit : ((l12_s2 > l12_s1) ? l12_t2.unit : ((l12_s1 > 0 || l12_s2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `MT-1/2-L1`,
             type: 'Team', group, round: '1/2',
             player1: l12_t1.unit,
             player2: l12_t2.unit,
             names1: l12_t1.names, names2: l12_t2.names,
-            score1: 0, score2: 0, winner: '', target: l12Target || '', isSeed: false
+            score1: l12_s1, score2: l12_s2, winner: l12_winner, target: l12Target || '', isSeed: false
         });
 
         // 1/2 Round Right Wing (1 match)
         const r12_t1 = getTeamInfo(5, 27, 26); // Row 6, Col AB, AA
         const r12_t2 = getTeamInfo(13, 27, 26); // Row 14, Col AB, AA
-        const r12Target = this.getValAt(ws, 9, 24); // Row 10, Col Y
+        const r12Target = this.getValAt(ws, 5, 25); // Row 6, Col Z (修正座標)
+        const r12_s1 = parseInt(this.getValAt(ws, 5, 25)) || 0; // Col Z
+        const r12_s2 = parseInt(this.getValAt(ws, 13, 25)) || 0; // Row 14, Col Z
+        const r12_winner = (r12_s1 > r12_s2) ? r12_t1.unit : ((r12_s2 > r12_s1) ? r12_t2.unit : ((r12_s1 > 0 || r12_s2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `MT-1/2-R1`,
             type: 'Team', group, round: '1/2',
             player1: r12_t1.unit,
             player2: r12_t2.unit,
             names1: r12_t1.names, names2: r12_t2.names,
-            score1: 0, score2: 0, winner: '', target: r12Target || '', isSeed: false
+            score1: r12_s1, score2: r12_s2, winner: r12_winner, target: r12Target || '', isSeed: false
         });
 
         // Gold Match (1 match) - 匯聚於 Row 10 (Index 9)
         const g_t1 = getTeamInfo(9, 15, 16); // Row 10, Col P, Q
-        const g_t2 = getTeamInfo(9, 23, 22); // Row 10, Col X, W (修正 P2 座標)
-        const gTarget = this.getValAt(ws, 10, 18); // Row 11, Col S
+        const g_t2 = getTeamInfo(9, 23, 22); // Row 10, Col X, W
+        const gTarget = this.getValAt(ws, 9, 17); // Row 10, Col R (修正)
+        const g_s1 = parseInt(this.getValAt(ws, 9, 17)) || 0; // Col R
+        const g_s2 = parseInt(this.getValAt(ws, 13, 17)) || 0; // Row 14, Col R
+        const g_winner = (g_s1 > g_s2) ? g_t1.unit : ((g_s2 > g_s1) ? g_t2.unit : ((g_s1 > 0 || g_s2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `MT-Final-1`,
             type: 'Team', group, round: 'Final',
             player1: g_t1.unit,
             player2: g_t2.unit,
             names1: g_t1.names, names2: g_t2.names,
-            score1: 0, score2: 0,
-            winner: '', target: gTarget || '', isSeed: false
+            score1: g_s1, score2: g_s2, winner: g_winner, target: gTarget || '', isSeed: false
         });
 
         // Bronze Match (1 match) - 位於 Row 14 (Index 13)
         const b_t1 = getTeamInfo(13, 15, 16); // Row 14, Col P, Q
-        const b_t2 = getTeamInfo(13, 23, 22); // Row 14, Col X, W (修正 P2 座標)
-        const bTarget = this.getValAt(ws, 14, 18); // Row 15, Col S
+        const b_t2 = getTeamInfo(13, 23, 22); // Row 14, Col X, W
+        const bTarget = this.getValAt(ws, 13, 21); // Row 14, Col V (修正)
+        const b_s1 = parseInt(this.getValAt(ws, 13, 21)) || 0; // Col V
+        const b_s2 = parseInt(this.getValAt(ws, 15, 21)) || 0; // Row 16, Col V
+        const b_winner = (b_s1 > b_s2) ? b_t1.unit : ((b_s2 > b_s1) ? b_t2.unit : ((b_s1 > 0 || b_s2 > 0) ? '平手' : ''));
+
         matches.push({
             matchId: `MT-Final-2`,
             type: 'Team', group, round: 'Bronze',
             player1: b_t1.unit,
             player2: b_t2.unit,
             names1: b_t1.names, names2: b_t2.names,
-            score1: 0, score2: 0,
-            winner: '', target: bTarget || '', isSeed: false
+            score1: b_s1, score2: b_s2, winner: b_winner, target: bTarget || '', isSeed: false
         });
 
         return matches;
