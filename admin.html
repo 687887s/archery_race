@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 01:25 (v1.5.4-31) -->
+    <!-- Last Build: 2026-05-15 01:52 (v1.5.4-33) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.4-31">
+    <link rel="stylesheet" href="css/style.css?v=1.5.4-33">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -196,15 +196,14 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-32</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.4-33</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
                 <input type="file" id="full-excel-import" accept=".xlsx" style="display: none;">
                 <button class="upload-btn" onclick="document.getElementById('full-excel-import').click()">📁 全檔案匯入
                     (XLSX)</button>
-                <input type="file" id="csv-import" accept=".csv, .xlsx" style="display: none;">
-                <button class="upload-btn" onclick="document.getElementById('csv-import').click()">📂 匯入單一分頁</button>
+
                 <button class="upload-btn" onclick="logout()">登出</button>
                 <a href="index.html" class="upload-btn" style="text-decoration:none">返回前端</a>
             </div>
@@ -302,39 +301,6 @@
         document.getElementById('login-btn').addEventListener('click', checkAuth);
         document.getElementById('save-players').addEventListener('click', () => saveToGithub('players'));
         document.getElementById('save-matches').addEventListener('click', () => saveToGithub('matches'));
-
-        // CSV Import Logic
-        document.getElementById('csv-import').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            try {
-                showToast('正在解析檔案...');
-                const activeTab = document.querySelector('.admin-tab.active').dataset.target;
-
-                if (activeTab === 'players-editor') {
-                    const importedPlayers = await handler.loadPlayers(file);
-                    if (importedPlayers.length > 0) {
-                        if (currentAdminMode === 'Individual') fullIndividualData = importedPlayers;
-                        else fullTeamData = importedPlayers;
-                        showToast(`成功匯入 ${importedPlayers.length} 筆選手資料`);
-                    }
-                } else {
-                    const importedMatches = await handler.loadMatches(file);
-                    if (importedMatches.length > 0) {
-                        if (currentAdminMode === 'Individual') fullIndividualMatches = importedMatches;
-                        else fullTeamMatches = importedMatches;
-                        showToast(`成功匯入 ${importedMatches.length} 筆賽程資料`);
-                    }
-                }
-
-                renderAllEditors();
-                e.target.value = '';
-            } catch (err) {
-                console.error(err);
-                showToast('匯入失敗：' + err.message, true);
-            }
-        });
 
         // Full Workbook Import Logic
         document.getElementById('full-excel-import').addEventListener('change', async (e) => {
