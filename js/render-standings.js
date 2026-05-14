@@ -31,24 +31,34 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
 
     const aggregate = (list) => {
         const teams = {};
+        let lastTeam = null;
+        let lastUnit = null;
+
         list.forEach(p => {
-            // SKIP ghost teams or invalid names
-            if (!p.team || p.team === '' || p.team === '個人' || p.team === '-') return;
+            // Memory Fill-down: If current row has no team, use the previous known team
+            const teamName = (p.team && p.team !== '' && p.team !== '個人' && p.team !== '-') ? p.team : lastTeam;
+            const unitName = (p.unit && p.unit !== '' && p.unit !== '-') ? p.unit : lastUnit;
+
+            if (!teamName || teamName === '個人' || teamName === '-') return;
+
+            // Update memory
+            lastTeam = teamName;
+            lastUnit = unitName;
             
-            if (!teams[p.team]) {
-                teams[p.team] = { 
-                    name: p.team, 
-                    unit: p.unit, 
+            if (!teams[teamName]) {
+                teams[teamName] = { 
+                    name: teamName, 
+                    unit: unitName, 
                     id: '-', 
                     r1: 0, r2: 0, total: 0, 
                     xCount: 0, tenXCount: 0 
                 };
             }
-            teams[p.team].r1 += p.r1;
-            teams[p.team].r2 += p.r2;
-            teams[p.team].total += p.total;
-            teams[p.team].xCount += (p.xCount || 0);
-            teams[p.team].tenXCount += (p.tenXCount || 0);
+            teams[teamName].r1 += p.r1;
+            teams[teamName].r2 += p.r2;
+            teams[teamName].total += p.total;
+            teams[teamName].xCount += (p.xCount || 0);
+            teams[teamName].tenXCount += (p.tenXCount || 0);
         });
         return Object.values(teams).sort((a, b) => 
             b.total - a.total || 

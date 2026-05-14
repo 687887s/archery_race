@@ -98,9 +98,11 @@ function updateView() {
 
 function refreshUI() {
     if (currentView === 'standings') {
-        renderStandings('standings-body', handler.getRankings(currentGroup), handler.getRankings(currentGroup, true), currentType === 'Team');
+        const searchGroup = currentType === 'Team' ? `${currentGroup}團體` : currentGroup;
+        renderStandings('standings-body', handler.getRankings(searchGroup), handler.getRankings(searchGroup, true), currentType === 'Team');
     } else {
-        renderBracket('bracket-container', handler.getFilteredMatches(currentType, currentGroup));
+        const searchGroup = currentType === 'Team' ? `${currentGroup}團體` : currentGroup;
+        renderBracket('bracket-container', handler.getFilteredMatches(currentType, searchGroup));
     }
 }
 
