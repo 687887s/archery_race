@@ -534,15 +534,6 @@ export class DataHandler {
                     const r2 = parseInt(this.getVal(p, ['r2', '第二輪'], 0)) || 0;
                     const total = parseInt(this.getVal(p, ['total', '總分'], r1 + r2)) || (r1 + r2);
 
-                    // VALIDATION: In ranking sheets, a real player MUST have at least one score or a target
-                    const hasData = r1 > 0 || r2 > 0 || total > 0;
-
-                    // Final validation check after cleaning
-                    if (!name || name === '') {
-                        name = allVals[0] || '';
-                        if (!unit) unit = allVals[1] || '-';
-                    }
-
                     return {
                         id: this.getVal(p, ['id', '編號', '序號', 'No', 'no'], ''),
                         unit: unit || '未知',
@@ -614,6 +605,95 @@ export class DataHandler {
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
         return mapped;
+    }
+
+    async loadTeamPlayers(file, isPrev = false) {
+        let rawRows = [];
+        let groupName = 'Unknown';
+
+        if (file.name && file.name.toLowerCase().endsWith('.xlsx')) {
+            const arrayBuffer = await file.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            groupName = sheetName;
+            const worksheet = workbook.Sheets[sheetName];
+            rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+        } else {
+            const text = await file.text();
+            const results = Papa.parse(text, { header: false, skipEmptyLines: true });
+            rawRows = results.data;
+            groupName = window.currentAdminGroup || 'Unknown';
+        }
+
+        let headerIdx = -1;
+        let colMap = {};
+        const fieldKeys = {
+            unit: ['單位', '所屬單位'],
+            name: ['姓名', '選手'],
+            target: ['靶位', '靶號'],
+            score: ['單局成績', '成績'],
+            total: ['總分', '團體總分', '積分'],
+            rank: ['排名', '團體排名'],
+            xCount: ['X總數', 'X'],
+            tenXCount: ['10+X']
+        };
+
+        for (let i = 0; i < Math.min(rawRows.length, 15); i++) {
+            const row = rawRows[i];
+            if (row && row.some(cell => cell && cell.toString().replace(/\s/g, '').includes('姓名'))) {
+                headerIdx = i;
+                Object.keys(fieldKeys).forEach(field => {
+                    const idx = row.findIndex(cell => {
+                        if (!cell) return false;
+                        const cleanCell = cell.toString().replace(/[\r\n\s\t]/g, '');
+                        return fieldKeys[field].some(tk => cleanCell.includes(tk));
+                    });
+                    if (idx !== -1) colMap[field] = idx;
+                });
+                break;
+            }
+        }
+
+        if (headerIdx === -1) return [];
+
+        const players = [];
+        for (let i = headerIdx + 1; i < rawRows.length; i++) {
+            const row = rawRows[i];
+            const unitVal = colMap.unit !== undefined ? (row[colMap.unit] || "").toString().trim() : "";
+            const nameVal = colMap.name !== undefined ? (row[colMap.name] || "").toString().trim() : "";
+
+            if (unitVal !== "" && unitVal !== "None") {
+                for (let offset = 0; offset < 3; offset++) {
+                    const targetIdx = i + offset;
+                    if (targetIdx >= rawRows.length) break;
+                    const mRow = rawRows[targetIdx];
+                    const mName = colMap.name !== undefined ? (mRow[colMap.name] || "").toString().trim() : "";
+                    if (mName === "" || mName === "None") continue;
+
+                    const s = colMap.score !== undefined ? parseInt(mRow[colMap.score] || 0) || 0 : 0;
+                    const t = colMap.total !== undefined ? parseInt(mRow[colMap.total] || 0) || s : s;
+
+                    players.push({
+                        unit: unitVal,
+                        name: mName,
+                        target: colMap.target !== undefined ? (mRow[colMap.target] || "").toString().trim() : "",
+                        r1: s,
+                        r2: 0,
+                        total: t,
+                        rank: colMap.rank !== undefined ? (mRow[colMap.rank] || "").toString().trim() : "",
+                        xCount: colMap.xCount !== undefined ? parseInt(mRow[colMap.xCount] || 0) : 0,
+                        tenXCount: colMap.tenXCount !== undefined ? parseInt(mRow[colMap.tenXCount] || 0) : 0,
+                        group: groupName,
+                        team: unitVal
+                    });
+                }
+                i += 2;
+            }
+        }
+
+        if (isPrev) this.prevPlayers = players;
+        else this.players = players;
+        return players;
     }
 
     getFilteredPlayers(group, isPrev = false) {
