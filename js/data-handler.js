@@ -217,8 +217,8 @@ export class DataHandler {
         const gP1Unit = this.getValAt(ws, 15, 24); // Col Y
         const gP2Name = this.getValAt(ws, 31, 25); // Row 32, Col Z
         const gP2Unit = this.getValAt(ws, 31, 24); // Col Y
-        const gT1 = this.getValAt(ws, 18, 26); // Row 19, Col AA
-        const gT2 = this.getValAt(ws, 28, 26); // Row 29, Col AA
+        const gT1 = this.getValAt(ws, 22, 26); // Row 19, Col AA
+        const gT2 = this.getValAt(ws, 24, 26); // Row 29, Col AA
         const gTarget = (gT1 && gT2 && gT1 !== gT2) ? `${gT1}/${gT2}` : (gT1 || gT2 || '');
         const gS1 = parseInt(this.getValAt(ws, 15, 26)) || 0; // Col AA
         const gS2 = parseInt(this.getValAt(ws, 31, 26)) || 0;
