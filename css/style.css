@@ -48,6 +48,7 @@ body {
 .app-container {
     display: flex;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
 }
 
@@ -55,6 +56,7 @@ body {
 .sidebar {
     width: 260px;
     height: 100vh;
+    height: 100dvh;
     background-color: var(--sidebar-bg);
     border-right: 1px solid var(--glass-border);
     display: flex;
@@ -495,6 +497,8 @@ tr:last-child td {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--text-primary);
+    white-space: normal;
+    line-height: 1.3;
 }
 
 .team-unit {
@@ -601,6 +605,7 @@ tr:last-child td {
     .main-content {
         padding: 1rem;
         padding-top: 5rem;
+        padding-bottom: 5rem; /* 增加底部間距確保最底下的內容不被遮擋 */
     }
 
     .top-header {
@@ -680,9 +685,16 @@ tr:last-child td {
         margin-right: 0.5rem;
     }
 
-    /* Team Member Table Hiding */
+    /* Team Member Table Adjustments */
+    .members-table th, .members-table td {
+        padding: 0.6rem 0.5rem;
+        white-space: normal; /* 允許成員姓名折行 */
+    }
+    
     .members-table th:nth-child(2), .members-table td:nth-child(2) {
-        display: none; /* Hide Member Target */
+        display: table-cell; /* 恢復顯示成員靶位 */
+        text-align: center;
+        width: 20%;
     }
     
     .members-table th, .members-table td {
