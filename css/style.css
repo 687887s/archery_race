@@ -445,6 +445,128 @@ tr:last-child td {
     display: none !important;
 }
 
+/* Team Mode Specifics */
+.team-mode thead {
+    display: none;
+}
+
+.team-row-container td {
+    padding: 0.5rem 0;
+    border-bottom: none;
+}
+
+.team-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(138, 129, 124, 0.08);
+}
+
+.team-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+.team-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 1.5rem;
+}
+
+.team-rank {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    min-width: 2rem;
+}
+
+.team-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.team-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.team-unit {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.team-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    margin-right: 1rem;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--accent-color);
+}
+
+.expand-icon {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    transition: transform 0.3s;
+}
+
+/* Collapsible Members Section */
+.team-members {
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s;
+    background: rgba(213, 189, 175, 0.05);
+    border-top: 1px solid var(--glass-border);
+    opacity: 1;
+}
+
+.team-card.collapsed .team-members {
+    max-height: 0;
+    opacity: 0;
+    border-top-color: transparent;
+}
+
+.members-table {
+    width: 100%;
+    font-size: 0.85rem;
+}
+
+.members-table th {
+    background: rgba(138, 129, 124, 0.05);
+    font-size: 0.7rem;
+    padding: 0.5rem 1.5rem;
+    color: var(--text-secondary);
+}
+
+.members-table td {
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid rgba(138, 129, 124, 0.05);
+}
+
+.members-table tr:last-child td {
+    border-bottom: none;
+}
+
 .toast {
     position: fixed;
     bottom: 2rem;

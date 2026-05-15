@@ -1,4 +1,4 @@
-/** v1.5.4-38 **/
+/** v1.5.5 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -51,17 +51,18 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                     name: teamName, 
                     unit: unitName, 
                     r1: 0, score: 0, total: 0, 
-                    xCount: 0, tenXCount: 0 
+                    xCount: 0, tenXCount: 0,
+                    members: []
                 };
             }
             teams[teamName].score += (p.score || 0);
             teams[teamName].total += p.total;
             teams[teamName].xCount += (p.xCount || 0);
             teams[teamName].tenXCount += (p.tenXCount || 0);
+            teams[teamName].members.push(p);
         });
         return Object.values(teams).sort((a, b) => 
             b.total - a.total || 
-            b.r2 - a.r2 || 
             b.xCount - a.xCount || 
             b.tenXCount - a.tenXCount
         );
@@ -70,32 +71,99 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
     if (isTeam) {
         displayData = aggregate(players);
         prevDisplayData = aggregate(prevPlayers);
+
+        // Hide table header and use card layout
+        const table = document.getElementById('standings-table');
+        if (table) table.classList.add('team-mode');
+        
+        displayData.forEach((team, index) => {
+            const tr = document.createElement('tr');
+            tr.className = 'team-row-container';
+            const prevTeam = prevDisplayData.find(t => t.name === team.name) || team;
+
+            tr.innerHTML = `
+                <td colspan="9" class="team-card-cell">
+                    <div class="team-card collapsed">
+                        <div class="team-header">
+                            <div class="team-rank">${index + 1}</div>
+                            <div class="team-info">
+                                <span class="team-name">${team.name}</span>
+                                <span class="team-unit">${team.unit}</span>
+                            </div>
+                            <div class="team-stats">
+                                <span class="stat-label">總分</span>
+                                <span class="stat-value animate-number" data-start="${prevTeam.total || 0}" data-end="${team.total}">${team.total}</span>
+                            </div>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                        <div class="team-members">
+                            <table class="members-table">
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>靶位</th>
+                                        <th>個人分</th>
+                                        <th>X</th>
+                                        <th>10+X</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${team.members.map(m => `
+                                        <tr>
+                                            <td>${m.name}</td>
+                                            <td>${m.target || '-'}</td>
+                                            <td>${m.total}</td>
+                                            <td>${m.xCount || 0}</td>
+                                            <td>${m.tenXCount || 0}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            `;
+            
+            // Toggle Click Listener
+            const card = tr.querySelector('.team-card');
+            const header = tr.querySelector('.team-header');
+            header.addEventListener('click', () => {
+                card.classList.toggle('collapsed');
+                const icon = header.querySelector('.expand-icon');
+                icon.style.transform = card.classList.contains('collapsed') ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+
+            tbody.appendChild(tr);
+        });
     } else {
         displayData = players;
         prevDisplayData = prevPlayers;
+
+        const table = document.getElementById('standings-table');
+        if (table) table.classList.remove('team-mode');
+
+        displayData.forEach((player, index) => {
+            const tr = document.createElement('tr');
+            const prevPlayer = prevDisplayData.find(p => p.name === player.name) || player;
+
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${player.id || '-'}</td>
+                <td>${player.unit}</td>
+                <td>${player.name}</td>
+                <td style="text-align: center;">${player.target || '-'}</td>
+                <td class="animate-number" data-start="${prevPlayer.score || 0}" data-end="${player.score}" style="text-align: center;">
+                    ${player.score}
+                </td>
+                <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-color); text-align: center;">
+                    ${player.total}
+                </td>
+                <td style="text-align: center;">${player.xCount || 0}</td>
+                <td style="text-align: center;">${player.tenXCount || 0}</td>
+            `;
+            tbody.appendChild(tr);
+        });
     }
-
-    displayData.forEach((player, index) => {
-        const tr = document.createElement('tr');
-        const prevPlayer = prevDisplayData.find(p => p.name === player.name) || player;
-
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${player.id || '-'}</td>
-            <td>${player.unit}</td>
-            <td>${player.name}</td>
-            <td style="text-align: center;">${isTeam ? '-' : (player.target || '-')}</td>
-            <td class="animate-number" data-start="${prevPlayer.score || 0}" data-end="${player.score}" style="text-align: center;">
-                ${player.score}
-            </td>
-            <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-color); text-align: center;">
-                ${player.total}
-            </td>
-            <td style="text-align: center;">${player.xCount || 0}</td>
-            <td style="text-align: center;">${player.tenXCount || 0}</td>
-        `;
-        tbody.appendChild(tr);
-    });
 
     // Start animation
     animateNumbers(tbody);
