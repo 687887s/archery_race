@@ -25,7 +25,7 @@ export function renderBracket(containerId, matches) {
     sortedRoundKeys.forEach((roundKey, roundIndex) => {
         const roundDiv = document.createElement('div');
         roundDiv.className = 'round';
-        
+
         // Round Heading
         const heading = document.createElement('div');
         heading.className = 'round-title';
@@ -38,7 +38,7 @@ export function renderBracket(containerId, matches) {
         rounds[roundKey].forEach(match => {
             const matchDiv = document.createElement('div');
             matchDiv.className = 'match-box';
-            
+
             const isP1Winner = match.winner === match.player1 && match.winner !== '' && match.winner !== 'TBD';
             const isP2Winner = match.winner === match.player2 && match.winner !== '' && match.winner !== 'TBD';
 
@@ -47,9 +47,9 @@ export function renderBracket(containerId, matches) {
                 .replace('M-', '')
                 .replace('Final-1', '金牌賽')
                 .replace('Final-2', '銅牌賽')
-                .replace('1/8', '16強賽')
-                .replace('1/4', '8強賽')
-                .replace('1/2', '4強賽')
+                .replace('1/8', '8強賽')
+                .replace('1/4', '4強賽')
+                .replace('1/2', '準決賽')
                 .replace('Final', '金牌賽')
                 .replace('Bronze', '銅牌賽');
 
@@ -76,6 +76,6 @@ function getRoundName(count) {
     const c = parseInt(count);
     if (c === 1) return 'FINAL 決賽';
     if (c === 2) return 'SEMIFINALS 準決賽';
-    if (c === 4) return 'QUARTERFINALS 半準決賽';
-    return `${c} 強賽`;
+    if (c === 4) return 'ROUND 1/4 四強賽';
+    return `$ROUND 1/8 八強賽`;
 }
