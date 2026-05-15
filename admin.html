@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-5) -->
+    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-6) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.7-5">
+    <link rel="stylesheet" href="css/style.css?v=1.5.7-6">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -227,7 +227,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-5</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-6</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -315,7 +315,7 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.5.7-5';
+        import { DataHandler } from './js/data-handler.js?v=1.5.7-6';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
@@ -454,6 +454,7 @@
                 'score': '單局成績', 'total': '總分', 'rank': '排名',
                 'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍',
                 'matchId': 'ID', 'type': '類別', 'round': '回合', 'player1': '選手1', 'player2': '選手2',
+                'unit1': '單位1', 'unit2': '單位2',
                 'names1': '成員1', 'names2': '成員2', 'winner': '勝者', 'score1': '比分1', 'score2': '比分2'
             };
             head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
@@ -464,7 +465,7 @@
             renderEditor('edit-players-body', currentPlayers, playerKeys);
             
             const matchKeys = currentAdminMode === 'Individual'
-                ? ['matchId', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']
+                ? ['matchId', 'round', 'player1', 'unit1', 'player2', 'unit2', 'winner', 'score1', 'score2', 'target']
                 : ['matchId', 'round', 'player1', 'player2', 'names1', 'names2', 'winner', 'score1', 'score2', 'target'];
             
             renderEditor('edit-matches-body', currentMatches, matchKeys);

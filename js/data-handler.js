@@ -1,4 +1,4 @@
-/** v1.5.7-5 **/
+/** v1.5.7-6 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -615,6 +615,8 @@ export class DataHandler {
             player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
             names1: this.getVal(m, ['names1', '成員1', '隊員1'], ''),
             names2: this.getVal(m, ['names2', '成員2', '隊員2'], ''),
+            unit1: this.getVal(m, ['unit1', '單位1'], ''),
+            unit2: this.getVal(m, ['unit2', '單位2'], ''),
             winner: this.getVal(m, ['winner', '勝者'], ''),
             score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
             score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
