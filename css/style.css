@@ -712,17 +712,18 @@ tr:last-child td {
     #standings-table th:nth-child(6), #standings-table td:nth-child(6) { width: 15% !important; } /* Round Score */
     #standings-table th:nth-child(7), #standings-table td:nth-child(7) { width: 15% !important; } /* Total */
 
-    /* Card Mode Table Fix */
+    /* Card Mode Table Fix - 僅針對外部排名表格 */
     #standings-table.team-mode,
-    #standings-table.team-mode tbody,
-    #standings-table.team-mode tr.team-row-container,
-    #standings-table.team-mode td.team-card-cell {
+    #standings-table.team-mode > tbody,
+    #standings-table.team-mode > tbody > tr.team-row-container,
+    #standings-table.team-mode > tbody > tr.team-row-container > td.team-card-cell {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box;
         padding: 0 !important;
         border: none !important;
     }
+
 
     .team-card-cell {
         padding: 0.5rem 0 !important;
@@ -737,6 +738,12 @@ tr:last-child td {
     }
 
     /* Team Member Table Adjustments */
+    .members-table {
+        width: 100% !important;
+        margin: 0 !important;
+        table-layout: fixed !important;
+    }
+
     .members-table th, .members-table td {
         padding: 0.6rem 0.5rem;
         white-space: normal;
@@ -752,14 +759,15 @@ tr:last-child td {
 
     /* 針對個人賽詳細模式的欄寬修正 */
     .members-table.detail-mode th {
-        width: 40% !important;
+        width: 30% !important;
         display: table-cell !important;
     }
     
     .members-table.detail-mode td {
-        width: 60% !important;
+        width: 70% !important;
         display: table-cell !important;
     }
+
 
 
 
