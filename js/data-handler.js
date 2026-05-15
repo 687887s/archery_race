@@ -1,4 +1,4 @@
-/** v1.5.5-5 **/
+/** v1.5.6 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -558,6 +558,7 @@ export class DataHandler {
                         target: this.getVal(p, ['target', '靶位', '靶號'], ''),
                         r1: r1,
                         r2: r2,
+                        score: r1,
                         total: total,
                         rank: this.getVal(p, ['rank', '排名'], ''),
                         xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
@@ -588,6 +589,7 @@ export class DataHandler {
                 target: this.getVal(p, ['target', '靶位', '靶號'], ''),
                 r1: r1,
                 r2: parseInt(this.getVal(p, ['r2', 'round2', '第二輪'], 0)) || 0,
+                score: r1,
                 total: total,
                 rank: this.getVal(p, ['rank', '排名'], ''),
                 xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
@@ -611,6 +613,8 @@ export class DataHandler {
             round: this.getVal(m, ['round', '輪次', '階段'], '1/8'),
             player1: this.getVal(m, ['player1', '選手1', '左側選手'], 'TBD'),
             player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
+            names1: this.getVal(m, ['names1', '成員1', '隊員1'], ''),
+            names2: this.getVal(m, ['names2', '成員2', '隊員2'], ''),
             winner: this.getVal(m, ['winner', '勝者'], ''),
             score1: parseInt(this.getVal(m, ['score1', '分數1'], 0)) || 0,
             score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,

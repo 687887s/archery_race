@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 09:27 (v1.5.5-5) -->
+    <!-- Last Build: 2026-05-15 09:27 (v1.5.6) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.5-5">
+    <link rel="stylesheet" href="css/style.css?v=1.5.6">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -196,7 +196,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.5-5</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.6</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -284,7 +284,7 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.5.5-5';
+        import { DataHandler } from './js/data-handler.js?v=1.5.6';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
@@ -382,17 +382,25 @@
             try {
                 showToast(`正在讀取全場數據...`);
 
-                const pIndResp = await fetch(`data/individual_players.csv?t=${Date.now()}`);
-                fullIndividualData = await handler.loadPlayers(await pIndResp.blob());
+                try {
+                    const pIndResp = await fetch(`data/individual_players.csv?t=${Date.now()}`);
+                    if (pIndResp.ok) fullIndividualData = await handler.loadPlayers(await pIndResp.blob());
+                } catch(e) { console.warn('Missing individual_players.csv'); }
 
-                const pTeamResp = await fetch(`data/team_players.csv?t=${Date.now()}`);
-                fullTeamData = await handler.loadPlayers(await pTeamResp.blob());
+                try {
+                    const pTeamResp = await fetch(`data/team_players.csv?t=${Date.now()}`);
+                    if (pTeamResp.ok) fullTeamData = await handler.loadPlayers(await pTeamResp.blob());
+                } catch(e) { console.warn('Missing team_players.csv'); }
 
-                const mIndResp = await fetch(`data/individual_matches.csv?t=${Date.now()}`);
-                fullIndividualMatches = await handler.loadMatches(await mIndResp.blob());
+                try {
+                    const mIndResp = await fetch(`data/individual_matches.csv?t=${Date.now()}`);
+                    if (mIndResp.ok) fullIndividualMatches = await handler.loadMatches(await mIndResp.blob());
+                } catch(e) { console.warn('Missing individual_matches.csv'); }
 
-                const mTeamResp = await fetch(`data/team_matches.csv?t=${Date.now()}`);
-                fullTeamMatches = await handler.loadMatches(await mTeamResp.blob());
+                try {
+                    const mTeamResp = await fetch(`data/team_matches.csv?t=${Date.now()}`);
+                    if (mTeamResp.ok) fullTeamMatches = await handler.loadMatches(await mTeamResp.blob());
+                } catch(e) { console.warn('Missing team_matches.csv'); }
 
                 renderAllEditors();
                 showToast('數據載入成功');
@@ -411,7 +419,9 @@
             const labels = {
                 'id': '編號', 'unit': '單位', 'name': '姓名', 'target': '靶位',
                 'score': '單局成績', 'total': '總分', 'rank': '排名',
-                'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍'
+                'xCount': 'X', 'tenXCount': '10+X', 'group': '組別', 'team': '隊伍',
+                'matchId': 'ID', 'type': '類別', 'round': '回合', 'player1': '選手1', 'player2': '選手2',
+                'names1': '成員1', 'names2': '成員2', 'winner': '勝者', 'score1': '比分1', 'score2': '比分2'
             };
             head.innerHTML = playerKeys.map(k => `<th>${labels[k] || k}</th>`).join('');
 
@@ -419,7 +429,12 @@
             const currentMatches = currentAdminMode === 'Individual' ? fullIndividualMatches : fullTeamMatches;
 
             renderEditor('edit-players-body', currentPlayers, playerKeys);
-            renderEditor('edit-matches-body', currentMatches, ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']);
+            
+            const matchKeys = currentAdminMode === 'Individual'
+                ? ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']
+                : ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'names1', 'names2', 'winner', 'score1', 'score2', 'target'];
+            
+            renderEditor('edit-matches-body', currentMatches, matchKeys);
         }
 
         function renderEditor(tbodyId, data, keys) {
