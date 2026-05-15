@@ -1,4 +1,4 @@
-/** v2.2.0 **/
+/** v2.2.1 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -96,25 +96,26 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <div class="expand-icon">▼</div>
                         </div>
                         <div class="team-members">
-                            <table class="members-table">
-                                <thead>
-                                    <tr>
-                                        <th>姓名</th>
-                                        <th style="text-align: center;">靶位</th>
-                                        <th style="text-align: right;">得分</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${team.members.map(m => `
-                                        <tr>
-                                            <td>${m.name}</td>
-                                            <td style="text-align: center;">${m.target || '-'}</td>
-                                            <td style="text-align: right; font-weight: 600;">${m.total}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
+                            <div class="member-list">
+                                ${team.members.map(m => `
+                                    <div class="member-card">
+                                        <div class="member-name-area">
+                                            <span class="member-name-label">選手</span>
+                                            <span class="member-name-value">${m.name}</span>
+                                        </div>
+                                        <div class="member-stat">
+                                            <span class="stat-mini-label">靶位</span>
+                                            <span class="stat-mini-value">${m.target || '-'}</span>
+                                        </div>
+                                        <div class="member-stat">
+                                            <span class="stat-mini-label">得分</span>
+                                            <span class="stat-mini-value">${m.total || 0}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
+
                     </div>
                 </td>
             `;

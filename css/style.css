@@ -671,6 +671,66 @@ tr:last-child td {
     color: var(--accent-color);
 }
 
+/* Team Member List Styles */
+.member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1rem;
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+    background: rgba(138, 129, 124, 0.05);
+    padding: 0.75rem 1rem;
+    border-radius: 0.6rem;
+    gap: 1rem;
+    border: 1px solid rgba(138, 129, 124, 0.03);
+}
+
+.member-name-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.member-name-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.member-name-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.member-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 22%;
+    min-width: 3.5rem;
+}
+
+.stat-mini-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.15rem;
+    opacity: 0.8;
+}
+
+.stat-mini-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--accent-color);
+}
+
 .toast {
     position: fixed;
     bottom: 2rem;
