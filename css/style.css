@@ -540,6 +540,17 @@ tr:last-child td {
     opacity: 1;
 }
 
+.members-header-title {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(213, 189, 175, 0.1);
+    border-bottom: 1px solid rgba(213, 189, 175, 0.1);
+}
+
 .team-card.collapsed .team-members {
     max-height: 0;
     opacity: 0;
