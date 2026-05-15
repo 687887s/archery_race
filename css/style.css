@@ -802,16 +802,32 @@ tr:last-child td {
     #standings-table th:nth-child(7), #standings-table td:nth-child(7) { width: 15% !important; } /* Total */
 
     /* Card Mode Table Fix - 僅針對外部排名表格 */
-    #standings-table.team-mode,
-    #standings-table.team-mode > tbody,
+    #standings-table.team-mode {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        padding-top: 0.75rem !important; /* 增加頂部間距，防止第一張卡片被切到 */
+        overflow: visible !important; /* 確保陰影不被切掉 */
+        border: none !important;
+    }
+
+    #standings-table.team-mode > tbody {
+        display: block !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
     #standings-table.team-mode > tbody > tr.team-row-container {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box;
-        padding: 0 !important; /* 去除左右間距 */
-        margin-bottom: 0.75rem !important; /* 保留上下間隔 */
+        padding: 0 0.5rem !important; 
+        margin-bottom: 1rem !important; /* 增加間隔 */
+        overflow: visible !important;
         border: none !important;
     }
+
+
 
 
     #standings-table.team-mode > tbody > tr.team-row-container > td.team-card-cell {
