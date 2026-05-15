@@ -327,7 +327,7 @@ tr:last-child td {
     display: flex;
     flex: 1;
     overflow: auto;
-    padding: 3rem;
+    padding: 2rem;
     background: radial-gradient(circle at center, #FDFBF7 0%, #F5EBE0 100%);
     cursor: grab;
 }
@@ -338,7 +338,7 @@ tr:last-child td {
 
 #bracket-container {
     display: flex;
-    gap: 4rem;
+    gap: 2.5rem;
     min-width: max-content;
     align-items: stretch;
 }
@@ -349,8 +349,8 @@ tr:last-child td {
 }
 
 .round-title {
-    color: var(--accent-color);
-    font-size: 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.9rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.2em;
@@ -369,7 +369,7 @@ tr:last-child td {
 }
 
 .match-box {
-    width: 280px;
+    width: 240px;
     background: var(--sidebar-bg);
     border: 1px solid var(--glass-border);
     border-radius: 0.75rem;
@@ -706,15 +706,15 @@ tr:last-child td {
     }
 
     .bracket-wrapper {
-        padding: 1.5rem 1rem;
+        padding: 1rem;
     }
     
     #bracket-container {
-        gap: 2rem;
+        gap: 1.5rem;
     }
     
     .match-box {
-        width: 240px;
+        width: 200px;
     }
 
     /* Sidebar as Dropdown */
