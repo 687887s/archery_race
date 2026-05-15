@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-2) -->
+    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-3) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.7-2">
+    <link rel="stylesheet" href="css/style.css?v=1.5.7-3">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -225,7 +225,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-2</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-3</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -313,7 +313,7 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.5.7-2';
+        import { DataHandler } from './js/data-handler.js?v=1.5.7-3';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
@@ -443,8 +443,8 @@
 
         function renderAllEditors() {
             const playerKeys = currentAdminMode === 'Individual'
-                ? ['id', 'unit', 'name', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount', 'group']
-                : ['id', 'unit', 'name', 'team', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount', 'group'];
+                ? ['id', 'unit', 'name', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount']
+                : ['id', 'unit', 'name', 'team', 'target', 'score', 'total', 'rank', 'xCount', 'tenXCount'];
 
             const head = document.getElementById('players-table-head');
             const labels = {
@@ -462,8 +462,8 @@
             renderEditor('edit-players-body', currentPlayers, playerKeys);
             
             const matchKeys = currentAdminMode === 'Individual'
-                ? ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']
-                : ['matchId', 'type', 'group', 'round', 'player1', 'player2', 'names1', 'names2', 'winner', 'score1', 'score2', 'target'];
+                ? ['matchId', 'round', 'player1', 'player2', 'winner', 'score1', 'score2', 'target']
+                : ['matchId', 'round', 'player1', 'player2', 'names1', 'names2', 'winner', 'score1', 'score2', 'target'];
             
             renderEditor('edit-matches-body', currentMatches, matchKeys);
         }
@@ -482,7 +482,7 @@
                 keys.forEach(key => {
                     const td = document.createElement('td');
                     const val = key === 'isSeed' ? (row[key] ? '1' : '0') : row[key];
-                    const isReadOnly = (key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total' || key === 'rank');
+                    const isReadOnly = (key === 'id' || key === 'name' || key === 'unit' || key === 'matchId' || key.toLowerCase() === 'total' || key === 'rank');
 
                     if (key === 'group' || key === 'type' || key === 'isSeed') {
                         const select = document.createElement('select');
