@@ -330,6 +330,7 @@ tr:last-child td {
     padding: 2rem;
     background: radial-gradient(circle at center, #FDFBF7 0%, #F5EBE0 100%);
     cursor: grab;
+    touch-action: none; /* 防止瀏覽器預設的縮放行為影響整個頁面 */
 }
 
 .bracket-wrapper:active {

@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.7.0';
-import { renderStandings } from './render-standings.js?v=1.7.0';
-import { renderBracket } from './render-bracket.js?v=1.7.0';
+import { DataHandler } from './data-handler.js?v=1.7.1';
+import { renderStandings } from './render-standings.js?v=1.7.1';
+import { renderBracket } from './render-bracket.js?v=1.7.1';
 
 const handler = new DataHandler();
 
@@ -80,12 +80,13 @@ if (bracketWrapper) {
             startDragging(touch.pageX, touch.pageY);
         } else if (e.touches.length === 2) {
             isDown = false; // Stop scrolling when zooming
+            e.preventDefault(); // Prevent browser zoom
             initialDistance = Math.hypot(
                 e.touches[0].pageX - e.touches[1].pageX,
                 e.touches[0].pageY - e.touches[1].pageY
             );
         }
-    }, { passive: true });
+    }, { passive: false });
 
     bracketWrapper.addEventListener('touchend', () => {
         stopDragging();
@@ -97,6 +98,7 @@ if (bracketWrapper) {
             const touch = e.touches[0];
             moveDragging(touch.pageX, touch.pageY);
         } else if (e.touches.length === 2 && initialDistance > 0) {
+            e.preventDefault(); // Prevent browser zoom
             const newDistance = Math.hypot(
                 e.touches[0].pageX - e.touches[1].pageX,
                 e.touches[0].pageY - e.touches[1].pageY
@@ -106,8 +108,9 @@ if (bracketWrapper) {
             currentScale = Math.min(Math.max(0.3, currentScale * delta), 3);
             if (bracketContainer) bracketContainer.style.transform = `scale(${currentScale})`;
         }
-    }, { passive: true });
+    }, { passive: false });
 }
+
 
 
 
