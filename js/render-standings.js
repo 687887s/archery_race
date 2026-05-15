@@ -110,7 +110,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                         <tr>
                                             <td>${m.name}</td>
                                             <td style="text-align: center;">${m.target || '-'}</td>
-                                            <td style="text-align: right; font-weight: 600;">${m.score || 0}</td>
+                                            <td style="text-align: right; font-weight: 600;">${m.total || 0}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
