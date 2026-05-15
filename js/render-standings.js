@@ -1,4 +1,4 @@
-/** v2.4.0 **/
+/** v2.4.1 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -114,10 +114,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                     </div>
                                 `).join('')}
                             </div>
-                            <div class="disclaimer">
-                                排名與名次請以大會公布為主，本系統僅為即時參考用
                             </div>
                         </div>
+
 
                     </div>
                 </td>
@@ -182,10 +181,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                     <span class="metric-value">${player.tenXCount || 0}</span>
                                 </div>
                             </div>
-                            <div class="disclaimer">
-                                排名與名次請以大會公布為主，本系統僅為即時參考用
                             </div>
                         </div>
+
                     </div>
                 </td>
             `;
