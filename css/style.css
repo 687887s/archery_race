@@ -622,7 +622,7 @@ tr:last-child td {
 
 /* Individual Mode Detail Table (Key-Value) */
 .members-table.detail-mode th {
-    width: 40%;
+    width: 50% !important;
     text-align: left;
     background: rgba(138, 129, 124, 0.05);
     font-weight: 700;
@@ -630,10 +630,11 @@ tr:last-child td {
 }
 
 .members-table.detail-mode td {
-    width: 60%;
+    width: 50% !important;
     padding: 0.6rem 1rem;
     text-align: left;
 }
+
 
 
 
@@ -759,14 +760,15 @@ tr:last-child td {
 
     /* 針對個人賽詳細模式的欄寬修正 */
     .members-table.detail-mode th {
-        width: 30% !important;
+        width: 50% !important;
         display: table-cell !important;
     }
     
     .members-table.detail-mode td {
-        width: 70% !important;
+        width: 50% !important;
         display: table-cell !important;
     }
+
 
 
 
