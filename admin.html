@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-12) -->
+    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-13) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.7-12">
+    <link rel="stylesheet" href="css/style.css?v=1.5.7-13">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -244,7 +244,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-12</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-13</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -324,7 +324,7 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.5.7-12';
+        import { DataHandler } from './js/data-handler.js?v=1.5.7-13';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
@@ -502,19 +502,34 @@
             filteredData.forEach((row, rowIndex) => {
                 const tr = document.createElement('tr');
                 keys.forEach(key => {
-                    // Handle Rowspan for Team Name (unit) and Rank in Team Mode
-                    if (currentAdminMode === 'Team' && (key === 'unit' || key === 'rank')) {
+                    // Handle Rowspan for Team Name (unit), Rank, and Total in Team Mode
+                    if (currentAdminMode === 'Team' && (key === 'unit' || key === 'rank' || key === 'total')) {
                         // Check if this is the start of a team block (assuming 3 players per team)
                         if (rowIndex % 3 === 0) {
                             const td = document.createElement('td');
                             td.rowSpan = 3;
                             const input = document.createElement('input');
                             input.type = 'text';
-                            input.value = row[key] || '';
+                            
+                            // For Team Mode Total, calculate sum if needed
+                            let displayVal = row[key] || '';
+                            if (key === 'total') {
+                                const p1 = parseInt(filteredData[rowIndex].score) || 0;
+                                const p2 = parseInt(filteredData[rowIndex+1]?.score) || 0;
+                                const p3 = parseInt(filteredData[rowIndex+2]?.score) || 0;
+                                displayVal = p1 + p2 + p3;
+                                // Sync back to data
+                                row.total = displayVal;
+                                if (filteredData[rowIndex+1]) filteredData[rowIndex+1].total = displayVal;
+                                if (filteredData[rowIndex+2]) filteredData[rowIndex+2].total = displayVal;
+                            }
+
+                            input.value = displayVal;
                             input.readOnly = true;
                             input.style.opacity = '0.7';
                             input.style.cursor = 'not-allowed';
                             input.setAttribute('data-key', key);
+                            input.id = `merged-${key}-${rowIndex}`; // ID for dynamic updates
                             td.appendChild(input);
                             tr.appendChild(td);
                         }
@@ -587,11 +602,28 @@
 
                             // Auto-calculate total if score changes
                             if (key === 'score') {
-                                const val = parseInt(row.score) || 0;
-                                row.total = val;
+                                if (currentAdminMode === 'Individual') {
+                                    const val = parseInt(row.score) || 0;
+                                    row.total = val;
+                                    const totalInput = tr.querySelector('input[data-key="total"]');
+                                    if (totalInput) totalInput.value = row.total;
+                                } else {
+                                    // Team Mode Summation
+                                    const startIdx = rowIndex - (rowIndex % 3);
+                                    const s1 = parseInt(filteredData[startIdx].score) || 0;
+                                    const s2 = parseInt(filteredData[startIdx+1]?.score) || 0;
+                                    const s3 = parseInt(filteredData[startIdx+2]?.score) || 0;
+                                    const teamTotal = s1 + s2 + s3;
+                                    
+                                    // Update all 3 rows in data
+                                    for(let i=0; i<3; i++) {
+                                        if (filteredData[startIdx+i]) filteredData[startIdx+i].total = teamTotal;
+                                    }
 
-                                const totalInput = tr.querySelector('input[data-key="total"]');
-                                if (totalInput) totalInput.value = row.total;
+                                    // Update the merged UI input
+                                    const totalInput = document.getElementById(`merged-total-${startIdx}`);
+                                    if (totalInput) totalInput.value = teamTotal;
+                                }
                             }
                         });
 
