@@ -1,4 +1,4 @@
-/** v1.8.2 **/
+/** v1.8.3 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -148,12 +148,11 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                     <div class="team-card collapsed">
                         <div class="team-header">
                             <div class="team-rank">${index + 1}</div>
-                            <div class="team-info">
-                                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <span class="team-unit" style="margin-bottom: 0;">#${player.id || '-'}</span>
-                                    <span class="team-name">${player.name}</span>
+                            <div class="team-info" style="justify-content: center;">
+                                <div style="display: flex; align-items: baseline; gap: 0.6rem;">
+                                    <span class="team-unit" style="margin-bottom: 0; font-size: 0.8rem; opacity: 0.8;">#${player.id || '-'}</span>
+                                    <span class="team-name" style="font-size: 1.1rem;">${player.name}</span>
                                 </div>
-                                <span class="team-unit">${player.unit}</span>
                             </div>
                             <div class="team-stats">
                                 <span class="stat-label">總分</span>
@@ -171,13 +170,14 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                     </tr>
                                     <tr>
                                         <th>10+X</th><td>${player.tenXCount || 0}</td>
-                                        <th>單位</th><td>${player.unit}</td>
+                                        <th>編號</th><td>#${player.id || '-'}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </td>
+
 
             `;
 
