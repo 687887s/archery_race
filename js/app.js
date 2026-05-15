@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.5.8-1';
-import { renderStandings } from './render-standings.js?v=1.5.8-1';
-import { renderBracket } from './render-bracket.js?v=1.5.8-1';
+import { DataHandler } from './data-handler.js?v=1.5.9';
+import { renderStandings } from './render-standings.js?v=1.5.9';
+import { renderBracket } from './render-bracket.js?v=1.5.9';
 
 const handler = new DataHandler();
 
@@ -25,33 +25,52 @@ let isDown = false;
 let startX, scrollLeft, startY, scrollTop;
 
 if (bracketWrapper) {
-    bracketWrapper.addEventListener('mousedown', (e) => {
+    const startDragging = (pageX, pageY) => {
         isDown = true;
         bracketWrapper.classList.add('active-dragging');
-        startX = e.pageX - bracketWrapper.offsetLeft;
-        startY = e.pageY - bracketWrapper.offsetTop;
+        startX = pageX - bracketWrapper.offsetLeft;
+        startY = pageY - bracketWrapper.offsetTop;
         scrollLeft = bracketWrapper.scrollLeft;
         scrollTop = bracketWrapper.scrollTop;
-    });
-    bracketWrapper.addEventListener('mouseleave', () => {
+    };
+
+    const stopDragging = () => {
         isDown = false;
         bracketWrapper.classList.remove('active-dragging');
-    });
-    bracketWrapper.addEventListener('mouseup', () => {
-        isDown = false;
-        bracketWrapper.classList.remove('active-dragging');
-    });
-    bracketWrapper.addEventListener('mousemove', (e) => {
+    };
+
+    const moveDragging = (pageX, pageY) => {
         if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - bracketWrapper.offsetLeft;
-        const y = e.pageY - bracketWrapper.offsetTop;
+        const x = pageX - bracketWrapper.offsetLeft;
+        const y = pageY - bracketWrapper.offsetTop;
         const walkX = (x - startX) * 2;
         const walkY = (y - startY) * 2;
         bracketWrapper.scrollLeft = scrollLeft - walkX;
         bracketWrapper.scrollTop = scrollTop - walkY;
+    };
+
+    // Mouse Events
+    bracketWrapper.addEventListener('mousedown', (e) => startDragging(e.pageX, e.pageY));
+    bracketWrapper.addEventListener('mouseleave', stopDragging);
+    bracketWrapper.addEventListener('mouseup', stopDragging);
+    bracketWrapper.addEventListener('mousemove', (e) => {
+        e.preventDefault();
+        moveDragging(e.pageX, e.pageY);
     });
+
+    // Touch Events
+    bracketWrapper.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        startDragging(touch.pageX, touch.pageY);
+    }, { passive: true });
+    bracketWrapper.addEventListener('touchend', stopDragging, { passive: true });
+    bracketWrapper.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        const touch = e.touches[0];
+        moveDragging(touch.pageX, touch.pageY);
+    }, { passive: true });
 }
+
 
 // Sidebar Toggle Logic
 function toggleSidebar(forceCollapse = null) {
