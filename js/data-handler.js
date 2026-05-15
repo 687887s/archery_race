@@ -1,4 +1,4 @@
-/** v1.5.6-1 **/
+/** v1.5.6-2 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -563,7 +563,7 @@ export class DataHandler {
                         rank: this.getVal(p, ['rank', '排名'], ''),
                         xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
                         tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
-                        group: group,
+                        group: this.getVal(p, ['group', '組別', '分組', '項目', '類別'], group),
                         team: unit || '-'
                     };
                 }).filter(p => p.name && p.name.length >= 2 && (parseInt(p.total) > 0 || p.target !== ''));
@@ -594,8 +594,8 @@ export class DataHandler {
                 rank: this.getVal(p, ['rank', '排名'], ''),
                 xCount: parseInt(this.getVal(p, ['X'], 0)) || 0,
                 tenXCount: parseInt(this.getVal(p, ['10+X'], 0)) || 0,
-                group: this.getVal(p, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
-                team: this.getVal(p, ['team', '隊伍'], unitVal)
+                group: this.getVal(p, ['group', '組別', '分組', '項目', '類別'], window.currentAdminGroup || 'Unknown'),
+                team: this.getVal(p, ['team', '隊伍', '團體'], unitVal)
             };
         }).filter(p => p.name && p.name.trim() !== '' && p.name !== '未知');
         if (isPrev) this.prevPlayers = mapped;
@@ -608,9 +608,9 @@ export class DataHandler {
 
         const mapped = data.map(m => ({
             matchId: this.getVal(m, ['matchId', '對抗序', '場次', '編號'], 'TBD'),
-            type: this.getVal(m, ['type', '類型'], 'Individual'),
-            group: this.getVal(m, ['group', '組別', '分組'], window.currentAdminGroup || 'Unknown'),
-            round: this.getVal(m, ['round', '輪次', '階段'], '1/8'),
+            type: this.getVal(m, ['type', '類型', '賽事類型', '對抗類型'], 'Individual'),
+            group: this.getVal(m, ['group', '組別', '分組', '項目', '類別'], window.currentAdminGroup || 'Unknown'),
+            round: this.getVal(m, ['round', '輪次', '階段', '局數'], '1/8'),
             player1: this.getVal(m, ['player1', '選手1', '左側選手'], 'TBD'),
             player2: this.getVal(m, ['player2', '選手2', '右側選手'], 'TBD'),
             names1: this.getVal(m, ['names1', '成員1', '隊員1'], ''),
