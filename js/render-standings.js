@@ -101,6 +101,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                 <thead>
                                     <tr>
                                         <th>選手姓名</th>
+                                        <th style="text-align: center;">靶位</th>
                                         <th style="text-align: right;">個人得分</th>
                                     </tr>
                                 </thead>
@@ -108,6 +109,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                     ${team.members.map(m => `
                                         <tr>
                                             <td>${m.name}</td>
+                                            <td style="text-align: center;">${m.target || '-'}</td>
                                             <td style="text-align: right; font-weight: 600;">${m.total}</td>
                                         </tr>
                                     `).join('')}
