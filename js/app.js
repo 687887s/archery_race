@@ -137,7 +137,7 @@ groupSelector?.addEventListener('click', (e) => {
 async function autoFetchData() {
     try {
         console.log('Fetching data for type:', currentType);
-        showToast('正在獲獲取最新賽況...');
+        showToast('正在獲取最新賽況...');
 
         const prefix = currentType === 'Individual' ? 'individual_' : 'team_';
         const pFile = `${prefix}players.csv`;

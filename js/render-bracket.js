@@ -1,4 +1,4 @@
-/** v1.5.7-14 **/
+/** v1.5.7-15 **/
 export function renderBracket(containerId, matches) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -42,8 +42,17 @@ export function renderBracket(containerId, matches) {
             const isP1Winner = match.winner === match.player1 && match.winner !== '' && match.winner !== 'TBD';
             const isP2Winner = match.winner === match.player2 && match.winner !== '' && match.winner !== 'TBD';
 
+            const displayId = (match.matchId || '')
+                .replace('MT-', '團體-')
+                .replace('M-', '')
+                .replace('1/8', '16強賽')
+                .replace('1/4', '8強賽')
+                .replace('1/2', '4強賽')
+                .replace('Final', '金牌賽')
+                .replace('Bronze', '銅牌賽');
+
             matchDiv.innerHTML = `
-                <div class="match-id">${match.matchId}</div>
+                <div class="match-id">${displayId}</div>
                 <div class="player-slot ${isP1Winner ? 'winner' : ''}">
                     <span class="name">${match.player1 || 'TBD'}</span>
                     <span class="score">${match.score1}</span>
