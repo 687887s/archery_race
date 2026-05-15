@@ -1,21 +1,16 @@
 :root {
     --bg-color: #FDFBF7;
-    /* 主背景：極淺米白 */
-    --sidebar-bg: #F5EBE0;
-    /* 側邊欄：輕透奶茶 */
-    --accent-color: #D5BDAF;
-    /* 強調色：深焦糖奶茶 */
-    --accent-soft: #E3D5CA;
-    /* 柔和奶茶 */
-    --text-primary: #463F3A;
-    /* 主要文字：暖深灰 */
-    --text-secondary: #8A817C;
-    /* 次要文字：暖中灰 */
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: #E3D5CA;
-    --card-shadow: 0 10px 30px -5px rgba(138, 129, 124, 0.15);
+    --sidebar-bg: #E8D9CC; /* 稍微加深側邊欄 */
+    --accent-color: #8C6A5D; /* 大幅加深強調色，確保文字清晰 */
+    --accent-soft: #D5BDAF;
+    --text-primary: #2B2522; /* 更加深的文字顏色 */
+    --text-secondary: #5E544F; /* 加深次要文字，符合對比標準 */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: #D5BDAF;
+    --card-shadow: 0 10px 30px -5px rgba(70, 63, 58, 0.2);
     --transition-speed: 0.3s;
 }
+
 
 * {
     margin: 0;
@@ -514,11 +509,11 @@ tr:last-child td {
 }
 
 .team-unit {
-    font-size: 0.75rem;
+    font-size: 0.8rem; /* 稍微加大 */
     color: var(--text-secondary);
     font-weight: 500;
-    opacity: 0.8;
 }
+
 
 .team-stats {
     display: flex;
@@ -697,15 +692,15 @@ tr:last-child td {
 }
 
 .member-name-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem; /* 稍微加大 */
     color: var(--text-secondary);
-    opacity: 0.6;
+    font-weight: 600; /* 加粗一點點 */
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .member-name-value {
-    font-size: 0.95rem;
+    font-size: 1rem; /* 稍微加大 */
     font-weight: 700;
     color: var(--text-primary);
 }
@@ -719,17 +714,17 @@ tr:last-child td {
 }
 
 .stat-mini-label {
-    font-size: 0.6rem;
+    font-size: 0.65rem; /* 稍微加大 */
     color: var(--text-secondary);
     margin-bottom: 0.15rem;
-    opacity: 0.8;
 }
 
 .stat-mini-value {
-    font-size: 0.95rem;
+    font-size: 1rem; /* 稍微加大 */
     font-weight: 800;
     color: var(--accent-color);
 }
+
 
 .toast {
     position: fixed;
