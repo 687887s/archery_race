@@ -460,10 +460,13 @@ tr:last-child td {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 0.75rem;
-    overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible; /* 改為 visible 以確保陰影與邊框在動畫時不被切掉 */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
     box-shadow: 0 4px 12px rgba(138, 129, 124, 0.08);
+    transform: translateZ(0); /* 穩定動畫，防止位置偏移 */
+    backface-visibility: hidden;
 }
+
 
 .team-card:hover {
     border-color: var(--accent-color);
@@ -555,7 +558,10 @@ tr:last-child td {
     background: rgba(213, 189, 175, 0.05);
     border-top: 1px solid var(--glass-border);
     opacity: 1;
+    border-bottom-left-radius: 0.75rem; /* 與卡片圓角一致 */
+    border-bottom-right-radius: 0.75rem;
 }
+
 
 .members-header-title {
     padding: 0.75rem 1.5rem;
