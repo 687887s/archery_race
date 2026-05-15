@@ -470,8 +470,15 @@ tr:last-child td {
 
 .team-card:hover {
     border-color: var(--accent-color);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(138, 129, 124, 0.15); /* 使用陰影加深代替位移 */
+    background: rgba(255, 255, 255, 0.95);
 }
+
+.team-card:active {
+    transform: scale(0.99); /* 點擊時輕微縮小，比向上位移更穩定 */
+    transition: transform 0.1s;
+}
+
 
 .team-header {
     padding: 1rem;
