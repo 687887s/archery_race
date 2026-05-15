@@ -808,10 +808,11 @@ tr:last-child td {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box;
-        padding: 0 0.75rem !important; /* 加入左右間距，不貼邊 */
-        margin-bottom: 0.75rem !important; /* 加入上下間隔 */
+        padding: 0 !important; /* 去除左右間距 */
+        margin-bottom: 0.75rem !important; /* 保留上下間隔 */
         border: none !important;
     }
+
 
     #standings-table.team-mode > tbody > tr.team-row-container > td.team-card-cell {
         display: block !important;
