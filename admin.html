@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第二屆長庚射箭公開邀請賽 | 核心管理系統</title>
-    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-3) -->
+    <!-- Last Build: 2026-05-15 09:27 (v1.5.7-4) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css?v=1.5.7-3">
+    <link rel="stylesheet" href="css/style.css?v=1.5.7-4">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -107,6 +107,7 @@
             top: 0;
             background: var(--sidebar-bg);
             z-index: 10;
+            text-align: center;
         }
 
         th,
@@ -140,13 +141,17 @@
         }
 
         td input[data-key="name"],
+        td input[data-key="player1"],
+        td input[data-key="player2"] {
+            min-width: 100px;
+            max-width: 150px;
+        }
+
         td input[data-key="team"],
         td input[data-key="unit"],
-        td input[data-key="player1"],
-        td input[data-key="player2"],
         td input[data-key="names1"],
         td input[data-key="names2"] {
-            min-width: 150px;
+            min-width: 160px;
         }
 
         .btn-save {
@@ -225,7 +230,7 @@
     <div class="admin-wrapper hidden" id="admin-ui">
         <header class="editor-header">
             <div>
-                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-3</span></h1>
+                <h1>第二屆長庚射箭公開邀請賽 <span style="font-size: 12px; opacity: 0.6;">v1.5.7-4</span></h1>
                 <p style="color: #000000">CGU x CGUST 賽事數據即時管理系統</p>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">
@@ -313,7 +318,7 @@
 
     <script type="module">
         console.log('Admin Script Loading...');
-        import { DataHandler } from './js/data-handler.js?v=1.5.7-3';
+        import { DataHandler } from './js/data-handler.js?v=1.5.7-4';
         const handler = new DataHandler();
         const REPO_OWNER = '687887s';
         const REPO_NAME = 'archery_race';
