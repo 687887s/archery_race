@@ -1,4 +1,4 @@
-/** v1.7.1 **/
+/** v1.8.0 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -136,30 +136,64 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         prevDisplayData = prevPlayers;
 
         const table = document.getElementById('standings-table');
-        if (table) table.classList.remove('team-mode');
+        if (table) table.classList.add('team-mode');
 
         displayData.forEach((player, index) => {
             const tr = document.createElement('tr');
+            tr.className = 'team-row-container';
             const prevPlayer = prevDisplayData.find(p => p.name === player.name) || player;
 
             tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${player.id || '-'}</td>
-                <td>${player.unit}</td>
-                <td>${player.name}</td>
-                <td style="text-align: center;">${player.target || '-'}</td>
-                <td class="animate-number" data-start="${prevPlayer.score || 0}" data-end="${player.score}" style="text-align: center;">
-                    ${player.score}
+                <td colspan="9" class="team-card-cell">
+                    <div class="team-card collapsed">
+                        <div class="team-header">
+                            <div class="team-rank">${index + 1}</div>
+                            <div class="team-info">
+                                <span class="team-name">${player.name}</span>
+                                <span class="team-unit">${player.unit}</span>
+                            </div>
+                            <div class="team-stats">
+                                <span class="stat-label">總分</span>
+                                <span class="stat-value animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}">${player.total}</span>
+                            </div>
+                            <div class="expand-icon">▼</div>
+                        </div>
+                        <div class="team-members">
+                            <div class="members-header-title">選手詳細數據 (ID: ${player.id || '-'})</div>
+                            <table class="members-table detail-mode">
+                                <tbody>
+                                    <tr>
+                                        <th>靶位</th><td>${player.target || '-'}</td>
+                                        <th>第一輪</th><td>${player.r1 || 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>X</th><td>${player.xCount || 0}</td>
+                                        <th>第二輪</th><td>${player.r2 || 0}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>10+X</th><td>${player.tenXCount || 0}</td>
+                                        <th>組別</th><td>${player.group || '-'}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </td>
-                <td class="animate-number" data-start="${prevPlayer.total || 0}" data-end="${player.total}" style="font-weight: bold; color: var(--accent-color); text-align: center;">
-                    ${player.total}
-                </td>
-                <td style="text-align: center;">${player.xCount || 0}</td>
-                <td style="text-align: center;">${player.tenXCount || 0}</td>
             `;
+
+            // Toggle Click Listener
+            const card = tr.querySelector('.team-card');
+            const header = tr.querySelector('.team-header');
+            header.addEventListener('click', () => {
+                card.classList.toggle('collapsed');
+                const icon = header.querySelector('.expand-icon');
+                if (icon) icon.style.transform = card.classList.contains('collapsed') ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+
             tbody.appendChild(tr);
         });
     }
+
 
     // Start animation
     animateNumbers(tbody);

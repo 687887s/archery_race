@@ -589,6 +589,19 @@ tr:last-child td {
     border-bottom: none;
 }
 
+.members-table.detail-mode th {
+    width: 25%;
+    text-align: left;
+    background: rgba(138, 129, 124, 0.05);
+    font-weight: 700;
+}
+
+.members-table.detail-mode td {
+    width: 25%;
+    text-align: left;
+}
+
+
 .toast {
     position: fixed;
     bottom: 2rem;
