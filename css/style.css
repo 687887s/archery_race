@@ -485,15 +485,16 @@ tr:last-child td {
 
 
 .team-rank {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: var(--accent-color);
-    width: 2.5rem;
+    width: 15%;
     flex-shrink: 0;
+    text-align: center;
 }
 
 .team-info {
-    flex: 1;
+    width: 55%;
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
@@ -524,9 +525,10 @@ tr:last-child td {
     flex-direction: column;
     align-items: center;
     gap: 0.1rem;
-    width: 3.5rem;
+    width: 20%;
     flex-shrink: 0;
 }
+
 
 
 .stat-label {
@@ -543,6 +545,8 @@ tr:last-child td {
 }
 
 .expand-icon {
+    width: 10%;
+    text-align: center;
     font-size: 0.8rem;
     color: var(--text-secondary);
     transition: transform 0.3s;
