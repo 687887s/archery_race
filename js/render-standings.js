@@ -1,4 +1,4 @@
-/** v1.5.5-3 **/
+/** v1.5.5-4 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -101,9 +101,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <table class="members-table">
                                 <thead>
                                     <tr>
-                                        <th>選手姓名</th>
+                                        <th>姓名</th>
                                         <th style="text-align: center;">靶位</th>
-                                        <th style="text-align: right;">個人得分</th>
+                                        <th style="text-align: right;">得分</th>
                                     </tr>
                                 </thead>
                                 <tbody>

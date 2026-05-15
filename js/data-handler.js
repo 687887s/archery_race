@@ -1,4 +1,4 @@
-/** v1.5.5-3 **/
+/** v1.5.5-4 **/
 export class DataHandler {
     constructor() {
         this.players = [];
