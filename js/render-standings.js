@@ -1,4 +1,4 @@
-/** v2.0.0 **/
+/** v2.0.1 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
