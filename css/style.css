@@ -691,6 +691,13 @@ tr:last-child td {
         font-size: 0.8rem;
     }
 
+    .team-card-cell {
+        width: 100% !important;
+        padding: 0.5rem 0 !important;
+        display: table-cell !important; /* 確保在手機版不被 display: block 破壞 table 結構 */
+    }
+
+
     /* Team Card Optimizations */
     .team-header {
         padding: 1rem;
@@ -717,18 +724,20 @@ tr:last-child td {
     /* Team Member Table Adjustments */
     .members-table th, .members-table td {
         padding: 0.6rem 0.5rem;
-        white-space: normal; /* 允許成員姓名折行 */
+        white-space: normal;
     }
     
-    .members-table th:nth-child(2), .members-table td:nth-child(2) {
-        display: table-cell; /* 恢復顯示成員靶位 */
-        text-align: center;
-        width: 20%;
+    /* 針對詳細模式 (Individual/Team Details) 的欄寬修正 */
+    .members-table.detail-mode th {
+        width: 35% !important;
+        display: table-cell !important;
     }
     
-    .members-table th, .members-table td {
-        padding: 0.6rem 0.75rem;
+    .members-table.detail-mode td {
+        width: 65% !important;
+        display: table-cell !important;
     }
+
 
     .bracket-wrapper {
         padding: 0.75rem;
