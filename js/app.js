@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.5.9';
-import { renderStandings } from './render-standings.js?v=1.5.9';
-import { renderBracket } from './render-bracket.js?v=1.5.9';
+import { DataHandler } from './data-handler.js?v=1.6.0';
+import { renderStandings } from './render-standings.js?v=1.6.0';
+import { renderBracket } from './render-bracket.js?v=1.6.0';
 
 const handler = new DataHandler();
 
@@ -78,11 +78,16 @@ function toggleSidebar(forceCollapse = null) {
     if (isCollapsed) {
         sidebar.classList.add('collapsed');
         sidebarOverlay.classList.add('hidden');
+        if (menuToggle) menuToggle.style.opacity = '1';
+        if (menuToggle) menuToggle.style.pointerEvents = 'auto';
     } else {
         sidebar.classList.remove('collapsed');
         sidebarOverlay.classList.remove('hidden');
+        if (menuToggle) menuToggle.style.opacity = '0';
+        if (menuToggle) menuToggle.style.pointerEvents = 'none';
     }
 }
+
 
 menuToggle?.addEventListener('click', () => toggleSidebar());
 sidebarOverlay?.addEventListener('click', () => toggleSidebar(true));

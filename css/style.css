@@ -700,4 +700,40 @@ tr:last-child td {
     .match-box {
         width: 240px;
     }
-}
+
+    /* Sidebar as Dropdown */
+    .sidebar {
+        width: 100vw;
+        height: auto;
+        max-height: 90vh;
+        left: 0;
+        top: 0;
+        transform: translateY(-100%);
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+        border-radius: 0 0 1.5rem 1.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        padding: 1.5rem;
+    }
+
+    .sidebar.collapsed {
+        transform: translateY(-100%);
+    }
+
+    .sidebar:not(.collapsed) {
+        transform: translateY(0);
+    }
+
+    .menu-toggle {
+        transition: opacity 0.3s ease;
+    }
+
+    .nav-menu {
+        gap: 1rem;
+    }
+
+    .logo {
+        margin-bottom: 1.5rem;
+    }
+}
+
