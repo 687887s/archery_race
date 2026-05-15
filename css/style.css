@@ -446,7 +446,7 @@ tr:last-child td {
 }
 
 /* Team Mode Specifics */
-.team-mode thead {
+.team-mode > thead {
     display: none;
 }
 
