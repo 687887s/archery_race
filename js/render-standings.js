@@ -1,4 +1,4 @@
-/** v1.8.1 **/
+/** v1.8.2 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -149,7 +149,10 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                         <div class="team-header">
                             <div class="team-rank">${index + 1}</div>
                             <div class="team-info">
-                                <span class="team-name">${player.name}</span>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="team-unit" style="margin-bottom: 0;">#${player.id || '-'}</span>
+                                    <span class="team-name">${player.name}</span>
+                                </div>
                                 <span class="team-unit">${player.unit}</span>
                             </div>
                             <div class="team-stats">
@@ -159,26 +162,23 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <div class="expand-icon">▼</div>
                         </div>
                         <div class="team-members">
-                            <div class="members-header-title">選手詳細數據 (ID: ${player.id || '-'})</div>
+                            <div class="members-header-title">數據詳情</div>
                             <table class="members-table detail-mode">
                                 <tbody>
                                     <tr>
                                         <th>靶位</th><td>${player.target || '-'}</td>
-                                        <th>第一輪</th><td>${player.r1 || 0}</td>
-                                    </tr>
-                                    <tr>
                                         <th>X</th><td>${player.xCount || 0}</td>
-                                        <th>第二輪</th><td>${player.r2 || 0}</td>
                                     </tr>
                                     <tr>
                                         <th>10+X</th><td>${player.tenXCount || 0}</td>
-                                        <th>組別</th><td>${player.group || '-'}</td>
+                                        <th>單位</th><td>${player.unit}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </td>
+
             `;
 
             // Toggle Click Listener
