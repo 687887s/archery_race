@@ -100,21 +100,15 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <table class="members-table">
                                 <thead>
                                     <tr>
-                                        <th>姓名</th>
-                                        <th>靶位</th>
-                                        <th>個人分</th>
-                                        <th>X</th>
-                                        <th>10+X</th>
+                                        <th>選手姓名</th>
+                                        <th style="text-align: right;">個人得分</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${team.members.map(m => `
                                         <tr>
                                             <td>${m.name}</td>
-                                            <td>${m.target || '-'}</td>
-                                            <td>${m.total}</td>
-                                            <td>${m.xCount || 0}</td>
-                                            <td>${m.tenXCount || 0}</td>
+                                            <td style="text-align: right; font-weight: 600;">${m.total}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
