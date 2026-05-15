@@ -1,4 +1,4 @@
-/** v1.6.4 **/
+/** v1.6.5 **/
 export function renderBracket(containerId, matches) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
@@ -45,6 +45,8 @@ export function renderBracket(containerId, matches) {
             const displayId = (match.matchId || '')
                 .replace('MT-', '團體-')
                 .replace('M-', '')
+                .replace('Final-1', '金牌賽')
+                .replace('Final-2', '銅牌賽')
                 .replace('1/8', '16強賽')
                 .replace('1/4', '8強賽')
                 .replace('1/2', '4強賽')
