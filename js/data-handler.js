@@ -578,8 +578,8 @@ export class DataHandler {
 
         const mapped = data.map(p => {
             const unitVal = this.getVal(p, ['unit', '單位', '參賽單位']) || (p.team ? p.team.split(' ')[0] : '-');
-            const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '單局 成績'], 0)) || 0;
-            let total = parseInt(this.getVal(p, ['total', 'points', '團體總分', '積分'], 0)) || 0;
+            const r1 = parseInt(this.getVal(p, ['r1', 'round1', '第一輪', '單局成績'], 0)) || 0;
+            let total = parseInt(this.getVal(p, ['total', 'points', '總分', '積分'], 0)) || 0;
             if (total === 0) total = r1; // Fallback to r1 if total is not set
 
             return {
