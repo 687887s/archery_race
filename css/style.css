@@ -488,24 +488,27 @@ tr:last-child td {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--accent-color);
-    min-width: 2rem;
+    width: 2.5rem;
+    flex-shrink: 0;
 }
 
 .team-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    min-width: 0; /* 防止 Flexbox 子元素溢出 */
+    gap: 0.1rem;
+    min-width: 0;
+    align-items: center;
+    text-align: center;
 }
 
 .team-name {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-primary);
     white-space: normal;
-    line-height: 1.3;
-    word-break: break-all; /* 強制長字折行 */
+    line-height: 1.2;
+    word-break: break-all;
     overflow-wrap: break-word;
 }
 
@@ -513,15 +516,18 @@ tr:last-child td {
     font-size: 0.75rem;
     color: var(--text-secondary);
     font-weight: 500;
+    opacity: 0.8;
 }
 
 .team-stats {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 0.25rem;
-    margin-right: 1rem;
+    align-items: center;
+    gap: 0.1rem;
+    width: 3.5rem;
+    flex-shrink: 0;
 }
+
 
 .stat-label {
     font-size: 0.65rem;
