@@ -1,4 +1,4 @@
-/** v1.5.6-2 **/
+/** v1.5.6-4 **/
 export class DataHandler {
     constructor() {
         this.players = [];
@@ -443,7 +443,7 @@ export class DataHandler {
             }
 
             // IMPROVED: Keep "Traditional" and "Recurve" to avoid merging groups like "Trad-30" and "Rec-30"
-            let group = sheetName.replace('對抗', '').replace('排名', '').replace('賽', '').replace(/\s*\d+強/g, '').trim();
+            let group = sheetName.replace('對抗', '').replace('排名', '').replace('賽', '').replace('團體', '').replace(/\s*\d+強/g, '').trim();
 
             // If the name becomes too short or empty after stripping, fall back to a safer version of the sheet name
             if (group.length < 2) {
@@ -620,7 +620,7 @@ export class DataHandler {
             score2: parseInt(this.getVal(m, ['score2', '分數2'], 0)) || 0,
             target: this.getVal(m, ['target', '靶位', '靶號'], ''),
             isSeed: this.getVal(m, ['isSeed', 'seed', '種子'], '0') === '1'
-        })).filter(m => m.player1 !== 'TBD' || m.player2 !== 'TBD');
+        }));
         if (isPrev) this.prevMatches = mapped;
         else this.matches = mapped;
         return mapped;
