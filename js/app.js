@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.5.7-14';
-import { renderStandings } from './render-standings.js?v=1.5.7-14';
-import { renderBracket } from './render-bracket.js?v=1.5.7-14';
+import { DataHandler } from './data-handler.js?v=1.5.7-16';
+import { renderStandings } from './render-standings.js?v=1.5.7-16';
+import { renderBracket } from './render-bracket.js?v=1.5.7-16';
 
 const handler = new DataHandler();
 
@@ -98,10 +98,10 @@ function updateView() {
 
 function refreshUI() {
     if (currentView === 'standings') {
-        const searchGroup = currentType === 'Team' ? `${currentGroup}團體` : currentGroup;
+        const searchGroup = currentGroup;
         renderStandings('standings-body', handler.getRankings(searchGroup), handler.getRankings(searchGroup, true), currentType === 'Team');
     } else {
-        const searchGroup = currentType === 'Team' ? `${currentGroup}團體` : currentGroup;
+        const searchGroup = currentGroup;
         renderBracket('bracket-container', handler.getFilteredMatches(currentType, searchGroup));
     }
 }
