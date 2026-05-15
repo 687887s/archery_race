@@ -1,4 +1,4 @@
-/** v2.1.0 **/
+/** v2.2.0 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -164,24 +164,23 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <div class="expand-icon">▼</div>
                         </div>
                         <div class="team-members">
-                            <table class="members-table detail-mode">
-                                <tbody>
-                                    <tr>
-                                        <th>靶位</th><td>${player.target || '-'}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>X</th><td>${player.xCount || 0}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>10+X</th><td>${player.tenXCount || 0}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="metrics-grid">
+                                <div class="metric-item">
+                                    <span class="metric-label">靶位</span>
+                                    <span class="metric-value">${player.target || '-'}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">X</span>
+                                    <span class="metric-value">${player.xCount || 0}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">10+X</span>
+                                    <span class="metric-value">${player.tenXCount || 0}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </td>
-
-
             `;
 
             // Toggle Click Listener

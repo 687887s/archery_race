@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=2.1.0';
-import { renderStandings } from './render-standings.js?v=2.1.0';
-import { renderBracket } from './render-bracket.js?v=2.1.0';
+import { DataHandler } from './data-handler.js?v=2.2.0';
+import { renderStandings } from './render-standings.js?v=2.2.0';
+import { renderBracket } from './render-bracket.js?v=2.2.0';
 
 const handler = new DataHandler();
 
