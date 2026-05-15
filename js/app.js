@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.6.5';
-import { renderStandings } from './render-standings.js?v=1.6.5';
-import { renderBracket } from './render-bracket.js?v=1.6.5';
+import { DataHandler } from './data-handler.js?v=1.7.0';
+import { renderStandings } from './render-standings.js?v=1.7.0';
+import { renderBracket } from './render-bracket.js?v=1.7.0';
 
 const handler = new DataHandler();
 
@@ -58,18 +58,57 @@ if (bracketWrapper) {
         moveDragging(e.pageX, e.pageY);
     });
 
-    // Touch Events
+    // Zoom State
+    let currentScale = 1.0;
+    let initialDistance = 0;
+    const bracketContainer = document.getElementById('bracket-container');
+
+    // Ctrl + Wheel Zoom
+    bracketWrapper.addEventListener('wheel', (e) => {
+        if (e.ctrlKey) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            currentScale = Math.min(Math.max(0.3, currentScale * delta), 3);
+            if (bracketContainer) bracketContainer.style.transform = `scale(${currentScale})`;
+        }
+    }, { passive: false });
+
+    // Touch Events (Scroll + Pinch Zoom)
     bracketWrapper.addEventListener('touchstart', (e) => {
-        const touch = e.touches[0];
-        startDragging(touch.pageX, touch.pageY);
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            startDragging(touch.pageX, touch.pageY);
+        } else if (e.touches.length === 2) {
+            isDown = false; // Stop scrolling when zooming
+            initialDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+        }
     }, { passive: true });
-    bracketWrapper.addEventListener('touchend', stopDragging, { passive: true });
+
+    bracketWrapper.addEventListener('touchend', () => {
+        stopDragging();
+        initialDistance = 0;
+    }, { passive: true });
+
     bracketWrapper.addEventListener('touchmove', (e) => {
-        if (!isDown) return;
-        const touch = e.touches[0];
-        moveDragging(touch.pageX, touch.pageY);
+        if (e.touches.length === 1 && isDown) {
+            const touch = e.touches[0];
+            moveDragging(touch.pageX, touch.pageY);
+        } else if (e.touches.length === 2 && initialDistance > 0) {
+            const newDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+            const delta = newDistance / initialDistance;
+            initialDistance = newDistance;
+            currentScale = Math.min(Math.max(0.3, currentScale * delta), 3);
+            if (bracketContainer) bracketContainer.style.transform = `scale(${currentScale})`;
+        }
     }, { passive: true });
 }
+
 
 
 // Sidebar Toggle Logic
