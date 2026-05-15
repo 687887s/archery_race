@@ -47,8 +47,8 @@ export function renderBracket(containerId, matches) {
                 .replace('M-', '')
                 .replace('Final-1', '金牌賽')
                 .replace('Final-2', '銅牌賽')
-                .replace('1/8', '8強賽')
-                .replace('1/4', '4強賽')
+                .replace('1/8', '八強賽')
+                .replace('1/4', '四強賽')
                 .replace('1/2', '準決賽')
                 .replace('Final', '金牌賽')
                 .replace('Bronze', '銅牌賽');
@@ -77,5 +77,5 @@ function getRoundName(count) {
     if (c === 1) return 'FINAL 決賽';
     if (c === 2) return 'SEMIFINALS 準決賽';
     if (c === 4) return 'ROUND 1/4 四強賽';
-    return `$ROUND 1/8 八強賽`;
+    return `ROUND 1/8 八強賽`;
 }
