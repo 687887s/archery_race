@@ -1,4 +1,4 @@
-/** v1.5.7-6 **/
+/** v1.5.7-7 **/
 export function renderBracket(containerId, matches) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
