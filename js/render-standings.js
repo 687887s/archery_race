@@ -161,16 +161,12 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <div class="expand-icon">▼</div>
                         </div>
                         <div class="team-members">
-                            <div class="members-header-title">數據詳情</div>
                             <table class="members-table detail-mode">
                                 <tbody>
                                     <tr>
                                         <th>靶位</th><td>${player.target || '-'}</td>
                                         <th>X</th><td>${player.xCount || 0}</td>
-                                    </tr>
-                                    <tr>
                                         <th>10+X</th><td>${player.tenXCount || 0}</td>
-                                        <th>編號</th><td>#${player.id || '-'}</td>
                                     </tr>
                                 </tbody>
                             </table>

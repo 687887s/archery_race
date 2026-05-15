@@ -1,6 +1,6 @@
-import { DataHandler } from './data-handler.js?v=1.8.3';
-import { renderStandings } from './render-standings.js?v=1.8.3';
-import { renderBracket } from './render-bracket.js?v=1.8.3';
+import { DataHandler } from './data-handler.js?v=1.8.4';
+import { renderStandings } from './render-standings.js?v=1.8.4';
+import { renderBracket } from './render-bracket.js?v=1.8.4';
 
 const handler = new DataHandler();
 
@@ -73,14 +73,10 @@ if (bracketWrapper) {
         }
     }, { passive: false });
 
-    // Touch Events (Scroll + Pinch Zoom)
+    // Touch Events (Pinch Zoom only, native scrolling allowed by CSS)
     bracketWrapper.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-            const touch = e.touches[0];
-            startDragging(touch.pageX, touch.pageY);
-        } else if (e.touches.length === 2) {
-            isDown = false; // Stop scrolling when zooming
-            e.preventDefault(); // Prevent browser zoom
+        if (e.touches.length === 2) {
+            e.preventDefault(); // 防止縮放整個頁面
             initialDistance = Math.hypot(
                 e.touches[0].pageX - e.touches[1].pageX,
                 e.touches[0].pageY - e.touches[1].pageY
@@ -89,16 +85,11 @@ if (bracketWrapper) {
     }, { passive: false });
 
     bracketWrapper.addEventListener('touchend', () => {
-        stopDragging();
         initialDistance = 0;
     }, { passive: true });
 
     bracketWrapper.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 1 && isDown) {
-            e.preventDefault(); // 確保手動捲動順暢，防止瀏覽器干擾
-            const touch = e.touches[0];
-            moveDragging(touch.pageX, touch.pageY);
-        } else if (e.touches.length === 2 && initialDistance > 0) {
+        if (e.touches.length === 2 && initialDistance > 0) {
             e.preventDefault(); // 防止縮放整個頁面
             const newDistance = Math.hypot(
                 e.touches[0].pageX - e.touches[1].pageX,
@@ -110,20 +101,11 @@ if (bracketWrapper) {
             
             if (bracketContainer) {
                 bracketContainer.style.transform = `scale(${currentScale})`;
-                // 同步調整容器的寬高，確保捲動軸範圍正確
-                // 使用原尺寸乘以縮放倍率
-                const originalWidth = bracketContainer.dataset.originalWidth || bracketContainer.scrollWidth;
-                const originalHeight = bracketContainer.dataset.originalHeight || bracketContainer.scrollHeight;
-                if (!bracketContainer.dataset.originalWidth) {
-                    bracketContainer.dataset.originalWidth = originalWidth;
-                    bracketContainer.dataset.originalHeight = originalHeight;
-                }
-                // 我們不需要真的改 width/height，因為 scale 只是視覺
-                // 但我們可以透過一個隱形的撐開元素或是 padding 來讓 parent 知道有新的內容
             }
         }
     }, { passive: false });
 }
+
 
 
 
