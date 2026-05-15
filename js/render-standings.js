@@ -1,4 +1,4 @@
-/** v1.5.7-16 **/
+/** v1.5.8 **/
 const unitColors = {
     '國立臺灣大學': '#38bdf8', // Light Blue
     '陽明射箭社': '#f472b6',    // Pink
@@ -20,9 +20,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
     const tbody = document.getElementById(containerId);
     const headName = document.getElementById('head-name');
     const headUnit = document.getElementById('head-unit');
-    
+
     tbody.innerHTML = '';
-    
+
     // Update headers based on mode
     if (headName) headName.textContent = isTeam ? '分隊名稱' : '選手姓名';
     if (headUnit) headUnit.textContent = isTeam ? '所屬單位' : '參賽單位';
@@ -45,12 +45,12 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             // Update memory
             lastTeam = teamName;
             lastUnit = unitName;
-            
+
             if (!teams[teamName]) {
-                teams[teamName] = { 
-                    name: teamName, 
-                    unit: unitName, 
-                    r1: 0, score: 0, total: 0, 
+                teams[teamName] = {
+                    name: teamName,
+                    unit: unitName,
+                    r1: 0, score: 0, total: 0,
                     xCount: 0, tenXCount: 0,
                     members: []
                 };
@@ -61,9 +61,9 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
             teams[teamName].tenXCount += (p.tenXCount || 0);
             teams[teamName].members.push(p);
         });
-        return Object.values(teams).sort((a, b) => 
-            b.total - a.total || 
-            b.xCount - a.xCount || 
+        return Object.values(teams).sort((a, b) =>
+            b.total - a.total ||
+            b.xCount - a.xCount ||
             b.tenXCount - a.tenXCount
         );
     };
@@ -75,7 +75,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
         // Hide table header and use card layout
         const table = document.getElementById('standings-table');
         if (table) table.classList.add('team-mode');
-        
+
         displayData.forEach((team, index) => {
             const tr = document.createElement('tr');
             tr.className = 'team-row-container';
@@ -97,7 +97,6 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                             <div class="expand-icon">▼</div>
                         </div>
                         <div class="team-members">
-                            <div class="members-header-title">隊員詳細成績 / Member Details</div>
                             <table class="members-table">
                                 <thead>
                                     <tr>
@@ -111,7 +110,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                                         <tr>
                                             <td>${m.name}</td>
                                             <td style="text-align: center;">${m.target || '-'}</td>
-                                            <td style="text-align: right; font-weight: 600;">${m.total}</td>
+                                            <td style="text-align: right; font-weight: 600;">${m.score || 0}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -120,7 +119,7 @@ export function renderStandings(containerId, players, prevPlayers = [], isTeam =
                     </div>
                 </td>
             `;
-            
+
             // Toggle Click Listener
             const card = tr.querySelector('.team-card');
             const header = tr.querySelector('.team-header');
