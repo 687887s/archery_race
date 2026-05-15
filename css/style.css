@@ -804,7 +804,15 @@ tr:last-child td {
     /* Card Mode Table Fix - 僅針對外部排名表格 */
     #standings-table.team-mode,
     #standings-table.team-mode > tbody,
-    #standings-table.team-mode > tbody > tr.team-row-container,
+    #standings-table.team-mode > tbody > tr.team-row-container {
+        display: block !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        padding: 0 0.75rem !important; /* 加入左右間距，不貼邊 */
+        margin-bottom: 0.75rem !important; /* 加入上下間隔 */
+        border: none !important;
+    }
+
     #standings-table.team-mode > tbody > tr.team-row-container > td.team-card-cell {
         display: block !important;
         width: 100% !important;
@@ -813,10 +821,10 @@ tr:last-child td {
         border: none !important;
     }
 
-
     .team-card-cell {
-        padding: 0.5rem 0 !important;
+        padding: 0 !important;
     }
+
 
 
 
